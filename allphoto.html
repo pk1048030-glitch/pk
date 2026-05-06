@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pankaj Kumar - Ultra Secure Folder</title>
+
+<style>
+:root{
+  --primary:#3f51b5;
+  --secondary:#ff9800;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Segoe UI, Arial;
+}
+
+body{
+  min-height:100vh;
+  background:linear-gradient(135deg,#f9f9ff,#ffe9f3);
+  color:#333;
+}
+
+/* Header */
+header{
+  background:linear-gradient(to right,var(--primary),var(--secondary));
+  padding:15px 5%;
+  color:#fff;
+}
+
+nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.logo{
+  font-size:1.6em;
+  font-weight:bold;
+}
+
+nav ul{
+  list-style:none;
+  display:flex;
+}
+
+nav ul li{
+  margin-left:20px;
+}
+
+nav ul li a{
+  color:#fff;
+  text-decoration:none;
+}
+
+/* Main */
+main{
+  display:flex;
+  justify-content:center;
+  padding:40px 15px;
+}
+
+.box{
+  background:#fff;
+  width:100%;
+  max-width:420px;
+  padding:25px;
+  border-radius:15px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.15);
+  text-align:center;
+}
+
+input{
+  width:100%;
+  padding:12px;
+  margin:12px 0;
+  border-radius:10px;
+  border:1px solid #ccc;
+  font-size:16px;
+}
+
+button{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:linear-gradient(to right,var(--primary),var(--secondary));
+  color:#fff;
+  font-size:16px;
+  cursor:pointer;
+}
+
+.error{
+  color:red;
+  margin-top:8px;
+}
+
+/* Strength bar */
+#strength{
+  font-size:14px;
+  margin-top:5px;
+  font-weight:bold;
+}
+
+/* Hidden */
+#passwordBox,#folder{
+  display:none;
+}
+
+/* Links */
+.link-item{
+  background:#f4f6ff;
+  padding:12px;
+  border-radius:10px;
+  margin-bottom:10px;
+  text-align:left;
+}
+
+.link-item a{
+  color:#333;
+  text-decoration:none;
+  font-weight:500;
+}
+
+.link-item a:hover{
+  color:var(--primary);
+  text-decoration:underline;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <nav>
+    <div class="logo">🌟 Pankaj Kumar</div>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="#">YouTube</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+<div class="box">
+
+<!-- 🧩 Puzzle -->
+<div id="puzzleBox">
+  <h2>🧩 Security Question</h2>
+  <p style="margin:10px 0;">Tumhara second name kya hai?</p>
+  <input type="text" id="puzzleInput" placeholder="Answer here">
+  <button onclick="checkPuzzle()">Submit</button>
+  <div class="error" id="puzzleError"></div>
+</div>
+
+<!-- 🔐 Password -->
+<div id="passwordBox">
+  <h2>🔐 Enter Password</h2>
+
+  <div style="position:relative;">
+    <input type="password" id="password" placeholder="Enter Password" oninput="checkStrength()">
+    <span onclick="togglePassword()" 
+      style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:18px;">
+      👁️
+    </span>
+  </div>
+
+  <div id="strength"></div>
+
+  <button onclick="unlock()">Unlock</button>
+  <div class="error" id="passError"></div>
+</div>
+
+<!-- 📂 Folder -->
+<div id="folder">
+  <h2>📂 Pic Link Folder</h2>
+
+  <div class="link-item">
+    <a href="https://photos.app.goo.gl/VoVXLWvm48nCW6wz6" target="_blank">
+      pankaj.nic1234@gmail.com
+    </a>
+  </div>
+  
+    <div class="link-item">
+    <a href="https://photos.app.goo.gl/onizdz6SPSVwa7jLA" target="_blank">
+      freefire91prp@gmail.com
+    </a>
+  </div>
+  
+  
+      <div class="link-item">
+      <a href="https://photos.app.goo.gl/BzHXUcuz91wMCavc9" target="_blank">
+        pfreekfire55@gmail.com
+      </a>
+    </div>
+    
+        <div class="link-item">
+      <a href="https://photos.app.goo.gl/UKFurck5kWHPG5ea7" target="_blank">
+        pic10000.nic@gmail.com
+      </a>
+    </div>
+  
+  
+    <div class="link-item">
+    <a href="https://photos.app.goo.gl/gm9161vcgHKWS3fH8" target="_blank">
+      pankaj.nic1836@gmail.com
+    </a>
+  </div>
+  
+
+  <div class="link-item">
+    <a href="https://photos.app.goo.gl/pzFwR49tFNhubu4U9" target="_blank">
+      pk017p10@gmail.com
+    </a>
+  </div>
+  
+  
+    <div class="link-item">
+    <a href="https://drive.google.com/drive/folders/1rVff_bM8ENwMuBF5RSHEfx564W3odi5s" target="_blank">
+      Documents 
+    </a>
+  </div>
+</div>
+
+
+
+
+  
+</div>
+
+</div>
+</main>
+
+<script>
+/* 🧩 Puzzle */
+function checkPuzzle(){
+  const ans = document.getElementById("puzzleInput").value.trim().toUpperCase();
+  if(ans === "AKASH"){
+    puzzleBox.style.display="none";
+    passwordBox.style.display="block";
+  } else {
+    puzzleError.innerText="❌ Wrong Answer";
+    navigator.vibrate?.(300);
+  }
+}
+
+/* 👁️ Show / Hide Password */
+let hideTimer;
+function togglePassword(){
+  const input = document.getElementById("password");
+  input.type = input.type === "password" ? "text" : "password";
+
+  clearTimeout(hideTimer);
+  if(input.type === "text"){
+    hideTimer = setTimeout(()=>{
+      input.type = "password";
+    },5000);
+  }
+}
+
+/* 🔐 Strength Checker */
+function checkStrength(){
+  const val = document.getElementById("password").value;
+  const strength = document.getElementById("strength");
+
+  if(val.length < 6){
+    strength.innerText="Strength: Weak";
+    strength.style.color="red";
+  } else if(val.length < 10){
+    strength.innerText="Strength: Medium";
+    strength.style.color="orange";
+  } else {
+    strength.innerText="Strength: Strong";
+    strength.style.color="green";
+  }
+}
+
+/* 🔒 SECURITY LAYER (Encoded + Fake Logic) */
+
+// Fake passwords (confusion)
+const fake1 = "Hello123";
+const fake2 = "Pankaj@2025";
+
+// Real password (Base64 encoded)
+const realEncoded = "SGVsbG8gUGFua2FqIGppaQ=="; // Hello Pankaj jii
+
+function decode(str){
+  return atob(str);
+}
+
+/* 🔓 Unlock */
+function unlock(){
+  const userPass = document.getElementById("password").value;
+
+  // fake checks
+  if(userPass === fake1 || userPass === fake2){
+    passError.innerText="❌ Wrong Password";
+    return;
+  }
+
+  if(userPass === decode(realEncoded)){
+    passwordBox.style.display="none";
+    folder.style.display="block";
+  } else {
+    passError.innerText="❌ Wrong Password";
+    navigator.vibrate?.([200,100,200]);
+  }
+}
+
+/* 🚫 Inspect discourage */
+document.addEventListener("contextmenu", e => e.preventDefault());
+document.addEventListener("keydown", e => {
+  if(e.key === "F12" || 
+     (e.ctrlKey && e.shiftKey && ["I","J","C"].includes(e.key)) ||
+     (e.ctrlKey && e.key === "U")){
+    e.preventDefault();
+  }
+});
+</script>
+
+<script>
+/* ========= GLOBAL VIBRATION ONLY ========= */
+
+// har click / tap par vibration
+document.addEventListener("click", function () {
+  if (navigator.vibrate) {
+    navigator.vibrate(40); // 40ms vibration
+  }
+}, true);
+
+</script>
+
+</body>
+</html>

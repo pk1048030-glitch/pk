@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=no">
+    <title>Happy Birthday Diwakar ❤️</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --font-script: 'Great Vibes', cursive;
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Montserrat', sans-serif;
+            --primary-gold: #D4AF37;
+            --deep-red: #4a0404;
+        }
+
+        body {
+            background-color: #0f0c29;
+            background-image: linear-gradient(315deg, #0f0c29 0%, #302b63 74%, #24243e 100%);
+            color: white;
+            font-family: var(--font-sans);
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .mobile-container {
+            width: 100%;
+            height: 100%;
+            max-width: 480px;
+            background: rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (min-width: 480px) {
+            .mobile-container {
+                height: 90vh;
+                border-radius: 20px;
+                box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+                border: 1px solid rgba(255,255,255,0.1);
+            }
+        }
+
+        .stars { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+        .star { position: absolute; background: white; border-radius: 50%; animation: twinkle var(--duration) infinite; opacity: 0; }
+        @keyframes twinkle {
+            0% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 0.8; transform: scale(1.2); }
+            100% { opacity: 0; transform: scale(0.5); }
+        }
+
+        .slide {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0; visibility: hidden; transition: all 0.8s ease-in-out;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            padding: 20px; text-align: center; z-index: 10;
+        }
+        .slide.active { opacity: 1; visibility: visible; }
+
+        .text-gold { color: var(--primary-gold); text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .title-script { font-family: var(--font-script); font-size: 4rem; line-height: 1.2; margin-bottom: 10px; }
+        .text-elegant { font-family: var(--font-serif); font-size: 1.5rem; font-style: italic; line-height: 1.6; }
+
+        .start-btn {
+            background: linear-gradient(45deg, #D4AF37, #FDC830);
+            border: none; padding: 15px 40px; border-radius: 50px;
+            color: #4a0404; font-weight: 700; font-size: 1.2rem; cursor: pointer;
+            box-shadow: 0 10px 20px rgba(212,175,55,0.3);
+            animation: pulse 2s infinite;
+            text-transform: uppercase; letter-spacing: 2px; z-index: 20;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(212,175,55,0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(212,175,55,0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(212,175,55,0); }
+        }
+
+        .progress-container { position: absolute; top: 20px; left: 0; width: 100%; display: flex; padding: 0 10px; gap: 5px; z-index: 50; }
+        .progress-bar { height: 4px; background: rgba(255,255,255,0.2); flex: 1; border-radius: 2px; overflow: hidden; }
+        .progress-fill { height: 100%; background: white; width: 0%; transition: width 0.3s linear; }
+        .progress-fill.filled { width: 100%; }
+        .progress-fill.active { width: 100%; transition: width 5s linear; }
+
+        .cake-container { cursor: pointer; transition: transform 0.3s; }
+        .cake-container:active { transform: scale(0.95); }
+        .flame { animation: flicker 1s infinite alternate; transform-origin: center bottom; }
+        @keyframes flicker { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.1); opacity: 0.8; } }
+
+        .tap-nav { position: absolute; bottom: 30px; font-size: 0.9rem; opacity: 0.6; animation: bounce 2s infinite; }
+        @keyframes bounce { 0%,20%,50%,80%,100%{transform:translateY(0);}40%{transform:translateY(-10px);}60%{transform:translateY(-5px);} }
+    </style>
+</head>
+<body>
+    <div class="mobile-container">
+        <div class="stars" id="starsContainer"></div>
+
+        <div class="progress-container hidden" id="progressContainer">
+            <div class="progress-bar"><div class="progress-fill" id="p1"></div></div>
+            <div class="progress-bar"><div class="progress-fill" id="p2"></div></div>
+            <div class="progress-bar"><div class="progress-fill" id="p3"></div></div>
+            <div class="progress-bar"><div class="progress-fill" id="p4"></div></div>
+            <div class="progress-bar"><div class="progress-fill" id="p5"></div></div>
+        </div>
+
+        <!-- SLIDE 1 -->
+        <div class="slide active" id="slide1">
+            <h1 class="title-script text-gold mb-4">Hello Diwakar</h1>
+            <p class="text-elegant mb-8">Ek chhoti si gift... sirf tere liye 💛</p>
+            <button class="start-btn" onclick="nextSlide(2)">Open ❤️</button>
+        </div>
+
+        <!-- SLIDE 2 -->
+        <div class="slide" id="slide2" onclick="nextSlide(3)">
+            <div class="text-6xl mb-4">🎉</div>
+            <h2 class="text-4xl font-serif font-bold text-gold mb-2">Today</h2>
+            <p class="text-elegant">Is not just another day...</p>
+            <p class="mt-4 px-6 text-sm opacity-80">Aaj ka din khaas hai, kyunki aaj mere bhai ka birthday hai! 🥳</p>
+            <div class="tap-nav">Tap to continue</div>
+        </div>
+
+        <!-- SLIDE 3 -->
+        <div class="slide" id="slide3" onclick="nextSlide(4)">
+            <div class="w-48 h-48 rounded-full border-4 border-yellow-500 overflow-hidden mb-6 shadow-2xl relative">
+                <img src="https://img.freepik.com/free-vector/happy-birthday-boy-cartoon-vector_138676-3092.jpg?w=740" 
+                     alt="Diwakar" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-black bg-opacity-20"></div>
+            </div>
+            <h2 class="title-script text-gold text-5xl">My bro...</h2>
+            <p class="text-elegant mt-4"> hmesa enjoy krte rho kunki <br> one  year km hogya tumhari life se  ❤️</p>
+            <div class="tap-nav">Tap to continue</div>
+        </div>
+
+        <!-- SLIDE 4 -->
+        <div class="slide" id="slide4" onclick="nextSlide(5)">
+            <h1 class="text-3xl font-bold mb-6 text-gold">Happy Birthday, Diwakar 🎂</h1>
+            <div class="text-left px-8 space-y-4 font-serif leading-relaxed">
+                <p>"Tere jaise bhai pe har dil fida hota hai,</p>
+                <p>Jo muskurata rahe, wo sada khuda ka banda hota hai."</p>
+                <p>"Zindagi ke har pal mein khushi mile tujhe,</p>
+                <p>Har dua mein bas tera naam ho mere bhai!"</p>
+            </div>
+            <div class="tap-nav mt-8">Tap for Magic ✨</div>
+        </div>
+
+        <!-- SLIDE 5 -->
+        <div class="slide" id="slide5">
+            <h1 class="title-script text-gold mb-2">Happy Birthday, Diwakar! 🎂</h1>
+            <p class="text-sm mb-8 opacity-70">Tap the cake to make a wish 🕯️</p>
+            <div class="cake-container transform scale-125" onclick="cutCake()">
+                <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="40" y="120" width="120" height="60" rx="5" fill="#F472B6"/>
+                    <rect x="40" y="120" width="120" height="10" rx="2" fill="#BE185D"/>
+                    <rect x="50" y="80" width="100" height="40" rx="5" fill="#FBCFE8"/>
+                    <rect x="50" y="80" width="100" height="10" rx="2" fill="#DB2777"/>
+                    <circle cx="100" cy="80" r="10" fill="#EF4444"/>
+                    <rect x="95" y="40" width="10" height="40" fill="#FCD34D"/>
+                    <path class="flame" d="M100 20 C100 20 90 35 95 40 H105 C110 35 100 20 100 20Z" fill="#F59E0B"/>
+                </svg>
+            </div>
+
+            <div id="wishes" class="mt-8 text-xl font-bold text-gold opacity-0 transition-opacity duration-1000">
+                🎈 Wishing You Endless Happiness, Diwakar! 🎈
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const starsContainer = document.getElementById('starsContainer');
+        for(let i=0; i<50; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.width = Math.random() * 3 + 1 + 'px';
+            star.style.height = star.style.width;
+            star.style.setProperty('--duration', Math.random() * 3 + 2 + 's');
+            starsContainer.appendChild(star);
+        }
+
+        let currentSlide = 1;
+        const totalSlides = 5;
+        function nextSlide(n) {
+            document.getElementById(`slide${currentSlide}`).classList.remove('active');
+            if(n > 1) {
+                document.getElementById('progressContainer').classList.remove('hidden');
+                document.getElementById('progressContainer').style.display = 'flex';
+                for(let i=1; i < n; i++) {
+                    document.getElementById(`p${i}`).classList.add('filled');
+                }
+                if(n <= totalSlides) document.getElementById(`p${n}`).classList.add('active');
+            }
+            currentSlide = n;
+            document.getElementById(`slide${currentSlide}`).classList.add('active');
+        }
+
+        function cutCake() {
+            let duration = 3 * 1000;
+            let end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: {x: 0} });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: {x: 1} });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            })();
+
+            const flame = document.querySelector('.flame');
+            if(flame) flame.style.display = 'none';
+
+            const wishText = document.getElementById('wishes');
+            wishText.style.opacity = '1';
+            wishText.innerHTML = "Janmadin Mubarak Ho, <b>Diwakar Gupta!</b> 🎂<br><span style='font-size:0.9em; color:white;'>— Tumhara Bhai, <b>Pankaj</b> ❤️</span>";
+        }
+    </script>
+</body>
+</html>

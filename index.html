@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pankaj Kumar - Personal Portfolio</title>
+
+  <style>
+    :root {
+      --primary-color: #3f51b5;
+      --secondary-color: #ff9800;
+      --accent-color: #e91e63;
+      --text-color: #333;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f9f9ff, #ffe9f3);
+      color: var(--text-color);
+      line-height: 1.6;
+      scroll-behavior: smooth;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+      color: white;
+      padding: 15px 5%;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      animation: slideDown 1s ease;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    nav .logo {
+      font-size: 1.8em;
+      font-weight: bold;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    nav ul li {
+      margin-left: 25px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: white;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    nav ul li a:hover {
+      color: #ffe57f;
+      text-shadow: 0 0 6px #fff;
+    }
+
+    .search-box {
+      margin-left: 20px;
+      position: relative;
+    }
+    .search-box input {
+      padding: 6px 32px 6px 10px;
+      border-radius: 20px;
+      border: none;
+      outline: none;
+      font-size: 0.95em;
+      transition: 0.3s;
+    }
+    .search-box input:focus { box-shadow: 0 0 8px #fff; }
+    .search-box::after {
+      content: "🔍";
+      position: absolute;
+      right: 10px;
+      top: 4px;
+      font-size: 1.1em;
+      pointer-events: none;
+    }
+
+    /* Hero Section */
+    #home {
+      background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+                  url('https://picsum.photos/1200/600?random') no-repeat center/cover;
+      height: 90vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: white;
+      padding: 0 20px;
+      animation: fadeIn 2s ease;
+    }
+
+    #home h1 {
+      font-size: 3em;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 8px #000;
+      border-right: 3px solid #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      width: 0;
+      animation: typing 4s steps(30) 0.5s forwards;
+    }
+
+    #home p {
+      font-size: 1.3em;
+      margin-top: 15px;
+      opacity: 0;
+      animation: fadeIn 2s ease 4.5s forwards;
+    }
+
+    #home .btn {
+      background: var(--secondary-color);
+      color: white;
+      padding: 12px 25px;
+      border-radius: 25px;
+      font-weight: bold;
+      text-decoration: none;
+      transition: 0.3s;
+      opacity: 0;
+      animation: fadeIn 2s ease 5s forwards;
+    }
+
+    #home .btn:hover {
+      background: var(--accent-color);
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(255,255,255,0.6);
+    }
+
+    /* Keyframes */
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-100%); }
+      to { transform: translateY(0); }
+    }
+
+    /* Science Hub Section */
+    #sciencehub {
+      background: linear-gradient(135deg, #e1f6e9, #f1f8f1);
+      padding: 40px 0;
+      border-radius: 20px;
+      box-shadow: 0 0 25px rgba(0,0,0,0.1);
+      margin: 40px 5%;
+    }
+
+    #sciencehub h2 {
+      text-align: center;
+      font-size: 2em;
+      color: #2e7d38;
+    }
+
+    .neon-btn {
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      color: white;
+      font-size: 1.1em;
+      padding: 12px 28px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      box-shadow: 0 6px #142850;
+      transition: all 0.25s ease-in-out;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .neon-btn:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 0 25px #00eaff, 0 0 40px #8a2be2, 0 8px 20px rgba(0,0,0,0.3);
+      background: linear-gradient(135deg, #4a00e0, #8e2de2);
+    }
+
+    footer {
+      text-align:center;
+      padding:20px;
+      background:linear-gradient(to right, var(--secondary-color), var(--accent-color));
+      color:white;
+      font-weight:bold;
+    }
+
+    @media(max-width:768px){
+      #home h1{font-size:2em;}
+      #home p{font-size:1.1em;}
+    }
+  </style>
+  
+  <style>
+/* 🔴 SEARCH RED BLINK HIGHLIGHT */
+.search-blink-red{
+  outline: 3px solid red !important;
+  animation: redBlink 1s infinite;
+}
+@keyframes redBlink{
+  0%{ box-shadow:0 0 6px red; }
+  50%{ box-shadow:0 0 22px red; }
+  100%{ box-shadow:0 0 6px red; }
+}
+</style>
+  
+  <style>
+.info-section{
+  max-width:1100px;
+  margin:40px auto;
+  display:flex;
+  flex-direction:column;
+  gap:35px;
+}
+
+.info-box{
+  background:#f1f8f1;
+  padding:35px 30px;
+  border-radius:20px;
+  box-shadow:0 0 25px rgba(0,0,0,0.08);
+  text-align:center;
+}
+
+.info-box h2{
+  color:#2e7d38;
+  margin-bottom:12px;
+  font-size:1.9em;
+}
+
+.info-box p{
+  font-size:1.1em;
+  color:#333;
+  line-height:1.7;
+}
+
+@media(max-width:768px){
+  .info-box{
+    padding:25px 18px;
+  }
+  .info-box h2{
+    font-size:1.5em;
+  }
+}
+</style>
+  
+  
+  
+  
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <nav>
+      <div class="logo">🌟 Pankaj Kumar 🌟</div>
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search menu...">
+      </div>
+      <ul id="menuList">
+        <li><a href="#home">Home</a></li>
+        <li><a href="about.html">Mere Baare Mein</a></li>
+        <li><a href="pankajcv.html"> Biodata🫰</a></li>
+        <li><a href="movie.html">Movies 🍿</a></li>
+        <li><a href="books.html">12th Books</a></li>
+          <li><a href="https://techinaut.edu.in/all-student">computer all students</a></li>
+        <li><a href="https://intermediate.biharboardonline.com/Exam26/StudentExamDummyCard.aspx">DUMMY ADMIT CARD</a></li>
+        <li><a href="owner.html">Ownership📂📂</a></li>
+        <li><a href="science.html">Science HuB 🧪</a></li>
+        <li><a href="modelspaper.html">12th Models 🗞️ Paper</a></li>
+        <li><a href="disha.html">All Notes</a></li>
+        <li><a href="countdown.html">🧾exam rootin</a></li>
+        <li><a href="font.html">🅿️Font creater</a></li>
+        <li><a href="https://modyolo.com/">Mod APK 🚀 </a></li>
+        <li><a href="allphoto.html"> © </a></li>
+        <li><a href="12thactivitycopy.html">12th Activity Copy 📑</a></li>
+        <li><a href="ai.html"> Your friend 🧑‍🤝‍🧑</a></li>
+        <li><a href="cuet-ug phy.html"> cuet-ug physics</a></li>
+        <li><a href="12th result.html"> 12th result </a></li>
+        <li><a href="https://drive.google.com/drive/folders/1JMxIoEtwsNviilwyP3IUyHrpqwpXB4Ks"> Cuet pyq </a></li>
+        <li><a href="https://drive.google.com/drive/folders/1gdL2khT1D7hGZaG457oIE-gjOpS4-5OM"> Current affairs of upcoming month</a></li>
+        <li><a href="https://drive.google.com/drive/folders/1JMxIoEtwsNviilwyP3IUyHrpqwpXB4Ks"> sample papers(2-5) </a></li>
+        <li><a href="location.html"> Location </a></li>
+          
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section id="home">
+    <div>
+      <h1>Namaste🙏🏻, I am 👨🏻‍💻Pankaj</h1>
+      <p>❥___I___𝑨𝒍𝒘𝒂𝒚𝒔__𝑭𝒓𝒆𝒆_____𝑭𝒐𝒓___𝒀𝒐𝒖__😇___𓆩♥︎𓆪__P̴͈̫̣̀̓̂͂̾̚a̵̡̯̤̩͍̟̟̽̃́̿n̴̥̗͕̥̪̆̕ḱ̷͙̠͊̆͆̅ä̵͖͍̘́̆̂̃̏͑͘j̵͈̠͚̗͚̙́̕ 🎨✨</p>
+      <a href="#sciencehub" class="btn">🚀 Explore Science Hub</a>
+    </div>
+  </section>
+
+  <!-- Science Hub -->
+  <section id="sciencehub">
+    <h2>12th All 📚 Books</h2>
+    <div style="text-align:center;">
+      <p style="font-size:1.2em; color:#2e7d38;">Yahan se apna <b>Books</b> online dekh sakte hain 👇</p>
+      <a href="https://drive.google.com/drive/folders/1nSKjHeSzK8NLYqp3X1t1Ik265jq2UFrM" class="neon-btn">🧪 12th Science 📚 Books</a>
+      <div style="margin-top:18px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+        <button class="small-btn neon-btn" onclick="window.open('https://youtube.com/@pankajkumar-v7d8o','_blank')">📚 Study Help</button>
+        <button class="small-btn neon-btn" onclick="window.open('tel:+919162389933')">📞 Contact</button>
+      </div>
+    </div>
+  </section>
+  
+  
+  <!-- 🎓 Student Folder Section -->
+<section id="student" style="background: linear-gradient(135deg, #e8f5e9, #f1f8e9); border-radius: 15px; padding: 40px 20px; box-shadow: 0 0 25px rgba(0,0,0,0.1); margin: 40px auto; max-width: 1100px;">
+  <h2 style="text-align:center; color:#2e7d32; font-size:2.2em; text-shadow:1px 1px 3px rgba(0,0,0,0.2);">🎓 Student Section</h2>
+  <div style="text-align:center;">
+    <p style="font-size:1.2em; color:#2e7d32; margin-bottom:15px;">
+      Yahan se apna <b>Bonafide Certificate</b> online dekh sakte hain 👇
+    </p>
+
+    <!-- Main Bonafide Button -->
+    <a id="bonafideLink" href="#" class="btn online-bonafide-btn" style="display:inline-block; text-decoration:none; font-weight:bold;">
+       📂 <b>ONLINE BONAFIDE 🫣</b>
+    </a>
+
+    <!-- Control Buttons -->
+    <div style="margin-top:18px; display:flex; gap:10px; justify-content:center; align-items:center; flex-wrap:wrap;">
+      <button id="forgotBtn" class="small-btn forgot-btn">🔑 Forgot / Help</button>
+      <button id="knowBtn" class="small-btn kp-btn">📞 KNOW PASSWORD</button>
+    </div>
+  </div>
+</section>
+
+<!-- 🌟 Bonafide Glow Button CSS -->
+<style>
+  .online-bonafide-btn {
+    background: linear-gradient(90deg, #4CAF50, #81C784);
+    color: white;
+    border: none;
+    font-size: 1.1em;
+    padding: 12px 28px;
+    border-radius: 12px;
+    text-shadow: 0px 0px 4px #000;
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.4);
+    transition: all 0.4s ease-in-out;
+  }
+  .online-bonafide-btn:hover {
+    box-shadow: 0 0 25px rgba(76,175,80,0.8), 0 0 40px rgba(129,199,132,0.6);
+    transform: scale(1.07);
+    text-shadow: 0px 0px 8px #fff;
+  }
+
+  .small-btn {
+    padding: 10px 14px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:700;
+    border:1px solid rgba(0,0,0,0.06);
+    background:transparent;
+    transition:0.3s;
+  }
+  .small-btn:hover{
+    transform: translateY(-2px);
+    box-shadow:0 8px 18px rgba(0,0,0,0.08);
+  }
+  .kp-btn { background: #fff; color: #0b6623; }
+  .forgot-btn { color: #2e7d32; }
+  .modal-backdrop{
+    position:fixed; inset:0; display:none; place-items:center;
+    background:rgba(0,0,0,0.45); z-index:2000
+  }
+  .modal{
+    background:#fff; width:min(420px,92%);
+    border-radius:12px; padding:18px;
+    box-shadow:0 12px 40px rgba(10,10,10,0.2);
+  }
+  .modal h3{ margin:0 0 8px; color:#3f51b5; }
+  .modal p{ margin:0 0 12px; color:#444; }
+  .modal-actions{
+    display:flex; gap:8px; justify-content:flex-end; margin-top:12px
+  }
+  .err{ color:#b00020; font-size:0.95rem; margin-top:8px }
+</style>
+
+<!-- 🔐 Password Modal -->
+<div id="pwModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="pwTitle">
+  <div class="modal" role="document">
+    <h3 id="pwTitle">Password Maange ja rha hai</h3>
+    <p>Kripya box me  password daalein taaki aapka Bonafide folder open ho sake.</p>
+    <label for="pwInput" style="font-size:0.95rem; display:block; margin-bottom:6px">Password</label>
+    <input id="pwInput" class="pw-input" type="password" inputmode="numeric" autocomplete="one-time-code" style="width:100%; padding:10px 12px; font-size:1rem; border-radius:8px; border:1px solid #ddd;" />
+    <div id="hint" style="font-size:0.85rem; color:#555; margin-top:8px">Tip: Password numeric hai. Agar aap bhool gaye to "KNOW PASSWORD" par call karein.</div>
+    <div class="err" id="pwErr" aria-live="polite" style="display:none"></div>
+    <div class="modal-actions">
+      <button id="pwCancel" class="small-btn">Cancel</button>
+      <button id="pwSubmit" class="small-btn kp-btn">Open</button>
+    </div>
+  </div>
+</div>
+
+<!-- 📞 Call Confirmation Modal -->
+<div id="callModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="callTitle">
+  <div class="modal" role="document">
+    <h3 id="callTitle">Call — Pankaj जी</h3>
+    <p style="margin-bottom:8px">Tap the green button to call Pankaj जी. Aap phone par call accept karenge to baat hogi.</p>
+    <div style="display:flex; gap:10px; justify-content:flex-end; align-items:center">
+      <button id="callCancel" class="small-btn">Cancel</button>
+      <a id="callNow" class="small-btn kp-btn" href="tel:+919162389933">📲 Call Pankaj जी</a>
+    </div>
+  </div>
+</div>
+
+<!-- 🧠 Script Logic -->
+<script>
+(function(){
+  const PROTECTED_LINK = 'https://drive.google.com/drive/folders/1R1AO088f_kMYbOLyXRBH_-5N7Cl8pFuA';
+  const CORRECT_PW = '9631';
+  const HELP_LINK = 'https://sites.google.com/view/welcome-to-myfirst-site/birthday?authuser=3';
+  const PHONE = '+919162389933';
+
+  const bonafideLink = document.getElementById('bonafideLink');
+  const pwModal = document.getElementById('pwModal');
+  const pwInput = document.getElementById('pwInput');
+  const pwErr = document.getElementById('pwErr');
+  const pwCancel = document.getElementById('pwCancel');
+  const pwSubmit = document.getElementById('pwSubmit');
+  const forgotBtn = document.getElementById('forgotBtn');
+  const knowBtn = document.getElementById('knowBtn');
+  const callModal = document.getElementById('callModal');
+  const callCancel = document.getElementById('callCancel');
+
+  let attemptsLeft = 3;
+  let lockedUntil = 0;
+
+  // 🔒 Bonafide click
+  bonafideLink.addEventListener('click', (e)=>{
+    e.preventDefault();
+    if(Date.now() < lockedUntil){
+      const rem = Math.ceil((lockedUntil - Date.now())/1000);
+      showPwError('Temporary lock. ' + rem + ' sec baad try karein.');
+      return;
+    }
+    showPwModal();
+  });
+
+  function showPwModal(){
+    pwErr.style.display = 'none';
+    pwInput.value = '';
+    pwModal.style.display = 'grid';
+    pwInput.focus();
+  }
+  function hidePwModal(){ pwModal.style.display = 'none'; }
+
+  function showPwError(msg){
+    pwErr.textContent = msg;
+    pwErr.style.display = 'block';
+  }
+
+  pwCancel.addEventListener('click', hidePwModal);
+
+  pwSubmit.addEventListener('click', ()=>{
+    if(Date.now() < lockedUntil){
+      const rem = Math.ceil((lockedUntil - Date.now())/1000);
+      showPwError('Aap temporary lock par ho. ' + rem + ' sec baad try karein.');
+      return;
+    }
+    const val = pwInput.value ? pwInput.value.trim() : '';
+    if(val === CORRECT_PW){
+      window.open(PROTECTED_LINK, '_blank', 'noopener');
+      hidePwModal();
+      attemptsLeft = 3;
+      pwErr.style.display = 'none';
+    } else {
+      attemptsLeft -= 1;
+      if(attemptsLeft <= 0){
+        lockedUntil = Date.now() + 30*1000;
+        showPwError('Bahut baar galat password. 30 seconds ke liye lock.');
+        attemptsLeft = 3;
+      } else {
+        showPwError('Galat password — ' + attemptsLeft + ' attempts bache hain.');
+      }
+    }
+  });
+
+  pwInput.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') pwSubmit.click(); });
+  pwModal.addEventListener('click', (e)=>{ if(e.target === pwModal) hidePwModal(); });
+
+  forgotBtn.addEventListener('click', ()=>{ window.open(HELP_LINK, '_blank', 'noopener,noreferrer'); });
+  knowBtn.addEventListener('click', ()=>{ callModal.style.display = 'grid'; });
+  callCancel.addEventListener('click', ()=>{ callModal.style.display = 'none'; });
+  callModal.addEventListener('click', (e)=>{ if(e.target === callModal) callModal.style.display = 'none'; });
+})();
+</script>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    <section id="sciencehub" style="background: linear-gradient(135deg, #e8f5e9, #f1f8e9);">
+  <h2>Dummy Admit card science arts  commerce</h2>
+  <div style="text-align:center;">
+    <p style="font-size:1.2em; color:#2e7d32;">
+      Yahan se apna <b>Dummy admit card 2026 exam </b> online dekh sakte hain 👇
+    </p><!-- Same Style Button as Bonafide but NO PASSWORD -->
+<a href="https://intermediate.biharboardonline.com/Exam26/StudentExamDummyCard.aspx" 
+   class="btn online-bonafide-btn" 
+   style="text-decoration:none;">
+   🧪 <b>Dummy Admit card science arts  commerce </b>
+</a>
+
+<!-- Forgot & Know Password style buttons (but changed meaning) -->
+<div style="margin-top:14px; display:flex; gap:10px; justify-content:center; align-items:center; flex-wrap:wrap;">
+  <button class="small-btn forgot-btn" onclick="window.open('https://youtube.com/@pankajkumar-v7d8o','_blank')">📚 Study Help</button>
+  <button class="small-btn kp-btn" onclick="window.open('tel:+919162389933')">📞 Contact</button>
+</div>
+
+  </div>
+    </section>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <!-- 12th Model Paper Section -->
+<section id="sciencehub" style="background: linear-gradient(135deg, #e1f6e9, #f1f8f1); padding: 40px 0; border-radius: 20px; box-shadow: 0 0 25px rgba(0,0,0,0.1);">
+  <h2 style="text-align:center; font-size:2em; color:#2e7d38; text-shadow:1px 1px 3px rgba(0,0,0,0.2);">
+    12th All Stream Model Papers
+  </h2>
+  
+  <div style="text-align:center;">
+    <p style="font-size:1.2em; color:#2e7d38;">
+      Yahan se apna <b>Stream</b> Model Paper download kar sakte hain 👇
+    </p>
+
+    <!-- ✅ Clean Button -->
+    <a href="modelspaper.html" class="neon-btn">
+      🧪 <b>12th Model Paper</b>
+    </a>
+
+    <!-- Small Buttons -->
+    <div style="margin-top:18px; display:flex; gap:12px; justify-content:center; align-items:center; flex-wrap:wrap;">
+      <button class="small-btn neon-btn" onclick="window.open('https://youtube.com/@pankajkumar-v7d8o','_blank')">📚 Study Help</button>
+      <button class="small-btn neon-btn" onclick="window.open('tel:+919162389933')">📞 Contact</button>
+    </div>
+  </div>
+</section>
+
+<section class="info-section">
+  <div class="info-box">
+    <h2>About This Website</h2>
+    <p>
+      Yeh website Class 12 ke students ke liye banayi gayi hai jahan par
+      Science, Arts aur Commerce ke important books, model papers,
+      dummy admit card aur bonafide certificate jaise academic services
+      bilkul free provide ki jaati hain. Iska main goal students ki
+      preparation ko easy aur effective banana hai.
+    </p>
+  </div>
+
+  <div class="info-box">
+    <h2>12th Class Books – All Streams</h2>
+    <p>
+      Yahan aap Bihar Board aur anya boards ke liye Class 12 ke
+      Science, Arts aur Commerce ke books online access kar sakte hain.
+    </p>
+  </div>
+
+  <div class="info-box">
+    <h2>Student Services</h2>
+    <p>
+      Is section me students apna Dummy Admit Card aur
+      Bonafide Certificate se related information dekh sakte hain.
+    </p>
+  </div>
+
+  <div class="info-box">
+    <h2>12th Model Papers</h2>
+    <p>
+      Yahan se Class 12 ke sabhi streams ke model papers
+      download kar sakte hain jo exam preparation me madad karte hain.
+    </p>
+  </div>
+</section>
+
+<!-- Neon Button CSS -->
+<style>
+  .neon-btn {
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: white;
+    font-size: 1.1em;
+    padding: 12px 28px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    box-shadow: 0 6px #142850;
+    transition: all 0.25s ease-in-out;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .neon-btn:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0 25px #00eaff, 0 0 40px #8a2be2, 0 8px 20px rgba(0,0,0,0.3);
+    background: linear-gradient(135deg, #4a00e0, #8e2de2);
+  }
+
+  .neon-btn:active {
+    transform: translateY(2px);
+    box-shadow: inset 0 4px 6px rgba(0,0,0,0.3);
+  }
+
+  .neon-btn::after {
+    content: "";
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    border-radius: 15px;
+    background: linear-gradient(45deg, #00eaff, #ff00ff, #00ff6a, #ffcc00, #00eaff);
+    z-index: -1;
+    filter: blur(12px);
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out;
+    animation: neon-pulse 3s infinite linear;
+  }
+
+  .neon-btn:hover::after {
+    opacity: 1;
+  }
+
+  @keyframes neon-pulse {
+    0% { background-position: 0% 50%; opacity: 0.5; }
+    50% { background-position: 100% 50%; opacity: 1; }
+    100% { background-position: 0% 50%; opacity: 0.5; }
+  }
+
+  .small-btn {
+    font-size: 0.95em;
+    padding: 10px 22px;
+  }
+</style>
+  
+  
+  
+  
+  
+  
+  
+  
+
+  <footer>© 2025 Pankaj Kumar | Rang-Biranga Portfolio 🌈</footer>
+
+  <!-- Search Function -->
+  <script>
+    const searchInput = document.getElementById('searchInput');
+    const menuList = document.getElementById('menuList');
+    const items = menuList.getElementsByTagName('li');
+    searchInput.addEventListener('keyup', function() {
+      const filter = searchInput.value.toLowerCase();
+      for (let i = 0; i < items.length; i++) {
+        const text = items[i].textContent.toLowerCase();
+        items[i].style.display = text.includes(filter) ? "" : "none";
+      }
+    });
+  </script>
+  <script>
+/*
+  SAFE SEARCH SYSTEM (RED BLINK)
+  ✔ No content change
+  ✔ Read-only
+*/
+(function () {
+  const searchInput = document.getElementById("searchInput");
+  if (!searchInput) return;
+
+  const menuItems = document.querySelectorAll("#menuList li");
+  const contentBlocks = document.querySelectorAll(
+    "section, div, h1, h2, h3, p"
+  );
+
+  let lastHighlight = null;
+
+  searchInput.addEventListener("input", function () {
+    const q = this.value.toLowerCase().trim();
+
+    /* MENU SEARCH */
+    menuItems.forEach(li => {
+      li.style.display = li.innerText.toLowerCase().includes(q) ? "" : "none";
+    });
+
+    /* REMOVE OLD BLINK */
+    if (lastHighlight) {
+      lastHighlight.classList.remove("search-blink-red");
+      lastHighlight = null;
+    }
+
+    if (!q) return;
+
+    /* PAGE CONTENT SEARCH */
+    for (let block of contentBlocks) {
+      if (!block.innerText) continue;
+
+      if (block.innerText.toLowerCase().includes(q)) {
+        block.classList.add("search-blink-red");
+        block.scrollIntoView({ behavior: "smooth", block: "center" });
+        lastHighlight = block;
+        break; // first match only
+      }
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

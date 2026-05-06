@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Document Center - Pankaj Kumar</title>
+  <style>
+    :root {
+      --primary-color: #3f51b5;
+      --secondary-color: #ff9800;
+      --success: #4CAF50;
+      --text: #2e7d32;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f9f9ff, #ffe9f3);
+      color: #333;
+      min-height: 100vh;
+      padding-bottom: 50px;
+    }
+
+    /* Header Styles */
+    header {
+      background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+      color: white;
+      padding: 15px 5%;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      animation: slideDown 1s ease;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav .logo {
+      font-size: 1.5em;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+    }
+
+    nav ul li {
+      margin-left: 20px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: white;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    nav ul li a:hover {
+      color: #ffe97f;
+      text-shadow: 0px 0px 6px #fff;
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-100%); }
+      to { transform: translateY(0); }
+    }
+
+    /* Section & Card Styles */
+    section {
+      background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+      border-radius: 15px;
+      padding: 40px 20px;
+      box-shadow: 0 0 25px rgba(0,0,0,0.1);
+      margin: 40px auto;
+      max-width: 900px; 
+      width: 90%;
+      text-align: center;
+    }
+
+    section h2 {
+      color: var(--text);
+      font-size: 1.8em;
+      margin-bottom: 10px;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .online-bonafide-btn {
+      background: linear-gradient(90deg, var(--success), #81C784);
+      color: white;
+      border: none;
+      font-size: 1.1em;
+      padding: 12px 28px;
+      border-radius: 12px;
+      text-shadow: 0px 0px 4px #000;
+      box-shadow: 0 0 15px rgba(76,175,80,0.4);
+      transition: all 0.4s ease-in-out;
+      text-decoration: none;
+      font-weight: bold;
+      display: inline-block;
+      cursor: pointer;
+    }
+    .online-bonafide-btn:hover {
+      box-shadow: 0 0 25px rgba(76,175,80,0.8), 0 0 40px rgba(129,199,132,0.6);
+      transform: scale(1.07);
+    }
+
+    .small-btn {
+      padding: 10px 14px;
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:700;
+      border:1px solid rgba(0,0,0,0.06);
+      background:transparent;
+      transition:0.3s;
+      margin: 5px;
+    }
+    .small-btn:hover{
+      transform: translateY(-2px);
+      box-shadow:0 8px 18px rgba(0,0,0,0.08);
+    }
+    .kp-btn { background: #fff; color: #0b6623; }
+    .forgot-btn { color: #2e7d32; }
+
+    /* Modal Styles */
+    .modal-backdrop{
+      position:fixed; inset:0; display:none; place-items:center;
+      background:rgba(0,0,0,0.45); z-index:2000;
+    }
+    .modal{
+      background:#fff; width:min(420px,92%);
+      border-radius:12px; padding:18px;
+      box-shadow:0 12px 40px rgba(10,10,10,0.2);
+      animation: fadeIn 0.3s ease;
+    }
+    .modal h3{ margin:0 0 8px; color:#3f51b5; }
+    .modal p{ margin:0 0 12px; color:#444; }
+    .modal-actions{
+      display:flex; gap:8px; justify-content:flex-end; margin-top:12px
+    }
+    .err{ color:#b00020; font-size:0.95rem; margin-top:8px }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @media(max-width: 768px) {
+      nav { flex-direction: column; }
+      nav ul { margin-top: 10px; }
+      nav .logo { font-size: 1.2em; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <nav>
+      <div class="logo">🌟 Pankaj Kumar 🌟</div>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="#">YouTube</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div style="text-align: center; margin-top: 20px; font-weight: bold; color: #555;">
+    🎓 Student Document Center
+  </div>
+
+  <section id="Pankaj kumar">
+    <h2>🎓 Pankaj kumar </h2>
+    <p>Yahan se apna <b>Document</b> online dekh sakte hain 👇</p>
+    <a href="#" id="bonafideLink4" class="online-bonafide-btn">📂 My Folder</a>
+    <div style="margin-top:15px;">
+      <button class="small-btn forgot-btn" id="forgotBtn4">🔑 Forgot / Help</button>
+      <button class="small-btn kp-btn" id="knowBtn4">📞 KNOW PASSWORD</button>
+    </div>
+  </section>
+
+  <section id="ramratan">
+    <h2>🎓 Ram Ratan Kumar Gupta</h2>
+    <p>Yahan se apna <b>Document</b> online dekh sakte hain 👇</p>
+    <a href="#" id="bonafideLink1" class="online-bonafide-btn">📂 My Folder</a>
+    <div style="margin-top:15px;">
+      <button class="small-btn forgot-btn" id="forgotBtn1">🔑 Forgot / Help</button>
+      <button class="small-btn kp-btn" id="knowBtn1">📞 KNOW PASSWORD</button>
+    </div>
+  </section>
+
+  <section id="babishek">
+    <h2>🎓 Babishek Kumar Gupta</h2>
+    <p>Yahan se apna <b>Document</b> online dekh sakte hain 👇</p>
+    <a href="#" id="bonafideLink2" class="online-bonafide-btn">📂 My Folder</a>
+    <div style="margin-top:15px;">
+      <button class="small-btn forgot-btn" id="forgotBtn2">🔑 Forgot / Help</button>
+      <button class="small-btn kp-btn" id="knowBtn2">📞 KNOW PASSWORD</button>
+    </div>
+  </section>
+
+  <section id="sandeep">
+    <h2>🎓 Sandeep Kumar</h2>
+    <p>Yahan se apna <b>Document</b> online dekh sakte hain 👇</p>
+    <a href="#" id="bonafideLink3" class="online-bonafide-btn">📂 My Folder</a>
+    <div style="margin-top:15px;">
+      <button class="small-btn forgot-btn" id="forgotBtn3">🔑 Forgot / Help</button>
+      <button class="small-btn kp-btn" id="knowBtn3">📞 KNOW PASSWORD</button>
+    </div>
+  </section>
+  
+  <section id="rahul">
+  <h2>🎓 Rahul Kumar</h2>
+  <p>Yahan se apna <b>Document</b> online dekh sakte hain 👇</p>
+  
+  <a href="#" id="bonafideLink5" class="online-bonafide-btn">📂 My Folder</a>
+  
+  <div style="margin-top:15px;">
+    <button class="small-btn forgot-btn" id="forgotBtn5">🔑 Forgot / Help</button>
+    <button class="small-btn kp-btn" id="knowBtn5">📞 KNOW PASSWORD</button>
+  </div>
+</section>
+
+
+  <div id="pwModal" class="modal-backdrop">
+    <div class="modal">
+      <h3>Password Maange ja rha hai</h3>
+      <p>Kripya niche diya gaya 4-ank ka password daalein taaki folder open ho sake.</p>
+      <input id="pwInput" type="password" inputmode="numeric" placeholder="Enter Password" style="width:100%; padding:10px; font-size:1rem; border-radius:8px; border:1px solid #ccc;">
+      <div class="err" id="pwErr" style="display:none"></div>
+      <div class="modal-actions">
+        <button id="pwCancel" class="small-btn">Cancel</button>
+        <button id="pwSubmit" class="small-btn kp-btn">Open</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="callModal" class="modal-backdrop">
+    <div class="modal">
+      <h3>Call — Pankaj जी</h3>
+      <p>Tap the green button to call Pankaj जी.</p>
+      <div class="modal-actions">
+        <button id="callCancel" class="small-btn">Cancel</button>
+        <a id="callNow" class="small-btn kp-btn" href="tel:+919162389933">📲 Call Pankaj जी</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      // ✅ Student Data 
+      // FIX: Added comma after Link3 so Link4 works
+      const students = {
+        bonafideLink1: { link: 'https://drive.google.com/drive/folders/1R1AO088f_kMYbOLyXRBH_-5N7Cl8pFuA', pass: '9631' },
+        bonafideLink2: { link: 'https://drive.google.com/drive/folders/1R1AO088f_kMYbOLyXRBH_-5N7Cl8pFuA', pass: '9632' },
+        bonafideLink3: { link: 'https://drive.google.com/drive/folders/183GCacS8b_U5-HaYwd25-Lrvx06F8qfr', pass: '9693' },
+        bonafideLink4: { link: 'https://drive.google.com/drive/folders/1ck17Ikc8tKKsIELTTI0wKBFe-X872wJ-', pass: '9631' },
+        bonafideLink5: { link: 'pankaj1936.gamer.gd', pass: '9931' },
+      };
+
+      const pwModal = document.getElementById('pwModal');
+      const pwInput = document.getElementById('pwInput');
+      const pwErr = document.getElementById('pwErr');
+      const pwCancel = document.getElementById('pwCancel');
+      const pwSubmit = document.getElementById('pwSubmit');
+      const callModal = document.getElementById('callModal');
+      const callCancel = document.getElementById('callCancel');
+
+      let currentTarget = null;
+      let attemptsLeft = 3;
+
+      // 🔐 Folder Clicks
+      Object.keys(students).forEach(id => {
+        const elem = document.getElementById(id);
+        if(elem) {
+          elem.addEventListener('click', (e)=>{
+            e.preventDefault();
+            currentTarget = id;
+            pwInput.value = '';
+            pwErr.style.display = 'none';
+            pwModal.style.display = 'grid';
+            pwInput.focus();
+          });
+        }
+      });
+
+      // 🔑 Forgot Buttons
+      ['forgotBtn1','forgotBtn2','forgotBtn3','forgotBtn4','forgotBtn5'].forEach(btn=>{
+        const elem = document.getElementById(btn);
+        if(elem) {
+          elem.addEventListener('click',()=>{
+            window.open('https://sites.google.com/view/welcome-to-myfirst-site/birthday?authuser=3','_blank');
+          });
+        }
+      });
+
+      // 📞 Know Buttons
+      ['knowBtn1','knowBtn2','knowBtn3','knowBtn4','knowBtn5'].forEach(btn=>{
+        const elem = document.getElementById(btn);
+        if(elem) {
+          elem.addEventListener('click',()=> callModal.style.display='grid');
+        }
+      });
+
+      // 🧩 Password Check Logic
+      pwCancel.addEventListener('click',()=> pwModal.style.display='none');
+      
+      pwSubmit.addEventListener('click',()=>{
+        const val = pwInput.value.trim();
+        if(!currentTarget) return;
+        const correct = students[currentTarget].pass;
+        if(val === correct){
+          window.open(students[currentTarget].link, '_blank');
+          pwModal.style.display='none';
+          attemptsLeft = 3;
+        } else {
+          attemptsLeft--;
+          pwErr.textContent = attemptsLeft > 0 ? 
+            'Galat password — ' + attemptsLeft + ' attempts bache hain.' :
+            'Bahut baar galat password. Try again later.';
+          pwErr.style.display='block';
+          if(attemptsLeft <= 0){ 
+            setTimeout(() => {
+              pwModal.style.display='none'; 
+              attemptsLeft=3; 
+            }, 2000);
+          }
+        }
+      });
+
+      pwInput.addEventListener('keydown',(e)=>{ if(e.key==='Enter') pwSubmit.click(); });
+      pwModal.addEventListener('click',(e)=>{ if(e.target===pwModal) pwModal.style.display='none'; });
+      callCancel.addEventListener('click',()=> callModal.style.display='none');
+      callModal.addEventListener('click',(e)=>{ if(e.target===callModal) callModal.style.display='none'; });
+
+    })();
+
+    // ========= GLOBAL VIBRATION =========
+    document.addEventListener("click", function () {
+      if (navigator.vibrate) {
+        navigator.vibrate(40); 
+      }
+    }, true);
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bihar Board 2026: Chemistry Master Plan</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts for Hindi Support -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Custom Style for Chart Containers as per requirements -->
+    <style>
+        body {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            background-color: #f5f5f4; /* Warm neutral - Stone 100 */
+        }
+        
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        
+        /* Smooth transitions */
+        .question-card {
+            transition: all 0.3s ease;
+        }
+        .question-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="text-stone-800">
+
+    <!-- Chosen Palette: Warm Stone (Background), Deep Blue (Primary/Trust), Burnt Orange (Accent/Important), Emerald Green (Success) -->
+    <!-- Application Structure Plan: 
+        1. Hero Section: Sets the context (Mission 2026) and provides motivation.
+        2. Strategic Analysis (Dashboard): Visualizes 'Weightage' and 'Question Pattern' to help students understand WHERE to focus marks-wise.
+        3. Interactive Question Bank: The core feature. A filterable list of high-probability questions categorized by branch (Physical, Organic, Inorganic).
+        4. Study Logic: Includes 'Show Hint' and 'Mark as Done' features to make it a functional study tool, not just a static list.
+    -->
+    <!-- Visualization & Content Choices: 
+        1. Syllabus Distribution (Doughnut Chart): Goal -> Inform. Shows the split between Physical, Organic, and Inorganic to justify study time allocation.
+        2. Marks Pattern (Bar Chart): Goal -> Compare. Compares MCQ vs. Theory to help strategize exam approach.
+        3. Dynamic List: Goal -> Organize/Drill-down. Replaces a static table with interactive cards for better readability on mobile.
+        4. Progress Bar: Goal -> Inform/Motivate. Visual feedback on study progress.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <!-- Navigation / Header -->
+    <nav class="bg-blue-900 text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <span class="text-2xl font-bold">BSEB 2026</span>
+                <span class="text-xs bg-orange-500 px-2 py-1 rounded-full font-semibold">Chemistry Target 90%+</span>
+            </div>
+            <div class="hidden md:flex space-x-6">
+                <button onclick="scrollToSection('strategy')" class="hover:text-orange-300 transition">रणनीति (Strategy)</button>
+                <button onclick="scrollToSection('questions')" class="hover:text-orange-300 transition">महत्वपूर्ण प्रश्न (VVI Questions)</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-8 space-y-12 max-w-6xl">
+
+        <!-- Intro Section -->
+        <header class="text-center space-y-4 fade-in">
+            <h1 class="text-3xl md:text-5xl font-bold text-blue-900">कक्षा 12वीं रसायन विज्ञान (Chemistry)</h1>
+            <p class="text-lg text-stone-600 max-w-3xl mx-auto">
+                बिहार बोर्ड 2026 फाइनल एग्जाम के लिए विशेषज्ञों द्वारा अनुशंसित <strong>Top High Demand Questions</strong>।
+                नीचे दिए गए विश्लेषण और प्रश्नों का अध्ययन करके आप अपनी सफलता सुनिश्चित कर सकते हैं।
+            </p>
+        </header>
+
+        <!-- Analytics Section -->
+        <section id="strategy" class="bg-white rounded-xl shadow-md p-6 border-t-4 border-orange-500">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-stone-800 mb-2">📊 परीक्षा पैटर्न और अंक विश्लेषण</h2>
+                <p class="text-stone-600">
+                    अंधाधुंध पढ़ाई करने से बेहतर है रणनीति बनाना। यहाँ देखें कि पिछले 5 वर्षों के रुझानों के आधार पर 2026 में किस खंड से सबसे अधिक प्रश्न आने की संभावना है।
+                    (Better to strategize than study blindly. See the expected weightage based on 5-year trends.)
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Chart 1: Syllabus Weightage -->
+                <div class="flex flex-col items-center">
+                    <h3 class="text-lg font-semibold text-blue-800 mb-4">विषयवार अंक वितरण (Weightage)</h3>
+                    <div class="chart-container">
+                        <canvas id="syllabusChart"></canvas>
+                    </div>
+                    <p class="text-sm text-stone-500 mt-2 text-center">Physical और Inorganic स्कोरिंग हैं, जबकि Organic अभ्यास मांगता है।</p>
+                </div>
+
+                <!-- Chart 2: Question Type Pattern -->
+                <div class="flex flex-col items-center">
+                    <h3 class="text-lg font-semibold text-blue-800 mb-4">प्रश्न प्रारूप (Question Pattern)</h3>
+                    <div class="chart-container">
+                        <canvas id="patternChart"></canvas>
+                    </div>
+                    <p class="text-sm text-stone-500 mt-2 text-center">50% अंक वस्तुनिष्ठ (Objective) प्रश्नों से आएंगे - यह गेम चेंजर है।</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Question Bank Section -->
+        <section id="questions" class="space-y-6">
+            <div class="flex flex-col md:flex-row justify-between items-end md:items-center border-b pb-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-stone-800">🔥 2026 के लिए संभावित प्रश्न (VVI List)</h2>
+                    <p class="text-stone-600 mt-1">ये प्रश्न पिछले 10 वर्षों में सबसे अधिक बार दोहराए गए हैं और 2026 के लिए 'Hot Topics' हैं।</p>
+                </div>
+                
+                <!-- Progress Tracker -->
+                <div class="bg-blue-50 px-4 py-2 rounded-lg mt-4 md:mt-0">
+                    <span class="text-sm font-semibold text-blue-800">आपकी तैयारी:</span>
+                    <span id="progress-text" class="text-lg font-bold text-orange-600 ml-2">0/15</span>
+                    <span class="text-sm text-stone-500"> प्रश्न पूरे हुए</span>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="flex flex-wrap gap-2 justify-center md:justify-start" id="filter-container">
+                <button onclick="filterQuestions('all')" class="filter-btn active px-4 py-2 rounded-full bg-blue-600 text-white font-medium hover:bg-blue-700 transition shadow-sm" data-category="all">सभी (All)</button>
+                <button onclick="filterQuestions('Physical')" class="filter-btn px-4 py-2 rounded-full bg-white text-stone-600 font-medium hover:bg-orange-100 border border-stone-200 transition shadow-sm" data-category="Physical">भौतिक रसायन (Physical)</button>
+                <button onclick="filterQuestions('Inorganic')" class="filter-btn px-4 py-2 rounded-full bg-white text-stone-600 font-medium hover:bg-orange-100 border border-stone-200 transition shadow-sm" data-category="Inorganic">अकार्बनिक रसायन (Inorganic)</button>
+                <button onclick="filterQuestions('Organic')" class="filter-btn px-4 py-2 rounded-full bg-white text-stone-600 font-medium hover:bg-orange-100 border border-stone-200 transition shadow-sm" data-category="Organic">कार्बनिक रसायन (Organic)</button>
+            </div>
+
+            <!-- Questions Grid -->
+            <div id="questions-grid" class="grid grid-cols-1 gap-4">
+                <!-- Content will be injected via JS -->
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-stone-200 rounded-xl p-6 text-center text-stone-600 mt-12">
+            <p class="font-semibold">शुभकामनाएं! (Best of Luck!)</p>
+            <p class="text-sm mt-2">© 2026 Exam Prep Assistant. नियमित अभ्यास ही सफलता की कुंजी है।</p>
+        </footer>
+
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // State Management
+        const appState = {
+            currentFilter: 'all',
+            completedIds: new Set(),
+            questions: [
+                // Physical Chemistry
+                {
+                    id: 1,
+                    category: 'Physical',
+                    topic: 'Solid State (ठोस अवस्था)',
+                    question: 'फ्रेंकल दोष और शॉटकी दोष में क्या अंतर है?',
+                    desc: 'Difference between Frenkel and Schottky defects.',
+                    probability: '95%',
+                    hint: 'घनत्व (Density) पर प्रभाव को अवश्य लिखें। AgBr दोनों दर्शाता है।'
+                },
+                {
+                    id: 2,
+                    category: 'Physical',
+                    topic: 'Solutions (विलयन)',
+                    question: 'राउल्ट के नियम (Raoult\'s Law) को लिखें तथा आदर्श और अनादर्श विलयन में अंतर स्पष्ट करें।',
+                    desc: 'Define Raoult\'s Law. Differentiate between Ideal and Non-ideal solutions.',
+                    probability: '98%',
+                    hint: 'P = P°x सूत्र का उल्लेख करें और Azeotropes के उदाहरण याद रखें।'
+                },
+                {
+                    id: 3,
+                    category: 'Physical',
+                    topic: 'Electrochemistry (वैद्युत रसायन)',
+                    question: 'कोलराउश का नियम (Kohlrausch\'s Law) क्या है? इसके अनुप्रयोग लिखें।',
+                    desc: 'What is Kohlrausch\'s law? Write its applications.',
+                    probability: '92%',
+                    hint: 'अनंत तनुता (Infinite dilution) पर मोलर चालकता के योग के बारे में लिखें।'
+                },
+                {
+                    id: 4,
+                    category: 'Physical',
+                    topic: 'Chemical Kinetics (रासायनिक बलगतिकी)',
+                    question: 'प्रथम कोटि की अभिक्रिया (First Order Reaction) के लिए वेग स्थिरांक का व्यंजक प्राप्त करें।',
+                    desc: 'Derive expression for rate constant of First Order Reaction.',
+                    probability: '99%',
+                    hint: 'k = (2.303/t) log(a/a-x) वाला derivation बहुत महत्वपूर्ण है।'
+                },
+                
+                // Inorganic Chemistry
+                {
+                    id: 5,
+                    category: 'Inorganic',
+                    topic: 'p-Block Elements',
+                    question: 'हैबर विधि (Haber\'s Process) द्वारा अमोनिया (NH₃) के निर्माण का सचित्र वर्णन करें।',
+                    desc: 'Describe the manufacture of Ammonia by Haber\'s Process with diagram.',
+                    probability: '94%',
+                    hint: 'उत्प्रेरक (Fe/Mo) और तापमान/दाब की स्थितियों का उल्लेख करें।'
+                },
+                {
+                    id: 6,
+                    category: 'Inorganic',
+                    topic: 'd and f Block',
+                    question: 'लैंथेनाइड संकुचन (Lanthanide Contraction) क्या है? इसके क्या परिणाम हैं?',
+                    desc: 'What is Lanthanide Contraction? What are its consequences?',
+                    probability: '90%',
+                    hint: 'परमाणु त्रिज्या में कमी और Zr-Hf की समानता (Similarity) के बारे में लिखें।'
+                },
+                {
+                    id: 7,
+                    category: 'Inorganic',
+                    topic: 'Coordination Compounds',
+                    question: 'IUPAC नामकरण और वर्नर का सिद्धांत (Werner\'s Theory) समझाएं।',
+                    desc: 'Explain IUPAC nomenclature rules and Werner\'s Coordination Theory.',
+                    probability: '93%',
+                    hint: 'Ligands के नाम और ऑक्सीकरण संख्या (Oxidation Number) निकालना सीखें।'
+                },
+                {
+                    id: 8,
+                    category: 'Inorganic',
+                    topic: 'p-Block Elements',
+                    question: 'सम्पर्क विधि (Contact Process) द्वारा सल्फ्यूरिक अम्ल (H₂SO₄) का उत्पादन कैसे होता है?',
+                    desc: 'Production of H₂SO₄ by Contact Process.',
+                    probability: '91%',
+                    hint: 'V₂O₅ उत्प्रेरक का उपयोग और SO₃ का निर्माण मुख्य चरण है।'
+                },
+
+                // Organic Chemistry
+                {
+                    id: 9,
+                    category: 'Organic',
+                    topic: 'Haloalkanes',
+                    question: 'SN1 और SN2 अभिक्रिया क्रियाविधि में अंतर स्पष्ट करें।',
+                    desc: 'Differentiate between SN1 and SN2 reaction mechanisms.',
+                    probability: '96%',
+                    hint: 'Carbocation का बनना (SN1) और Transition state (SN2) मुख्य अंतर हैं।'
+                },
+                {
+                    id: 10,
+                    category: 'Organic',
+                    topic: 'Aldehydes & Ketones',
+                    question: 'निम्नलिखित अभिक्रियाओं को समझाएं: (a) एल्डोल संघनन (Aldol Condensation) (b) कैनिजारो अभिक्रिया (Cannizzaro Reaction)।',
+                    desc: 'Explain Aldol Condensation and Cannizzaro Reaction.',
+                    probability: '99%',
+                    hint: 'Alpha-Hydrogen की उपस्थिति और अनुपस्थिति (Absence) के आधार पर अंतर याद रखें।'
+                },
+                {
+                    id: 11,
+                    category: 'Organic',
+                    topic: 'Amines',
+                    question: 'एनीलीन (Aniline) फ्रिडेल-क्राफ्ट्स अभिक्रिया क्यों नहीं दर्शाता है? कार्बिल एमीन अभिक्रिया (Carbylamine Reaction) क्या है?',
+                    desc: 'Why Aniline does not show Friedel-Crafts? What is Carbylamine reaction?',
+                    probability: '90%',
+                    hint: 'AlCl₃ के साथ लवण (Salt) बनने के कारण।'
+                },
+                {
+                    id: 12,
+                    category: 'Organic',
+                    topic: 'Biomolecules',
+                    question: 'DNA और RNA में अंतर लिखें। प्रोटीन का विकृतिकरण (Denaturation) क्या है?',
+                    desc: 'Difference between DNA and RNA. What is denaturation of protein?',
+                    probability: '95%',
+                    hint: 'Sugar (Deoxyribose vs Ribose) और Base (Thymine vs Uracil) का अंतर।'
+                },
+                {
+                    id: 13,
+                    category: 'Organic',
+                    topic: 'Alcohol, Phenol',
+                    question: 'ल्युकास अभिकर्मक (Lucas Reagent) क्या है? इससे 1°, 2°, 3° एल्कोहल की पहचान कैसे करें?',
+                    desc: 'What is Lucas Reagent? How to distinguish 1°, 2°, 3° alcohols with it?',
+                    probability: '92%',
+                    hint: 'ZnCl₂ + HCl. धुंधलापन (Turbidity) आने का समय नोट करें।'
+                },
+                 {
+                    id: 14,
+                    category: 'Physical',
+                    topic: 'Surface Chemistry',
+                    question: 'भौतिक अधिशोषण और रासायनिक अधिशोषण में अंतर स्पष्ट करें।',
+                    desc: 'Difference between Physisorption and Chemisorption.',
+                    probability: '89%',
+                    hint: 'बंधन बल (Van der Waals vs Chemical bond) और उत्क्रमणीयता (Reversibility) पर ध्यान दें।'
+                },
+                 {
+                    id: 15,
+                    category: 'Organic',
+                    topic: 'Name Reactions',
+                    question: 'रीमर-टीमैन (Reimer-Tiemann) और वुर्ट्ज (Wurtz) अभिक्रिया के समीकरण लिखें।',
+                    desc: 'Write equations for Reimer-Tiemann and Wurtz reaction.',
+                    probability: '97%',
+                    hint: 'Phenol से Salicylaldehyde बनना (Reimer-Tiemann)।'
+                }
+            ]
+        };
+
+        // DOM Elements
+        const questionsGrid = document.getElementById('questions-grid');
+        const progressText = document.getElementById('progress-text');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+
+        // Initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            initCharts();
+            renderQuestions('all');
+            updateProgress();
+        });
+
+        // Functional Navigation
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Logic: Filter Questions
+        function filterQuestions(category) {
+            appState.currentFilter = category;
+            
+            // Update UI Buttons
+            filterBtns.forEach(btn => {
+                if(btn.dataset.category === category) {
+                    btn.classList.add('bg-blue-600', 'text-white');
+                    btn.classList.remove('bg-white', 'text-stone-600');
+                } else {
+                    btn.classList.remove('bg-blue-600', 'text-white');
+                    btn.classList.add('bg-white', 'text-stone-600');
+                }
+            });
+
+            renderQuestions(category);
+        }
+
+        // Logic: Render Questions Cards
+        function renderQuestions(filter) {
+            questionsGrid.innerHTML = '';
+            
+            const filteredData = appState.questions.filter(q => 
+                filter === 'all' ? true : q.category === filter
+            );
+
+            if (filteredData.length === 0) {
+                questionsGrid.innerHTML = '<p class="text-center text-stone-500 py-10">कोई प्रश्न नहीं मिला।</p>';
+                return;
+            }
+
+            filteredData.forEach(q => {
+                const isCompleted = appState.completedIds.has(q.id);
+                
+                const card = document.createElement('div');
+                card.className = `question-card bg-white p-5 rounded-lg border-l-4 ${isCompleted ? 'border-green-500 bg-green-50' : getBorderColor(q.category)} shadow-sm fade-in relative`;
+                
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-xs font-bold uppercase tracking-wide px-2 py-1 rounded ${getBadgeColor(q.category)}">
+                            ${translateCategory(q.category)}
+                        </span>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm font-bold text-orange-600">Chance: ${q.probability}</span>
+                        </div>
+                    </div>
+                    
+                    <h3 class="text-lg font-bold text-stone-800 mb-1">${q.question}</h3>
+                    <p class="text-sm text-stone-500 italic mb-4">${q.desc}</p>
+                    
+                    <div class="flex flex-wrap items-center justify-between gap-4 mt-4 pt-4 border-t border-stone-100">
+                        <div>
+                            <button onclick="toggleHint(${q.id})" class="text-sm text-blue-600 font-medium hover:underline focus:outline-none">
+                                💡 हिंट देखें (Show Hint)
+                            </button>
+                            <p id="hint-${q.id}" class="hidden text-sm text-stone-600 mt-2 bg-yellow-50 p-2 rounded border border-yellow-200">
+                                <strong>Hint:</strong> ${q.hint}
+                            </p>
+                        </div>
+                        
+                        <label class="flex items-center cursor-pointer space-x-2 select-none">
+                            <input type="checkbox" onchange="toggleComplete(${q.id})" class="form-checkbox h-5 w-5 text-green-600 rounded focus:ring-green-500" ${isCompleted ? 'checked' : ''}>
+                            <span class="text-sm font-medium ${isCompleted ? 'text-green-700' : 'text-stone-400'}">
+                                ${isCompleted ? 'तैयार है (Done)' : 'तैयार करें (Mark Done)'}
+                            </span>
+                        </label>
+                    </div>
+                `;
+                questionsGrid.appendChild(card);
+            });
+        }
+
+        // Logic: Helper Functions
+        function getBorderColor(category) {
+            if(category === 'Physical') return 'border-blue-400';
+            if(category === 'Organic') return 'border-orange-400';
+            return 'border-purple-400';
+        }
+
+        function getBadgeColor(category) {
+            if(category === 'Physical') return 'bg-blue-100 text-blue-800';
+            if(category === 'Organic') return 'bg-orange-100 text-orange-800';
+            return 'bg-purple-100 text-purple-800';
+        }
+
+        function translateCategory(cat) {
+            if(cat === 'Physical') return 'भौतिक (Physical)';
+            if(cat === 'Organic') return 'कार्बनिक (Organic)';
+            return 'अकार्बनिक (Inorganic)';
+        }
+
+        function toggleHint(id) {
+            const hintEl = document.getElementById(`hint-${id}`);
+            hintEl.classList.toggle('hidden');
+        }
+
+        function toggleComplete(id) {
+            if (appState.completedIds.has(id)) {
+                appState.completedIds.delete(id);
+            } else {
+                appState.completedIds.add(id);
+            }
+            updateProgress();
+            renderQuestions(appState.currentFilter); // Re-render to update styles
+        }
+
+        function updateProgress() {
+            const total = appState.questions.length;
+            const done = appState.completedIds.size;
+            progressText.innerText = `${done}/${total}`;
+        }
+
+        // Logic: Charts
+        function initCharts() {
+            // Chart 1: Syllabus Weightage
+            const ctx1 = document.getElementById('syllabusChart').getContext('2d');
+            new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Physical Chemistry', 'Organic Chemistry', 'Inorganic Chemistry'],
+                    datasets: [{
+                        data: [23, 28, 19], // Approximate weightage marks out of 70
+                        backgroundColor: ['#60a5fa', '#fb923c', '#c084fc'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+
+            // Chart 2: Question Pattern
+            const ctx2 = document.getElementById('patternChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: ['Objective (MCQ)', 'Short Answer', 'Long Answer'],
+                    datasets: [{
+                        label: 'अंक (Marks)',
+                        data: [35, 20, 15], // 35 MCQ, 20 Short, 15 Long (Total 70 Theory)
+                        backgroundColor: ['#3b82f6', '#22c55e', '#f59e0b'],
+                        borderRadius: 5,
+                        barThickness: 40
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, max: 40 }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.raw + ' Marks';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

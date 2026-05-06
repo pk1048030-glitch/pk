@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bihar Board 12th Physics - Top Questions Strategy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            background-color: #fdfbf7; /* Warm neutral background */
+            color: #1f2937;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .transition-all-custom {
+            transition: all 0.3s ease-in-out;
+        }
+        /* Custom scrollbar */
+        .custom-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 4px;
+        }
+        /* Loading Spinner */
+        .spinner {
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border-left-color: #0f766e;
+            animation: spin 1s ease-in-out infinite;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+    <!-- Chosen Palette: Warm Academic -->
+    <!-- Application Structure Plan:
+        1. Hero Section: Value prop & strategy.
+        2. Dashboard: Data viz of importance.
+        3. Question Bank: Tabbed interface with manual answers + AI Simplification integration.
+        4. AI Features: "Explain Simply" (inline) and "Generate Quiz" (modal).
+        5. Progress: Tracker.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="flex flex-col min-h-screen relative">
+
+    <!-- Quiz Modal (Hidden by default) -->
+    <div id="quiz-modal" class="fixed inset-0 bg-black bg-opacity-50 z-[100] hidden flex items-center justify-center px-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full p-6 relative">
+            <button onclick="closeQuizModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 font-bold text-xl">&times;</button>
+            
+            <div class="flex items-center gap-2 mb-4">
+                <span class="text-2xl">✨</span>
+                <h3 class="text-xl font-bold text-gray-800">AI Quick Quiz</h3>
+            </div>
+            
+            <div id="quiz-content">
+                <!-- Dynamic Quiz Content -->
+                <div class="text-center py-8">
+                    <div class="spinner w-8 h-8 mb-4 border-teal-600"></div>
+                    <p class="text-gray-600">Generating a question for you...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation / Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="text-2xl text-red-700">⚛️</span>
+                <h1 class="text-xl font-bold text-gray-800 tracking-tight">BSEB 12th Physics <span class="text-red-600">Top Questions</span></h1>
+            </div>
+            <div class="hidden md:flex items-center space-x-4 text-sm font-medium text-gray-600">
+                <span>लक्ष्य: 90%+</span>
+                <div class="h-4 w-px bg-gray-300"></div>
+                <span id="progress-text">तैयारी: 0%</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        
+        <!-- Intro Section -->
+        <section class="mb-10 text-center max-w-3xl mx-auto">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">अंतिम समय की तैयारी (Last Minute Strategy)</h2>
+            <p class="text-lg text-gray-600 leading-relaxed">
+                यह विशेष रूप से बिहार बोर्ड (BSEB) 12वीं के छात्रों के लिए डिज़ाइन किया गया है। 
+                <span class="font-semibold text-red-600">इन प्रश्नों को रट लें और अपनी तैयारी को ट्रैक करें।</span>
+            </p>
+        </section>
+
+        <!-- Dashboard Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+            
+            <!-- Left Column: Topic Analysis (Chart) -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 lg:col-span-1">
+                <h3 class="text-lg font-bold text-gray-800 mb-2">महत्व विश्लेषण (Topic Importance)</h3>
+                <p class="text-sm text-gray-500 mb-4">
+                    पिछले 10 वर्षों में इन टॉपिक्स की आवृत्ति (Frequency).
+                </p>
+                <div class="chart-container">
+                    <canvas id="frequencyChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Right Column: Question Bank & Interaction -->
+            <div class="lg:col-span-2 space-y-6">
+                
+                <!-- Controls -->
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div class="flex space-x-2 bg-gray-100 p-1 rounded-lg">
+                        <button onclick="switchTab('long')" id="btn-long" class="px-6 py-2 rounded-md text-sm font-bold transition-all shadow-sm bg-white text-gray-800 border border-gray-200">
+                            दीर्घ उत्तरीय (5 Marks)
+                        </button>
+                        <button onclick="switchTab('short')" id="btn-short" class="px-6 py-2 rounded-md text-sm font-bold transition-all text-gray-500 hover:text-gray-700">
+                            लघु उत्तरीय (2 Marks)
+                        </button>
+                    </div>
+                    
+                    <div class="flex items-center gap-3">
+                        <!-- AI Quiz Button -->
+                        <button onclick="startAIQuiz()" class="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-md transition-all">
+                            ✨ AI Test
+                        </button>
+
+                        <div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden hidden sm:block">
+                            <div id="progress-bar-fill" class="h-full bg-teal-500 transition-all duration-500" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Questions List Container -->
+                <div id="questions-container" class="space-y-4">
+                    <!-- Questions will be injected here via JS -->
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Mastery Section (Bottom) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <!-- Study Tips -->
+            <div class="bg-teal-50 p-6 rounded-xl border border-teal-100">
+                <h3 class="text-lg font-bold text-teal-800 mb-3">💡 टॉपर्स के लिए टिप्स (Topper's Tips)</h3>
+                <ul class="space-y-3 text-teal-900 text-sm">
+                    <li class="flex items-start gap-2">
+                        <span class="mt-0.5 text-teal-600">➤</span>
+                        <span><strong>चित्र (Diagrams):</strong> 5 नंबर वाले प्रश्नों में पेंसिल से साफ-सुथरा चित्र अवश्य बनाएं।</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="mt-0.5 text-teal-600">➤</span>
+                        <span><strong>मात्रक (Units):</strong> संख्यात्मक प्रश्नों (Numericals) में अंत में उत्तर का मात्रक लिखना न भूलें।</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Detailed Progress Chart -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center justify-center">
+                <h3 class="text-lg font-bold text-gray-800 mb-2">आपकी तैयारी (Your Status)</h3>
+                <div class="chart-container" style="height: 200px;">
+                    <canvas id="progressChart"></canvas>
+                </div>
+                <p id="motivational-text" class="text-center text-sm text-gray-500 mt-4">प्रश्नों को याद करें और चेकबॉक्स पर क्लिक करें।</p>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-gray-800 text-gray-300 py-8">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="mb-2">Bihar Board 12th Exam Preparation Tool</p>
+            <p class="text-sm text-gray-500">All the best for your Physics Exam! 🚀</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- Gemini API Setup ---
+        const apiKey = "AIzaSyBS0D6C39Qbk3we-f8TQ3kE5d4c9l0fC24"; // Injected by environment
+
+        async function callGemini(prompt, isJson = false) {
+            if (!apiKey) {
+                alert("API Key is missing. Please export this app with a valid key.");
+                return null;
+            }
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }]
+            };
+
+            if (isJson) {
+                payload.generationConfig = {
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: "OBJECT",
+                        properties: {
+                            question: { type: "STRING" },
+                            options: { type: "ARRAY", items: { type: "STRING" } },
+                            correctIndex: { type: "INTEGER" },
+                            explanation: { type: "STRING" }
+                        }
+                    }
+                };
+            }
+
+            // Simple retry logic (exponential backoff)
+            const delays = [1000, 2000, 4000];
+            for (let i = 0; i <= delays.length; i++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) throw new Error(`API Error: ${response.status}`);
+
+                    const data = await response.json();
+                    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                    
+                    return isJson ? JSON.parse(text) : text;
+
+                } catch (error) {
+                    if (i === delays.length) {
+                        console.error("Gemini API Failed:", error);
+                        return null;
+                    }
+                    await new Promise(r => setTimeout(r, delays[i]));
+                }
+            }
+        }
+
+        // --- Data: The High Demand Questions ---
+        const questionsData = {
+            long: [
+                {
+                    id: 'l1',
+                    title: '1. गॉस की प्रमेय (Gauss\'s Theorem)',
+                    question: 'स्थिर वैद्युतिकी में गॉस की प्रमेय को लिखें और सिद्ध करें। इसकी सहायता से किसी आवेशित समतल चादर (Plane Sheet) के निकट विद्युत क्षेत्र की तीव्रता ज्ञात करें।',
+                    keyPoints: [
+                        'कथन: किसी बंद पृष्ठ से गुजरने वाला कुल विद्युत फ्लक्स उस पृष्ठ द्वारा घिरे कुल आवेश का 1/ε₀ गुना होता है।',
+                        'सूत्र: Φ = ∮ E.dA = q/ε₀',
+                        'अनुप्रयोग: समतल चादर के लिए E = σ / 2ε₀ (जहाँ σ पृष्ठीय आवेश घनत्व है)।',
+                        'महत्वपूर्ण: बंद पृष्ठ (Gaussian Surface) का चित्र बनाना अनिवार्य है।'
+                    ],
+                    frequency: 9
+                },
+                {
+                    id: 'l2',
+                    title: '2. संयुक्त सूक्ष्मदर्शी (Compound Microscope)',
+                    question: 'संयुक्त सूक्ष्मदर्शी का नामांकित किरण आरेख खींचें। इसकी आवर्धन क्षमता (Magnifying Power) के लिए व्यंजक प्राप्त करें जब अंतिम प्रतिबिंब स्पष्ट दृष्टि की न्यूनतम दूरी पर बने।',
+                    keyPoints: [
+                        'सिद्धांत: इसमें दो उत्तल लेंस (अभिदृश्यक और नेत्रिका) होते हैं।',
+                        'किरण आरेख: वस्तु -> अभिदृश्यक -> वास्तविक उल्टा प्रतिबिंब -> नेत्रिका -> अंतिम आभासी, सीधा और बड़ा प्रतिबिंब।',
+                        'सूत्र: M = - (v₀/u₀) * (1 + D/fₑ)',
+                        'टिप: किरणों की दिशा (Arrow) दिखाना न भूलें।'
+                    ],
+                    frequency: 8
+                },
+                {
+                    id: 'l3',
+                    title: '3. ट्रांसफार्मर (Transformer)',
+                    question: 'ट्रांसफार्मर का सिद्धांत, बनावट और क्रियाविधि का वर्णन करें। इसमें होने वाली ऊर्जा हानियों का उल्लेख करें।',
+                    keyPoints: [
+                        'सिद्धांत: अन्योन्य प्रेरण (Mutual Induction) पर आधारित।',
+                        'प्रकार: उच्चायी (Step-up) और अपचायी (Step-down)।',
+                        'सूत्र: Vs/Vp = Ns/Np = k (परिणमन अनुपात)।',
+                        'ऊर्जा हानि: ताम्र हानि (Copper loss), लौह हानि (Iron loss), शैथिल्य हानि (Hysteresis loss)।'
+                    ],
+                    frequency: 9
+                }
+            ],
+            short: [
+                {
+                    id: 's1',
+                    title: '1. विद्युत आवेश के संरक्षण का सिद्धांत',
+                    question: 'विद्युत आवेश के संरक्षण (Conservation of Charge) का सिद्धांत क्या है? उदाहरण दें।',
+                    keyPoints: [
+                        'परिभाषा: किसी विलगित निकाय (Isolated System) का कुल आवेश नियत रहता है।',
+                        'आवेश को न तो उत्पन्न किया जा सकता है और न ही नष्ट।',
+                        'उदाहरण: कांच की छड़ को रेशम से रगड़ने पर आवेश का स्थानांतरण।'
+                    ],
+                    frequency: 7
+                },
+                {
+                    id: 's2',
+                    title: '2. लॉरेंट्ज़ बल (Lorentz Force)',
+                    question: 'लॉरेंट्ज़ बल क्या है? इसका व्यंजक लिखें।',
+                    keyPoints: [
+                        'परिभाषा: जब कोई आवेशित कण विद्युत और चुंबकीय क्षेत्र दोनों में गति करता है, तो उस पर लगने वाला कुल बल लॉरेंट्ज़ बल कहलाता है।',
+                        'सूत्र: F = qE + q(v × B)',
+                        'सदिश रूप में लिखना बेहतर है।'
+                    ],
+                    frequency: 8
+                },
+                {
+                    id: 's3',
+                    title: '3. पूर्ण आंतरिक परावर्तन (TIR)',
+                    question: 'पूर्ण आंतरिक परावर्तन क्या है? इसकी आवश्यक शर्तें लिखें।',
+                    keyPoints: [
+                        'परिभाषा: जब प्रकाश सघन माध्यम से विरल माध्यम में जाता है और आपतन कोण का मान क्रांतिक कोण से अधिक हो जाता है।',
+                        'शर्तें: 1. प्रकाश सघन से विरल में जाना चाहिए। 2. आपतन कोण > क्रांतिक कोण (i > C)।',
+                        'उपयोग: ऑप्टिकल फाइबर (Optical Fiber)।'
+                    ],
+                    frequency: 9
+                },
+                {
+                    id: 's4',
+                    title: '4. भंवर धाराएं (Eddy Currents)',
+                    question: 'भंवर धाराएं क्या हैं? इनके दो उपयोग लिखें।',
+                    keyPoints: [
+                        'परिभाषा: जब किसी चालक के चुंबकीय फ्लक्स में परिवर्तन होता है, तो उसमें चक्करदार प्रेरित धाराएं उत्पन्न होती हैं।',
+                        'हानि: ऊष्मा उत्पन्न करती हैं।',
+                        'उपयोग: प्रेरण भट्ठी (Induction Furnace), विद्युत ब्रेक (Electric Brakes)।'
+                    ],
+                    frequency: 6
+                },
+                {
+                    id: 's5',
+                    title: '5. प्रकाश विद्युत प्रभाव (Photoelectric Effect)',
+                    question: 'देहली आवृत्ति (Threshold Frequency) और कार्य फलन (Work Function) को परिभाषित करें।',
+                    keyPoints: [
+                        'देहली आवृत्ति: वह न्यूनतम आवृत्ति जिससे कम आवृत्ति पर प्रकाश-इलेक्ट्रॉन उत्सर्जित नहीं होते।',
+                        'कार्य फलन (φ): धातु की सतह से इलेक्ट्रॉन बाहर निकालने के लिए आवश्यक न्यूनतम ऊर्जा।',
+                        'सूत्र: φ = hν₀'
+                    ],
+                    frequency: 8
+                }
+            ]
+        };
+
+        // --- State Management ---
+        let currentTab = 'long';
+        let masteryState = JSON.parse(localStorage.getItem('biharPhysicsMastery')) || {};
+
+        // --- UI Logic ---
+        const questionsContainer = document.getElementById('questions-container');
+        const progressBarFill = document.getElementById('progress-bar-fill');
+        const progressText = document.getElementById('progress-text');
+        const motivationalText = document.getElementById('motivational-text');
+        const quizModal = document.getElementById('quiz-modal');
+        const quizContent = document.getElementById('quiz-content');
+
+        // --- Gemini Feature 1: AI Simplifier ---
+        async function explainWithAI(id, questionText) {
+            const resultDiv = document.getElementById(`ai-result-${id}`);
+            const btn = document.getElementById(`ai-btn-${id}`);
+            
+            // UI Loading State
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner w-4 h-4 border-white mr-2"></span> समझा रहा हूँ...`;
+            resultDiv.classList.remove('hidden');
+            resultDiv.innerHTML = `<div class="flex items-center gap-2 text-gray-500 animate-pulse"><span class="text-xl">✨</span> AI शिक्षक सोच रहा है...</div>`;
+
+            // Call API
+            const prompt = `You are a friendly Physics tutor for Bihar Board Class 12 students. 
+            Explain this physics concept in simple Hinglish (Hindi + English mix) like you are talking to a friend. 
+            Use a real-life analogy if possible. Keep it under 80 words.
+            Question: ${questionText}`;
+
+            const response = await callGemini(prompt);
+
+            if (response) {
+                resultDiv.innerHTML = `
+                    <div class="bg-indigo-50 border border-indigo-100 rounded p-3 mt-2">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-indigo-600 font-bold text-xs uppercase tracking-wide">✨ AI Explanation</span>
+                        </div>
+                        <p class="text-gray-800 text-sm leading-relaxed">${response}</p>
+                    </div>
+                `;
+            } else {
+                resultDiv.innerHTML = `<div class="text-red-500 text-sm">माफ़ करें, अभी संपर्क नहीं हो पा रहा है।</div>`;
+            }
+
+            // Reset Button
+            btn.innerHTML = `✨ AI से सरल भाषा में समझें`;
+            btn.disabled = false;
+        }
+
+        // --- Gemini Feature 2: AI Quiz ---
+        async function startAIQuiz() {
+            quizModal.classList.remove('hidden');
+            quizContent.innerHTML = `
+                <div class="text-center py-8">
+                    <div class="spinner w-8 h-8 mb-4 border-teal-600"></div>
+                    <p class="text-gray-600 font-medium">Creating a new question for you...</p>
+                    <p class="text-xs text-gray-400 mt-2">Based on current topics</p>
+                </div>
+            `;
+
+            // Gather context
+            const activeQuestions = questionsData[currentTab].map(q => q.title);
+            const prompt = `Create one multiple-choice question (MCQ) in Hindi suitable for Bihar Board Class 12 Physics. 
+            Base it on one of these topics: ${activeQuestions.join(', ')}.
+            Return strictly JSON format: { "question": "...", "options": ["A", "B", "C", "D"], "correctIndex": 0-3, "explanation": "Short reason in Hinglish" }`;
+
+            const data = await callGemini(prompt, true);
+
+            if (data) {
+                renderQuiz(data);
+            } else {
+                quizContent.innerHTML = `<div class="text-center text-red-500 py-4">Error generating quiz. Please try again.</div>`;
+            }
+        }
+
+        function renderQuiz(data) {
+            let optionsHtml = '';
+            data.options.forEach((opt, idx) => {
+                optionsHtml += `
+                    <button onclick="checkQuizAnswer(this, ${idx}, ${data.correctIndex}, '${data.explanation.replace(/'/g, "\\'")}')" 
+                        class="w-full text-left p-3 rounded border border-gray-200 hover:bg-gray-50 transition-colors mb-2 text-gray-700 quiz-option">
+                        <span class="font-bold mr-2">${String.fromCharCode(65 + idx)}.</span> ${opt}
+                    </button>
+                `;
+            });
+
+            quizContent.innerHTML = `
+                <div class="animate-fadeIn">
+                    <div class="mb-4">
+                        <span class="inline-block px-2 py-1 bg-purple-100 text-purple-700 text-xs font-bold rounded mb-2">AI Generated Question</span>
+                        <h4 class="text-lg font-bold text-gray-800">${data.question}</h4>
+                    </div>
+                    <div class="space-y-1 mb-4">
+                        ${optionsHtml}
+                    </div>
+                    <div id="quiz-feedback" class="hidden mt-4 p-3 rounded bg-gray-50 text-sm"></div>
+                    <button onclick="startAIQuiz()" class="mt-4 w-full py-2 text-indigo-600 font-bold text-sm hover:underline">Next Question &rarr;</button>
+                </div>
+            `;
+        }
+
+        function checkQuizAnswer(btn, selectedIdx, correctIdx, explanation) {
+            const allBtns = document.querySelectorAll('.quiz-option');
+            allBtns.forEach(b => b.disabled = true); // Disable all
+
+            const feedback = document.getElementById('quiz-feedback');
+            feedback.classList.remove('hidden');
+
+            if (selectedIdx === correctIdx) {
+                btn.classList.add('bg-green-100', 'border-green-500', 'text-green-800');
+                feedback.innerHTML = `<strong class="text-green-600">✅ Correct!</strong><br>${explanation}`;
+            } else {
+                btn.classList.add('bg-red-100', 'border-red-500', 'text-red-800');
+                allBtns[correctIdx].classList.add('bg-green-100', 'border-green-500', 'text-green-800'); // Show correct
+                feedback.innerHTML = `<strong class="text-red-600">❌ Incorrect.</strong><br>${explanation}`;
+            }
+        }
+
+        function closeQuizModal() {
+            quizModal.classList.add('hidden');
+        }
+
+        // --- Charts Initialization ---
+        let freqChartInstance = null;
+        let progressChartInstance = null;
+
+        function initCharts() {
+            // Chart 1: Topic Frequency
+            const ctxFreq = document.getElementById('frequencyChart').getContext('2d');
+            freqChartInstance = new Chart(ctxFreq, {
+                type: 'bar',
+                data: {
+                    labels: [], // Populated dynamically
+                    datasets: [{
+                        label: 'पिछले 10 वर्षों में आवृत्ति',
+                        data: [],
+                        backgroundColor: '#c0392b',
+                        borderRadius: 4,
+                        maxBarThickness: 30
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 10,
+                            title: { display: true, text: 'वर्षों की संख्या' }
+                        },
+                        x: {
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 45,
+                                font: { size: 10 }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `पूछा गया: ${context.raw} बार (10 में से)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Chart 2: Progress
+            const ctxProg = document.getElementById('progressChart').getContext('2d');
+            progressChartInstance = new Chart(ctxProg, {
+                type: 'doughnut',
+                data: {
+                    labels: ['याद हो गया', 'बाकी है'],
+                    datasets: [{
+                        data: [0, 8],
+                        backgroundColor: ['#16a085', '#ecf0f1'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        }
+
+        function updateCharts() {
+            // Update Frequency Chart based on current tab
+            const data = questionsData[currentTab];
+            freqChartInstance.data.labels = data.map(q => q.title.split('.')[1].trim()); 
+            freqChartInstance.data.datasets[0].data = data.map(q => q.frequency);
+            freqChartInstance.update();
+
+            // Update Progress Chart
+            const totalQ = questionsData.long.length + questionsData.short.length;
+            const masteredQ = Object.values(masteryState).filter(v => v).length;
+            
+            progressChartInstance.data.datasets[0].data = [masteredQ, totalQ - masteredQ];
+            progressChartInstance.update();
+
+            // Update Header Progress
+            const percentage = Math.round((masteredQ / totalQ) * 100);
+            if(progressBarFill) progressBarFill.style.width = `${percentage}%`;
+            if(progressText) progressText.innerText = `तैयारी: ${percentage}%`;
+            
+            if(motivationalText) {
+                if(percentage === 100) {
+                    motivationalText.innerText = "अद्भुत! आप परीक्षा के लिए तैयार हैं! 🎉";
+                    motivationalText.className = "text-center text-sm mt-4 text-teal-600 font-bold";
+                } else {
+                    motivationalText.innerText = "प्रश्नों को याद करें और चेकबॉक्स पर क्लिक करें।";
+                    motivationalText.className = "text-center text-sm text-gray-500 mt-4";
+                }
+            }
+        }
+
+        // --- Render Function ---
+        function renderQuestions() {
+            const data = questionsData[currentTab];
+            questionsContainer.innerHTML = '';
+
+            data.forEach((item) => {
+                const isMastered = masteryState[item.id] || false;
+                
+                const card = document.createElement('div');
+                card.className = `bg-white rounded-lg border ${isMastered ? 'border-teal-200 bg-teal-50' : 'border-gray-200'} p-5 transition-all-custom card-hover`;
+                
+                const html = `
+                    <div class="flex items-start gap-4">
+                        <div class="pt-1">
+                            <input type="checkbox" id="check-${item.id}" 
+                                class="w-5 h-5 text-teal-600 rounded focus:ring-teal-500 cursor-pointer"
+                                ${isMastered ? 'checked' : ''}
+                                onchange="toggleMastery('${item.id}')">
+                        </div>
+                        <div class="flex-grow">
+                            <div class="flex justify-between items-start flex-wrap gap-2">
+                                <h4 class="text-md font-bold text-gray-800 ${isMastered ? 'text-teal-800 line-through decoration-2 decoration-teal-500' : ''}">
+                                    ${item.title}
+                                </h4>
+                                <span class="px-2 py-0.5 text-xs font-semibold bg-red-100 text-red-700 rounded-full border border-red-200">
+                                    High Demand
+                                </span>
+                            </div>
+                            
+                            <p class="mt-2 text-gray-700 font-medium">
+                                Q: ${item.question}
+                            </p>
+
+                            <div class="mt-4">
+                                <div class="flex flex-wrap gap-3">
+                                    <button onclick="toggleAnswer('${item.id}')" 
+                                        class="text-sm text-blue-600 font-semibold hover:text-blue-800 flex items-center gap-1 focus:outline-none">
+                                        <span id="btn-text-${item.id}">उत्तर के मुख्य बिंदु देखें</span>
+                                        <span id="icon-${item.id}">▼</span>
+                                    </button>
+                                </div>
+                                
+                                <div id="ans-${item.id}" class="hidden mt-3">
+                                    <div class="pl-4 border-l-4 border-blue-200 bg-blue-50 p-3 rounded text-sm text-gray-700 mb-3">
+                                        <ul class="list-disc pl-4 space-y-1">
+                                            ${item.keyPoints.map(pt => `<li>${pt}</li>`).join('')}
+                                        </ul>
+                                    </div>
+                                    
+                                    <!-- AI Simplify Button -->
+                                    <div class="mt-2">
+                                        <button id="ai-btn-${item.id}" onclick="explainWithAI('${item.id}', '${item.question.replace(/'/g, "\\'")}')" 
+                                            class="text-xs font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-full transition-colors flex items-center gap-1 border border-indigo-200">
+                                            ✨ AI से सरल भाषा में समझें (Explain Simply)
+                                        </button>
+                                        <div id="ai-result-${item.id}" class="hidden"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                card.innerHTML = html;
+                questionsContainer.appendChild(card);
+            });
+            updateCharts();
+        }
+
+        // --- Event Handlers ---
+        window.switchTab = (tab) => {
+            currentTab = tab;
+            const btnLong = document.getElementById('btn-long');
+            const btnShort = document.getElementById('btn-short');
+            
+            if (tab === 'long') {
+                btnLong.className = "px-6 py-2 rounded-md text-sm font-bold transition-all shadow-sm bg-white text-gray-800 border border-gray-200";
+                btnShort.className = "px-6 py-2 rounded-md text-sm font-bold transition-all text-gray-500 hover:text-gray-700";
+            } else {
+                btnShort.className = "px-6 py-2 rounded-md text-sm font-bold transition-all shadow-sm bg-white text-gray-800 border border-gray-200";
+                btnLong.className = "px-6 py-2 rounded-md text-sm font-bold transition-all text-gray-500 hover:text-gray-700";
+            }
+
+            renderQuestions();
+        };
+
+        window.toggleAnswer = (id) => {
+            const el = document.getElementById(`ans-${id}`);
+            const btnText = document.getElementById(`btn-text-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                btnText.innerText = "छिपाएं (Hide)";
+                icon.innerText = "▲";
+            } else {
+                el.classList.add('hidden');
+                btnText.innerText = "उत्तर के मुख्य बिंदु देखें";
+                icon.innerText = "▼";
+            }
+        };
+
+        window.toggleMastery = (id) => {
+            masteryState[id] = !masteryState[id];
+            localStorage.setItem('biharPhysicsMastery', JSON.stringify(masteryState));
+            renderQuestions();
+        };
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target == quizModal) {
+                closeQuizModal();
+            }
+        }
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initCharts();
+            renderQuestions();
+        });
+
+    </script>
+</body>
+</html>

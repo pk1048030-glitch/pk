@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Me - Pankaj Kumar</title>
+
+  <style>
+    :root {
+      --primary-color: #3f51b5;
+      --secondary-color: #ff9800;
+      --accent-color: #e91e63;
+      --text-color: #333;
+      --bg-light: #f4f4f9;
+      --bg-dark: #fff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f9f9ff, #ffe9f3);
+      color: var(--text-color);
+      line-height: 1.6;
+      scroll-behavior: smooth;
+    }
+
+    header {
+      background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+      color: white;
+      padding: 15px 5%;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      font-size: 1.8em;
+      font-weight: bold;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    nav ul li {
+      margin-left: 25px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: white;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+
+    nav ul li a:hover {
+      color: #ffe97f;
+      text-shadow: 0px 0px 6px #fff;
+    }
+
+    /* Hero Section with photo */
+    .about-hero {
+      text-align: center;
+      padding: 60px 20px;
+      background: linear-gradient(rgba(63,81,181,0.15), rgba(255,152,0,0.15));
+      border-bottom: 3px solid #ddd;
+      animation: fadeIn 2s ease;
+    }
+
+    .profile-pic {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid #fff;
+      box-shadow: 0 0 25px rgba(0,0,0,0.3);
+    }
+
+    .about-hero h1 {
+      font-size: 2.5em;
+      margin-top: 15px;
+      color: var(--primary-color);
+    }
+
+    .typing-text {
+      font-size: 1.3em;
+      color: var(--accent-color);
+      border-right: 3px solid var(--accent-color);
+      display: inline-block;
+      white-space: nowrap;
+      overflow: hidden;
+      width: 0;
+      animation: typing 4s steps(30) 1s 1 normal both, blink 0.6s step-end infinite alternate;
+    }
+
+    /* Main About Section */
+    section {
+      padding: 50px 6%;
+      margin: 40px auto;
+      max-width: 1100px;
+      background: var(--bg-dark);
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      animation: fadeInUp 1s ease;
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 2.4em;
+      color: var(--primary-color);
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    h2::after {
+      content: "";
+      display: block;
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+      margin: 10px auto;
+      border-radius: 3px;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .info-card {
+      background: linear-gradient(135deg, #fdfbfb, #ebedee);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+      transition: 0.3s;
+    }
+
+    .info-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 18px rgba(0,0,0,0.15);
+    }
+
+    .info-card h3 {
+      color: var(--secondary-color);
+      border-bottom: 2px solid #ddd;
+      margin-bottom: 12px;
+      padding-bottom: 5px;
+    }
+
+    ul {
+      list-style: none;
+      font-size: 1em;
+    }
+
+    ul li {
+      margin-bottom: 6px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: linear-gradient(to right, var(--secondary-color), var(--accent-color));
+      color: white;
+      font-weight: bold;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    @keyframes blink {
+      50% { border-color: transparent; }
+    }
+
+    @media(max-width:768px){
+      .about-hero h1 { font-size: 2em; }
+      .typing-text { font-size: 1.1em; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <nav>
+      <div class="logo">🌟 Pankaj Kumar 🌟</div>
+      <ul>
+        <li><a href="index.html">🏠 Home</a></li>
+        <li><a href="about.html" style="color:#ffe57f;">👤 About</a></li>
+        <li><a href="science.html">🧪 Science Hub</a></li>
+        <li><a href="Update.html">📂 new update</a></li>
+        <li><a href="index1.html"> Happy birthday</a></li>
+          <li><a href="app.html"> Education by pk </a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- About Hero Section -->
+  <div class="about-hero">
+    <!-- 👉 Apni Photo Ka Link Yahan Lagao 👇 -->
+    <img src="/pk.jpg" alt="Pankaj Kumar Photo" class="profile-pic">
+
+    <h1>Pankaj Kumar</h1>
+    <p class="typing-text">Namaste 🙏🏻, i am always Free For You 😇</p>
+  </div>
+
+  <!-- About Details Section -->
+  <section>
+    <h2>About Me</h2>
+    <div class="about-grid">
+
+      <div class="info-card">
+        <h3>🎓 Shiksha Aur Jeevan</h3>
+        <ul>
+          <li><b>Naam:</b> Pankaj Kumar</li>
+          <li><b>DOB:</b> 07 July 2007</li>
+          <li><b>Class:</b> 12 (Session 2025–26)</li>
+          <li><b>Roll No:</b> 82</li>
+          <li><b>District:</b> Rohtas, Bihar</li>
+        </ul>
+      </div>
+
+      <div class="info-card">
+        <h3>⏰ Routine</h3>
+        <ul>
+          <li><b>Uthna:</b> 5:00 AM</li>
+          <li><b>School:</b> 6:00 AM</li>
+          <li><b>Sona:</b> 9:00 PM</li>
+          <li><b>Pani:</b> 2.5–3 Litres Daily</li>
+        </ul>
+      </div>
+
+      <div class="info-card">
+        <h3>💭 Mere Goals</h3>
+        <ul>
+          <li>🔹 ethical Hacking</li>
+          <li>🔹 Engineer banna</li>
+          <li>🔹 I like listening song</li>
+          <li>🔹 I want to do every Day exercise</li>
+        </ul>
+      </div>
+
+      <div class="info-card">
+        <h3>📱 Social Links</h3>
+        <ul>
+          <li>📺 <b>YouTube:</b> <a href="https://youtube.com/@pankajkumar-v7d8o" target="_blank">@pankajkumar-v7d8o</a></li>
+          <li>📞 <b>Call:</b> <a href="tel:+919162389933">+91 9162389933</a></li>
+          <li>💬 <b>WhatsApp:</b> <a href="https://wa.me/919162389933" target="_blank">Message Me</a></li>
+           <li>   <b>insta id:</b> <a href="https://www.instagram.com/pankaj__kr__2400312?utm_source=qr" target="_blank">insta.com</a></li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>© 2025 Pankaj Kumar | About Page 🌈</footer>
+
+</body>
+</html>

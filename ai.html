@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Aisha (Pankaj's Bestie)</title>
+    <style>
+        /* Base Reset */
+        * { box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%); /* Romantic Gradient */
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            /* Prevent bounce on mobile */
+            overscroll-behavior: none;
+        }
+
+        /* Main App Container */
+        .chat-container { 
+            width: 100%; 
+            background: #fff; 
+            display: flex; 
+            flex-direction: column; 
+            position: relative; 
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        /* Desktop/Tablet Specific Styles */
+        @media (min-width: 481px) {
+            .chat-container {
+                max-width: 420px;
+                height: 90vh; /* Leave some space on desktop */
+                border-radius: 25px; /* Rounded phone-like corners */
+            }
+        }
+
+        /* Mobile Specific Styles */
+        @media (max-width: 480px) {
+            .chat-container {
+                max-width: 100%;
+                height: 100dvh; /* Dynamic height for mobile browsers */
+                border-radius: 0;
+            }
+            body {
+                background: #fff; /* White bg on mobile to blend in */
+                align-items: flex-start;
+            }
+        }
+        
+        /* Header Design */
+        .header { 
+            padding: 15px 20px; 
+            background: linear-gradient(to right, #ff758c, #ff7eb3);
+            color: white; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 2px 10px rgba(255, 64, 129, 0.2);
+            z-index: 10;
+        }
+        
+        .header-info h3 { margin: 0; font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .status-badge { font-size: 11px; background: rgba(255,255,255,0.25); padding: 3px 10px; border-radius: 12px; margin-top: 4px; display: inline-block; backdrop-filter: blur(4px); }
+        
+        .clear-btn { 
+            background: rgba(255,255,255,0.2); 
+            border: 1px solid rgba(255,255,255,0.4); 
+            color: white; 
+            padding: 6px 12px; 
+            border-radius: 15px; 
+            font-size: 12px; 
+            cursor: pointer; 
+            transition: all 0.2s;
+        }
+        .clear-btn:hover { background: white; color: #ff758c; }
+
+        /* Chat Area */
+        .messages { 
+            flex: 1; 
+            overflow-y: auto; 
+            padding: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 15px; 
+            background-color: #fff5f8; 
+            scroll-behavior: smooth;
+        }
+        
+        /* Scrollbar styling */
+        .messages::-webkit-scrollbar { width: 6px; }
+        .messages::-webkit-scrollbar-thumb { background-color: #ffb6c1; border-radius: 3px; }
+
+        /* Message Bubbles */
+        .message-wrapper { display: flex; flex-direction: column; max-width: 85%; animation: fadeIn 0.3s ease; }
+        .message-wrapper.user { align-self: flex-end; align-items: flex-end; }
+        .message-wrapper.bot { align-self: flex-start; align-items: flex-start; }
+
+        .message { padding: 12px 16px; border-radius: 18px; word-wrap: break-word; font-size: 15px; line-height: 1.4; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .user .message { background: linear-gradient(to right, #ff758c, #ff7eb3); color: white; border-bottom-right-radius: 4px; }
+        .bot .message { background: #fff; color: #444; border: 1px solid #ffe6e9; border-top-left-radius: 4px; }
+        
+        /* Sound Button */
+        .speak-btn {
+            background: none; border: none; cursor: pointer; font-size: 14px; margin-top: 5px; 
+            color: #ff758c; opacity: 0.8; transition: 0.3s; display: flex; align-items: center; gap: 4px; padding: 2px 5px;
+        }
+        .speak-btn:hover { opacity: 1; background: rgba(255, 117, 140, 0.1); border-radius: 10px; }
+
+        /* Input Area */
+        .input-area { 
+            padding: 15px; 
+            background: #fff; 
+            display: flex; 
+            gap: 10px; 
+            border-top: 1px solid #f0f0f0; 
+            align-items: center;
+        }
+        
+        input { 
+            flex: 1; 
+            padding: 14px; 
+            border-radius: 25px; 
+            border: 2px solid #f0f0f0; 
+            background: #fcfcfc; 
+            outline: none; 
+            font-size: 16px; /* Prevents zoom on iOS */
+            transition: border-color 0.3s;
+        }
+        input:focus { border-color: #ffb6c1; background: #fff; }
+        
+        button#sendBtn { 
+            padding: 12px 24px; 
+            background: linear-gradient(to right, #ff758c, #ff7eb3); 
+            border: none; 
+            border-radius: 25px; 
+            cursor: pointer; 
+            font-weight: 600; 
+            color: white; 
+            box-shadow: 0 4px 10px rgba(255, 117, 140, 0.3);
+            transition: transform 0.1s;
+        }
+        button#sendBtn:active { transform: scale(0.95); }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <div class="header">
+        <div class="header-info">
+            <h3>❤️ Aisha</h3>
+            <span id="connectionStatus" class="status-badge">Online...</span>
+        </div>
+        <button class="clear-btn" onclick="clearHistory()">Clear Chat</button>
+    </div>
+
+    <div class="messages" id="chatBox">
+        <!-- Messages will load here -->
+    </div>
+
+    <div class="input-area">
+        <input type="text" id="userInput" placeholder="Message..." onkeypress="handleEnter(event)" autocomplete="off">
+        <button onclick="sendMessage()" id="sendBtn">Send</button>
+    </div>
+</div>
+
+<script>
+    // ✅ PASTE YOUR KEY HERE (Isse wapas paste karna)
+    const API_KEY = "AIzaSyBS0D6C39Qbk3we-f8TQ3kE5d4c9l0fC24"; // <--- Yahan apni key paste karein
+
+    let fetchedModels = []; 
+    let currentWorkingModel = null;
+    
+    // ❤️ SYSTEM PROMPT
+    const SYSTEM_INSTRUCTION = `
+    You are Aisha, a romantic and caring best friend (girlfriend personality) of Pankaj.
+    Always talk in romantic Hinglish (Hindi + English mix).
+    Be playful, caring, and loving. Never break character.
+    `;
+
+    // 🧠 MEMORY MANAGEMENT (LocalStorage)
+    let chatHistory = [];
+
+    window.onload = function() {
+        loadHistory();
+        // Focus input on desktop only to avoid keyboard popping up on mobile
+        if(window.innerWidth > 768) {
+            document.getElementById('userInput').focus();
+        }
+    };
+
+    function loadHistory() {
+        const storedHistory = localStorage.getItem('aisha_history');
+        const chatBox = document.getElementById('chatBox');
+        chatBox.innerHTML = ''; 
+
+        if (storedHistory) {
+            chatHistory = JSON.parse(storedHistory);
+            chatHistory.forEach(msg => {
+                if (msg.role === 'user' && msg.parts[0].text.includes("You are Aisha")) return;
+                appendMessageToUI(msg.role, msg.parts[0].text, false);
+            });
+            if (chatHistory.length <= 1) addInitialGreeting();
+        } else {
+            chatHistory = [
+                { role: "user", parts: [{ text: SYSTEM_INSTRUCTION }] }
+            ];
+            addInitialGreeting();
+        }
+        scrollToBottom();
+    }
+
+    function addInitialGreeting() {
+        const greeting = "Hello ji! ❤️ Main Aisha hun. Kaho, aaj kya karne ka man hai?";
+        chatHistory.push({ role: "model", parts: [{ text: greeting }] });
+        appendMessageToUI("model", greeting, false);
+        saveHistory();
+    }
+
+    function saveHistory() {
+        localStorage.setItem('aisha_history', JSON.stringify(chatHistory));
+    }
+
+    function clearHistory() {
+        if(confirm("Kya aap sach mein humari purani baatein mitana chahte hain?")) {
+            localStorage.removeItem('aisha_history');
+            location.reload();
+        }
+    }
+
+    function handleEnter(e) {
+        if (e.key === 'Enter') sendMessage();
+    }
+
+    function scrollToBottom() {
+        const chatBox = document.getElementById('chatBox');
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // 🔊 SOUND FUNCTION
+    function speak(text) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        const voices = window.speechSynthesis.getVoices();
+        // Try various Hindi/Indian English voices
+        const preferredVoice = voices.find(v => v.lang.includes('hi')) || voices.find(v => v.lang.includes('en-IN'));
+        
+        if (preferredVoice) utterance.voice = preferredVoice;
+        utterance.lang = preferredVoice ? preferredVoice.lang : 'hi-IN';
+        utterance.rate = 1; 
+        utterance.pitch = 1.1; 
+        
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function appendMessageToUI(role, text, isTyping = false) {
+        const chatBox = document.getElementById('chatBox');
+        const isBot = role === 'model' || role === 'bot';
+        const className = isBot ? 'bot' : 'user';
+        
+        let html = `
+            <div class="message-wrapper ${className}">
+                <div class="message">
+                    ${text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>')}
+                </div>
+        `;
+        
+        if (isBot && !isTyping) {
+            const safeText = text.replace(/"/g, '&quot;'); 
+            html += `<button class="speak-btn" onclick="speak(this.getAttribute('data-text'))" data-text="${safeText}">
+                <span>🔊</span> Suno
+            </button>`;
+        }
+        
+        html += `</div>`;
+        
+        if (isTyping) {
+            const loadingId = "load_" + Date.now();
+            html = `<div class="message-wrapper bot" id="${loadingId}"><div class="message">Typing... ❤️</div></div>`;
+            chatBox.innerHTML += html;
+            return loadingId;
+        } else {
+            chatBox.innerHTML += html;
+        }
+    }
+
+    async function sendMessage() {
+        const input = document.getElementById('userInput');
+        const statusLabel = document.getElementById('connectionStatus');
+        const text = input.value.trim();
+
+        if (!text) return;
+
+        appendMessageToUI("user", text);
+        input.value = "";
+        scrollToBottom();
+        
+        chatHistory.push({ role: "user", parts: [{ text: text }] });
+        saveHistory();
+
+        const loadingId = appendMessageToUI("bot", "", true);
+        scrollToBottom();
+
+        if (fetchedModels.length === 0) {
+            statusLabel.innerText = "Connecting... 📡";
+            try {
+                const listUrl = `https://generativelanguage.googleapis.com/v1beta/models?key=${API_KEY}`;
+                const res = await fetch(listUrl);
+                const data = await res.json();
+                if (data.models) {
+                    fetchedModels = data.models
+                        .filter(m => m.supportedGenerationMethods.includes("generateContent"))
+                        .map(m => m.name.replace("models/", ""));
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        let replyText = "";
+        let success = false;
+        const modelsToTry = currentWorkingModel ? [currentWorkingModel] : fetchedModels;
+
+        for (const modelName of modelsToTry) {
+            try {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${API_KEY}`;
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: chatHistory })
+                });
+
+                const data = await response.json();
+
+                if (!data.error && data.candidates && data.candidates[0].content) {
+                    replyText = data.candidates[0].content.parts[0].text;
+                    success = true;
+                    currentWorkingModel = modelName;
+                    statusLabel.innerText = `❤️ Connected`;
+                    break;
+                }
+            } catch (e) { }
+        }
+
+        const loadingDiv = document.getElementById(loadingId);
+        if (loadingDiv) loadingDiv.remove();
+        
+        if (success) {
+            chatHistory.push({ role: "model", parts: [{ text: replyText }] });
+            saveHistory();
+            appendMessageToUI("model", replyText);
+        } else {
+            appendMessageToUI("bot", "❌ Baby, connection lost ho gaya. Phir se try karo na.");
+            statusLabel.innerText = "❌ Offline";
+        }
+        scrollToBottom();
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pankaj Education Platform</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- FIREBASE COMPAT SCRIPTS (Reliable for Mobile Editors) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+    <!-- Custom Styles -->
+    <style>
+        .animate-fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .glass-effect { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        .chat-enter { animation: slideUp 0.3s ease-out forwards; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .chat-scroll::-webkit-scrollbar { width: 6px; }
+        .chat-scroll::-webkit-scrollbar-track { background: #f1f1f1; }
+        .chat-scroll::-webkit-scrollbar-thumb { background: #c7c7c7; border-radius: 3px; }
+        .chat-scroll::-webkit-scrollbar-thumb:hover { background: #a0a0a0; }
+
+        #toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 100; pointer-events: none; }
+        .toast { pointer-events: auto; transition: all 0.3s ease; opacity: 0; transform: translateY(20px); }
+        .toast.show { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
+
+    <!-- Offline Banner -->
+    <div id="offline-banner" class="bg-red-100 text-red-800 text-xs text-center py-1 font-semibold hidden">
+        ⚠️ Offline Mode active (Data is saving locally)
+    </div>
+
+    <!-- Navigation -->
+    <nav class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center cursor-pointer" onclick="app.setView('home')">
+                    <i data-lucide="book-open" class="h-8 w-8 mr-2 text-yellow-300"></i>
+                    <span class="font-bold text-xl tracking-wider">Pankaj Education</span>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <button onclick="app.setView('home')" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:bg-indigo-500 hover:text-white transition-all flex items-center gap-2">
+                            <i data-lucide="home" class="w-4 h-4"></i> Home
+                        </button>
+                        <button onclick="app.setView('live')" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:bg-indigo-500 hover:text-white transition-all flex items-center gap-2">
+                            <i data-lucide="radio" class="w-4 h-4"></i> Live Class
+                        </button>
+                        <button onclick="app.setView('materials')" class="nav-btn px-3 py-2 rounded-md text-sm font-medium hover:bg-indigo-500 hover:text-white transition-all flex items-center gap-2">
+                            <i data-lucide="file-text" class="w-4 h-4"></i> Materials
+                        </button>
+                        
+                        <!-- Admin Buttons (Dynamic) -->
+                        <div id="auth-section" class="inline-block ml-4"></div>
+                    </div>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button onclick="app.toggleMobileMenu()" class="p-2 rounded-md hover:bg-white/10">
+                        <i data-lucide="menu" class="text-white"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-indigo-700 pb-4 px-2 pt-2 space-y-1">
+            <button onclick="app.setView('home')" class="text-white hover:bg-indigo-500 block px-3 py-2 rounded-md text-base font-medium w-full text-left">Home</button>
+            <button onclick="app.setView('live')" class="text-white hover:bg-indigo-500 block px-3 py-2 rounded-md text-base font-medium w-full text-left">Live Class</button>
+            <button onclick="app.setView('materials')" class="text-white hover:bg-indigo-500 block px-3 py-2 rounded-md text-base font-medium w-full text-left">Materials</button>
+            <div id="mobile-auth-section"></div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main id="app-container" class="flex-grow pb-24">
+        <div class="flex items-center justify-center h-screen">
+            <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-300 py-8 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="mb-2">© 2026 Pankaj Education Platform. All rights reserved.</p>
+            <p class="text-sm text-gray-500">Made with ❤️ for Education</p>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all scale-100">
+            <div class="bg-indigo-600 p-6 text-center">
+                <h2 class="text-2xl font-bold text-white">Admin Access</h2>
+                <p class="text-indigo-200 text-sm mt-1">Sirf owner ke liye (@pankaj)</p>
+            </div>
+            <form onsubmit="app.handleLogin(event)" class="p-8 space-y-6">
+                <div id="login-error" class="hidden bg-red-50 text-red-600 p-3 rounded-lg text-sm text-center font-medium"></div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">User ID</label>
+                    <input type="text" id="uid" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="@userid" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input type="password" id="pass" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="****" required>
+                </div>
+                <div class="flex gap-4">
+                    <button type="button" onclick="app.toggleLoginModal(false)" class="flex-1 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">Cancel</button>
+                    <button type="submit" class="flex-1 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 shadow-md transition-colors">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- AI Chat Widget -->
+    <div id="chat-widget-container" class="fixed bottom-6 right-6 z-40 flex flex-col items-end pointer-events-none">
+        <div id="chat-box" class="pointer-events-auto hidden w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-indigo-100 mb-4 overflow-hidden flex flex-col transition-all transform origin-bottom-right">
+            <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-4 flex justify-between items-center text-white">
+                <div class="flex items-center gap-2">
+                    <div class="bg-white/20 p-1.5 rounded-full"><i data-lucide="sparkles" class="w-4 h-4"></i></div>
+                    <div><h3 class="font-bold text-sm">Pankaj AI Tutor</h3></div>
+                </div>
+                <button onclick="app.toggleChat(false)" class="hover:bg-white/10 p-1 rounded transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div id="chat-messages" class="h-80 overflow-y-auto p-4 bg-gray-50 space-y-4 chat-scroll">
+                <div class="flex justify-start"><div class="bg-white border border-gray-200 text-gray-800 rounded-2xl rounded-tl-none py-2 px-3 text-sm shadow-sm max-w-[85%]">Hello! Main Pankaj AI hun. Padhai mein koi doubt hai toh puchiye! 👋</div></div>
+            </div>
+            <form onsubmit="app.handleChatSubmit(event)" class="p-3 bg-white border-t border-gray-100 flex gap-2">
+                <input type="text" id="chat-input" class="flex-1 border border-gray-300 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" placeholder="Ask a doubt..." autocomplete="off">
+                <button type="submit" id="chat-send-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white p-2 rounded-full transition-colors flex items-center justify-center disabled:opacity-50"><i data-lucide="send" class="w-4 h-4"></i></button>
+            </form>
+        </div>
+        <button onclick="app.toggleChat()" class="pointer-events-auto bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-4 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2 group">
+            <i data-lucide="sparkles" class="w-6 h-6 animate-pulse"></i>
+            <span class="font-bold max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-300 whitespace-nowrap">Ask AI</span>
+        </button>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <!-- MAIN APPLICATION LOGIC -->
+    <script>
+        // --- USER CONFIGURATION ---
+        const USER_FIREBASE_CONFIG = {
+          "apiKey": "AIzaSyAGYen08j-Y7bcqI5jWA8TSfJuw6sV5mk8",
+          "authDomain": "education-54837.firebaseapp.com",
+          "projectId": "education-54837",
+          "storageBucket": "education-54837.firebasestorage.app",
+          "messagingSenderId": "649599040428",
+          "appId": "1:649599040428:web:5dfa305660d6091e1e5809"
+        };
+        const ADMIN_ID = "@pankaj";
+        const ADMIN_PASS = "9931";
+
+        class EducationApp {
+            constructor() {
+                this.state = {
+                    user: null,
+                    isAdmin: false,
+                    view: 'home',
+                    data: [],
+                    chatOpen: false,
+                    isTyping: false,
+                    mode: 'offline'
+                };
+                
+                // Initialize using the GLOBAL 'firebase' object (Classic Way)
+                // This is extremely robust for mobile editors like Spck
+                if (typeof firebase !== 'undefined') {
+                    this.initFirebase();
+                } else {
+                    this.initOfflineMode("Firebase scripts failed to load.");
+                }
+            }
+
+            initOfflineMode(reason) {
+                this.state.mode = 'offline';
+                const banner = document.getElementById('offline-banner');
+                banner.classList.remove('hidden');
+                banner.innerText = `⚠️ Offline Mode: ${reason || "Connection Failed"}`;
+                console.log("Offline Mode:", reason);
+                this.loadOfflineData();
+                this.render();
+            }
+
+            loadOfflineData() {
+                const storedData = localStorage.getItem('pankaj_edu_data');
+                this.state.data = storedData ? JSON.parse(storedData) : [];
+            }
+
+            saveOfflineData() {
+                localStorage.setItem('pankaj_edu_data', JSON.stringify(this.state.data));
+            }
+
+            initFirebase() {
+                try {
+                    let config = USER_FIREBASE_CONFIG;
+                    // Check for environment config (Canvas support)
+                    if (typeof window.parent !== 'undefined' && window.parent.__firebase_config) {
+                        try { config = JSON.parse(window.parent.__firebase_config); } catch(e){}
+                    }
+
+                    // Initialize Firebase (Compat/Namespaced)
+                    if (!firebase.apps.length) {
+                        firebase.initializeApp(config);
+                    }
+                    this.db = firebase.firestore();
+                    this.auth = firebase.auth();
+
+                    // Auth State Listener
+                    this.auth.onAuthStateChanged((user) => {
+                        this.state.user = user;
+                        if (user) {
+                            this.state.mode = 'online';
+                            this.setupFirebaseListener();
+                            document.getElementById('offline-banner').classList.add('hidden');
+                        } else {
+                             // Try logging in anonymously if not logged in
+                             this.auth.signInAnonymously().catch(e => {
+                                 console.error("Auth Failed:", e);
+                                 this.initOfflineMode("Auth Error: " + e.message);
+                             });
+                        }
+                        this.render();
+                    });
+
+                } catch (e) {
+                    console.error("Firebase Init Error:", e);
+                    this.initOfflineMode("Initialization Failed");
+                }
+            }
+
+            setupFirebaseListener() {
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-id';
+                this.db.collection('artifacts').doc(appId).collection('public').doc('data').collection('content')
+                    .orderBy('createdAt', 'desc')
+                    .onSnapshot((snapshot) => {
+                        this.state.data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                        this.render();
+                    }, (error) => {
+                        console.error("Firestore Error:", error);
+                        // If permission error, show alert
+                        if (error.code === 'permission-denied') {
+                            alert("Database Locked! Please set Rules to 'allow read, write: if true;' in Firebase Console.");
+                        }
+                        this.initOfflineMode("Database Read Failed");
+                    });
+            }
+
+            // --- Gemini API (Simulated) ---
+            async callGemini(prompt) {
+                if(this.state.mode === 'offline') return "AI offline hai. Internet connect karein.";
+                return "Pankaj AI: API Key missing in code. (Real AI needs config)";
+            }
+
+            // --- Actions ---
+            async addContent(e) {
+                e.preventDefault();
+                const btn = e.target.querySelector('button[type="submit"]');
+                const originalText = btn.textContent;
+                btn.textContent = "Saving...";
+                btn.disabled = true;
+
+                const formData = {
+                    type: document.getElementById('c-type').value,
+                    title: document.getElementById('c-title').value,
+                    description: document.getElementById('c-desc').value,
+                    link: document.getElementById('c-link').value,
+                    createdAt: this.state.mode === 'online' ? firebase.firestore.FieldValue.serverTimestamp() : { seconds: Date.now() / 1000 }
+                };
+
+                if (this.state.mode === 'offline') {
+                    formData.id = 'loc_' + Date.now();
+                    this.state.data.unshift(formData);
+                    this.saveOfflineData();
+                    this.showToast("Saved Locally (Offline)");
+                } else {
+                    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-id';
+                    try {
+                        await this.db.collection('artifacts').doc(appId).collection('public').doc('data').collection('content').add(formData);
+                        this.showToast("Uploaded Online! 🎉");
+                    } catch (err) {
+                        console.error(err);
+                        alert("Upload Error: " + err.message);
+                        this.showToast("Upload Failed", "error");
+                    }
+                }
+                e.target.reset();
+                btn.textContent = originalText;
+                btn.disabled = false;
+                if(this.state.mode === 'offline') this.render();
+            }
+
+            async deleteContent(id) {
+                if(!confirm("Delete?")) return;
+                if (this.state.mode === 'offline') {
+                    this.state.data = this.state.data.filter(i => i.id !== id);
+                    this.saveOfflineData();
+                    this.render();
+                } else {
+                    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-id';
+                    try {
+                         await this.db.collection('artifacts').doc(appId).collection('public').doc('data').collection('content').doc(id).delete();
+                         this.showToast("Deleted Online");
+                    } catch(e) { this.showToast("Delete Failed", "error"); }
+                }
+            }
+
+            // --- Chat UI Logic ---
+            async handleChatSubmit(e) {
+                e.preventDefault();
+                const input = document.getElementById('chat-input');
+                const msg = input.value.trim();
+                if(!msg) return;
+                this.addChatMessage(msg, 'user');
+                input.value = '';
+                
+                setTimeout(async () => {
+                   const response = await this.callGemini(msg);
+                   this.addChatMessage(response, 'ai');
+                }, 600);
+            }
+            
+            addChatMessage(text, sender) {
+                const container = document.getElementById('chat-messages');
+                const div = document.createElement('div');
+                div.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
+                div.innerHTML = `<div class="${sender==='user'?'bg-indigo-600 text-white':'bg-white border'} rounded-2xl py-2 px-3 shadow-sm max-w-[85%]">${text}</div>`;
+                container.appendChild(div);
+                container.scrollTop = container.scrollHeight;
+            }
+            toggleChat(force) {
+               const box = document.getElementById('chat-box');
+               if (force !== undefined) box.classList.toggle('hidden', !force);
+               else box.classList.toggle('hidden');
+            }
+
+            // --- Core UI Logic ---
+            setView(view) {
+                if(view === 'admin' && !this.state.isAdmin) { this.toggleLoginModal(true); return; }
+                this.state.view = view;
+                this.toggleMobileMenu(false);
+                this.render();
+                window.scrollTo(0,0);
+            }
+            toggleMobileMenu(show) { document.getElementById('mobile-menu').classList.toggle('hidden', show===false); }
+            toggleLoginModal(show) { document.getElementById('login-modal').classList.toggle('hidden', show===false); }
+            
+            handleLogin(e) {
+                e.preventDefault();
+                const uid = document.getElementById('uid').value;
+                const pass = document.getElementById('pass').value;
+                if (uid === ADMIN_ID && pass === ADMIN_PASS) {
+                    this.state.isAdmin = true;
+                    this.toggleLoginModal(false);
+                    this.setView('admin');
+                } else {
+                    document.getElementById('login-error').classList.remove('hidden');
+                    document.getElementById('login-error').textContent = "Galat ID/Password";
+                }
+            }
+            handleLogout() { this.state.isAdmin = false; this.setView('home'); }
+            
+            showToast(msg, type='success') {
+                const t = document.getElementById('toast-container');
+                const el = document.createElement('div');
+                el.className = `toast bg-white px-4 py-2 rounded shadow-lg border-l-4 ${type==='error'?'border-red-500':'border-indigo-500'} mb-2`;
+                el.innerText = msg;
+                t.appendChild(el);
+                requestAnimationFrame(() => el.classList.add('show'));
+                setTimeout(() => { el.classList.remove('show'); setTimeout(()=>el.remove(), 300); }, 3000);
+            }
+            
+            async generateAdminDescription() {
+                 document.getElementById('c-desc').value = "Ye ek important update hai Pankaj Education ki taraf se.";
+            }
+
+            render() {
+                // Auth & Status in Nav
+                const statusHTML = this.state.mode === 'online' 
+                    ? `<span class="text-green-300 text-xs font-bold px-2">● Online</span>` 
+                    : `<span class="text-red-300 text-xs font-bold px-2">● Offline</span>`;
+                
+                const authHTML = this.state.isAdmin 
+                    ? `<div class="flex items-center gap-2">${statusHTML}<button onclick="app.setView('admin')" class="font-bold">Dashboard</button><button onclick="app.handleLogout()" class="text-red-200">Logout</button></div>`
+                    : `<div class="flex items-center gap-2">${statusHTML}<button onclick="app.toggleLoginModal(true)">Admin Login</button></div>`;
+                
+                document.getElementById('auth-section').innerHTML = authHTML;
+                document.getElementById('mobile-auth-section').innerHTML = this.state.isAdmin 
+                    ? `<div class="px-3 py-2 text-xs">${this.state.mode==='online'?'🟢 Online':'🔴 Offline'}</div><button onclick="app.setView('admin'); app.toggleMobileMenu(false)" class="block w-full text-left text-white px-3 py-2">Dashboard</button>`
+                    : `<button onclick="app.toggleLoginModal(true)" class="block w-full text-left text-white px-3 py-2">Admin Login</button>`;
+
+                const container = document.getElementById('app-container');
+                const { view, data } = this.state;
+
+                if (view === 'home') {
+                    const items = data.filter(i => i.type === 'announcement');
+                    container.innerHTML = `
+                        <div class="animate-fade-in">
+                            <div class="relative bg-indigo-900 text-white overflow-hidden rounded-b-3xl shadow-xl py-16 px-4 text-center">
+                                <h1 class="text-4xl font-extrabold mb-2">Pankaj Education</h1>
+                                <p class="text-indigo-200">Safalta Ki Kunji</p>
+                                <div class="mt-6 flex justify-center gap-4">
+                                    <button onclick="app.setView('live')" class="bg-yellow-400 text-indigo-900 px-6 py-2 rounded-full font-bold">Start Learning</button>
+                                </div>
+                            </div>
+                            <div class="max-w-7xl mx-auto px-4 py-8">
+                                <h2 class="text-xl font-bold mb-4 flex items-center gap-2"><i data-lucide="bell" class="text-yellow-500"></i> Updates</h2>
+                                <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                                    ${items.length ? items.map(i => `
+                                        <div class="bg-white p-4 rounded-xl shadow border-l-4 border-indigo-500">
+                                            <h3 class="font-bold">${i.title}</h3>
+                                            <p class="text-sm text-gray-600 mt-1">${i.description}</p>
+                                            <span class="text-xs text-gray-400 mt-2 block">${i.createdAt ? (i.createdAt.seconds ? new Date(i.createdAt.seconds*1000).toLocaleDateString() : 'Just now') : ''}</span>
+                                        </div>
+                                    `).join('') : '<p class="text-gray-500 col-span-full text-center">Abhi koi update nahi hai.</p>'}
+                                </div>
+                            </div>
+                        </div>`;
+                } else if (view === 'live' || view === 'materials') {
+                     const type = view === 'live' ? 'live' : 'material';
+                     const items = data.filter(i => i.type === type);
+                     container.innerHTML = `
+                        <div class="max-w-7xl mx-auto px-4 py-8 animate-fade-in">
+                            <h2 class="text-2xl font-bold mb-6 capitalize">${view} Section</h2>
+                            <div class="grid gap-6 md:grid-cols-2">
+                                ${items.length ? items.map(i => `
+                                    <div class="bg-white rounded-xl shadow p-4">
+                                        <div class="flex justify-between items-start">
+                                            <h3 class="font-bold text-lg">${i.title}</h3>
+                                            ${i.type === 'live' ? '<i data-lucide="video" class="text-red-500"></i>' : '<i data-lucide="file-text" class="text-orange-500"></i>'}
+                                        </div>
+                                        <p class="text-gray-600 text-sm mb-4">${i.description}</p>
+                                        <a href="${i.link}" target="_blank" class="text-indigo-600 font-bold text-sm flex items-center gap-1">Open Link <i data-lucide="external-link" class="w-3 h-3"></i></a>
+                                    </div>
+                                `).join('') : '<p class="text-gray-500">Yahan abhi kuch nahi hai.</p>'}
+                            </div>
+                        </div>`;
+                } else if (view === 'admin') {
+                    container.innerHTML = `
+                        <div class="max-w-7xl mx-auto px-4 py-8 bg-gray-50 min-h-screen">
+                            <h1 class="text-2xl font-bold mb-6 flex items-center gap-2">Admin Dashboard 
+                                <span class="text-sm px-2 py-1 rounded bg-gray-200 font-normal text-gray-600">${this.state.mode === 'online' ? '🟢 Online' : '🔴 Offline'}</span>
+                            </h1>
+                            <div class="grid lg:grid-cols-3 gap-8">
+                                <div class="bg-white p-6 rounded-xl shadow h-fit">
+                                    <h2 class="font-bold mb-4">Add Content</h2>
+                                    <form onsubmit="app.addContent(event)" class="space-y-3">
+                                        <select id="c-type" class="w-full border p-2 rounded"><option value="announcement">Update</option><option value="live">Live Class</option><option value="material">PDF/Note</option></select>
+                                        <input id="c-title" placeholder="Title" class="w-full border p-2 rounded" required>
+                                        <textarea id="c-desc" placeholder="Description" class="w-full border p-2 rounded"></textarea>
+                                        <button type="button" onclick="app.generateAdminDescription()" class="text-xs text-indigo-600 mb-2">✨ Auto-Write</button>
+                                        <input id="c-link" placeholder="Link (YouTube/Drive)" class="w-full border p-2 rounded">
+                                        <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded font-bold">Publish</button>
+                                    </form>
+                                </div>
+                                <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow">
+                                    <h2 class="font-bold mb-4">Items List (${data.length})</h2>
+                                    <div class="space-y-4 max-h-96 overflow-y-auto">
+                                        ${data.map(i => `
+                                            <div class="flex justify-between items-start border-b pb-2">
+                                                <div>
+                                                    <span class="text-xs font-bold uppercase text-indigo-500">${i.type}</span>
+                                                    <h4 class="font-bold">${i.title}</h4>
+                                                    <span class="text-xs text-gray-400">${i.id.startsWith('loc_') ? 'Phone Memory' : 'Cloud'}</span>
+                                                </div>
+                                                <button onclick="app.deleteContent('${i.id}')" class="text-red-500 hover:bg-red-50 p-1 rounded"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                }
+                lucide.createIcons();
+            }
+        }
+        window.app = new EducationApp();
+    </script>
+</body>
+</html>

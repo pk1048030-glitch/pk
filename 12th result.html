@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pankaj Kumar - 12th Result Portal</title>
+
+<style>
+:root {
+  --primary-color: #3f51b5;
+  --secondary-color: #ff9800;
+  --accent-color: #e91e63;
+}
+
+/* RESET */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:"Segoe UI", Arial, sans-serif;
+}
+
+body{
+  background: linear-gradient(135deg, #f9f9ff, #ffe9f3);
+  color:#333;
+  min-height:100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== HEADER ===== */
+header{
+  background:linear-gradient(to right,var(--primary-color),var(--secondary-color));
+  color:#fff;
+  padding:15px 5%;
+  position:sticky;
+  top:0;
+  z-index:1000;
+  box-shadow:0 4px 8px rgba(0,0,0,0.2);
+}
+
+nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+.logo{
+  font-size:1.5em;
+  font-weight:bold;
+  letter-spacing:1px;
+}
+
+nav ul{
+  list-style:none;
+  display:flex;
+  flex-wrap:wrap;
+}
+
+nav ul li{
+  margin-left:20px;
+}
+
+nav ul li a{
+  text-decoration:none;
+  color:white;
+  font-weight:500;
+  transition:.3s;
+}
+
+nav ul li a:hover{
+  color:#ffe97f;
+}
+
+/* 🔍 SEARCH BOX */
+.search-box{
+  margin: 10px 0;
+  position:relative;
+}
+.search-box input{
+  padding:8px 35px 8px 15px;
+  border-radius:20px;
+  border:none;
+  outline:none;
+  width: 200px;
+  font-size:.9em;
+}
+.search-box::after{
+  content:"🔍";
+  position:absolute;
+  right:10px;
+  top:6px;
+  pointer-events:none;
+}
+
+/* 🏆 RESULT SECTION */
+.content-area {
+  flex: 1;
+  padding: 30px 5%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.result-card {
+  background: white;
+  width: 100%;
+  max-width: 600px;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  text-align: center;
+  border-top: 5px solid var(--accent-color);
+  animation: fadeIn 1s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.result-card h2 {
+  color: var(--primary-color);
+  margin-bottom: 10px;
+  font-size: 1.5em;
+}
+
+.result-card p {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.link-container {
+  display: grid;
+  gap: 15px;
+}
+
+.result-link {
+  display: block;
+  padding: 15px;
+  background: #f8f9fa;
+  color: #333;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  transition: 0.3s;
+}
+
+.result-link:hover {
+  background: var(--primary-color);
+  color: white;
+  transform: scale(1.02);
+  box-shadow: 0 5px 15px rgba(63, 81, 181, 0.3);
+}
+
+.result-link span {
+  float: right;
+}
+
+/* 🔴 HIGHLIGHT BLINK */
+.search-blink-red{
+  outline:3px solid red !important;
+  animation:redBlink 1s infinite;
+}
+@keyframes redBlink{
+  0%, 100%{ box-shadow:0 0 5px red; }
+  50%{ box-shadow:0 0 20px red; }
+}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  nav{ justify-content: center; gap: 10px; }
+  .logo { width: 100%; text-align: center; }
+  .search-box input { width: 100%; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<nav>
+  <div class="logo">🌟 Pankaj Kumar 🌟</div>
+
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="Search result link...">
+  </div>
+
+  <ul id="menuList">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="#">BSEB Updates</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+</nav>
+</header>
+
+<main class="content-area">
+  <div class="result-card" id="resultCard">
+    <h2>Bihar Board 12th Result 2026</h2>
+    <p>अपना रिजल्ट चेक करने के लिए नीचे दिए गए सर्वर लिंक पर क्लिक करें।</p>
+    
+    <div class="link-container" id="linkList">
+      <a href="http://results.biharboardonline.com/" target="_blank" class="result-link">
+        🔗 Server Link 1 (Official) <span>➔</span>
+      </a>
+      <a href="https://secondary.biharboardonline.com/" target="_blank" class="result-link">
+        🔗 Server Link 2 (Mirror) <span>➔</span>
+      </a>
+      <a href="https://indiaresults.com/" target="_blank" class="result-link">
+        🔗 Server Link 3 (Fast) <span>➔</span>
+      </a>
+      <a href="#" class="result-link" onclick="showVibrationAlert()">
+        🔗 Server Link 4 (Private) <span>➔</span>
+      </a>
+    </div>
+  </div>
+</main>
+
+<script>
+/* 🔍 SEARCH SYSTEM */
+(function(){
+  const search = document.getElementById("searchInput");
+  const links = document.querySelectorAll(".result-link");
+  let last = null;
+
+  search.addEventListener("input", function(){
+    const q = this.value.toLowerCase().trim();
+
+    links.forEach(link => {
+      const text = link.innerText.toLowerCase();
+      link.style.display = text.includes(q) ? "block" : "none";
+    });
+
+    if(last) {
+      last.classList.remove("search-blink-red");
+      last = null;
+    }
+
+    if(!q) return;
+
+    for(const link of links) {
+      if(link.innerText.toLowerCase().includes(q)) {
+        link.classList.add("search-blink-red");
+        last = link;
+        break;
+      }
+    }
+  });
+})();
+
+/* 📱 VIBRATION LOGIC */
+document.addEventListener("click", function () {
+  if (navigator.vibrate) navigator.vibrate(40);
+}, true);
+
+function showVibrationAlert() {
+  alert("यह लिंक अभी एक्टिव नहीं हुआ है। कृपया लिंक 1 या 2 का उपयोग करें।");
+}
+</script>
+
+</body>
+</html>

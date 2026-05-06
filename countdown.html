@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Pankaj Exam Dashboard</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Roboto+Mono:wght@500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #00f2ff;
+      --secondary: #00c3ff;
+      --accent: #bc13fe;
+      --glass: rgba(255, 255, 255, 0.08);
+      --border: rgba(255, 255, 255, 0.15);
+      --bg-gradient: radial-gradient(circle at top, #1a2a3a, #000000);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Poppins", sans-serif; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg-gradient);
+      color: white;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 15px; overflow-x: hidden;
+    }
+
+    /* --- STATUS BAR --- */
+    .status-bar {
+      display: flex; justify-content: space-between; width: 100%; max-width: 600px;
+      background: rgba(0,0,0,0.5); backdrop-filter: blur(10px);
+      padding: 8px 15px; border-radius: 50px; border: 1px solid var(--border);
+      margin-bottom: 20px; font-size: 0.85rem; font-weight: 600;
+    }
+    .status-item { display: flex; align-items: center; gap: 6px; }
+    .battery-low { color: #ff4444; animation: blink 1s infinite; }
+    .battery-ok { color: #00ffaa; }
+    @keyframes blink { 50% { opacity: 0.5; } }
+
+    /* --- HEADERS --- */
+    h1 {
+      font-size: 1.6rem; text-transform: uppercase;
+      background: linear-gradient(90deg, #fff, var(--primary));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      font-weight: 800; margin-bottom: 5px; text-align: center;
+    }
+    h2 { font-size: 0.9rem; color: #bbb; margin-bottom: 15px; text-align: center; }
+
+    /* --- PROGRESS BAR --- */
+    .progress-box {
+      width: 100%; max-width: 600px; background: var(--glass);
+      padding: 15px; border-radius: 15px; border: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+    .progress-info { display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 8px; color: #ddd; }
+    .track { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; }
+    .fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--primary), var(--accent)); transition: width 1s ease; }
+
+    /* --- SECTION TITLE --- */
+    .section-title {
+      font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;
+      color: #888; margin: 15px 0 5px 0; width: 100%; max-width: 600px; text-align: left;
+    }
+
+    /* --- MAIN COUNTDOWN GRID --- */
+    .countdown-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+      width: 100%; max-width: 600px; margin-bottom: 10px;
+    }
+    /* Milliseconds spans full width */
+    .countdown-grid .time-box:last-child { grid-column: span 3; }
+
+    .time-box {
+      background: var(--glass); border: 1px solid var(--border);
+      border-radius: 12px; padding: 10px; text-align: center;
+    }
+    .value {
+      font-family: 'Roboto Mono', monospace; font-size: 1.3rem; font-weight: 700;
+      color: var(--primary); text-shadow: 0 0 10px rgba(0, 242, 255, 0.4);
+    }
+    .label { font-size: 0.65rem; color: #aaa; text-transform: uppercase; margin-top: 2px; }
+
+    /* --- TOTAL STATS GRID (NEW FEATURE) --- */
+    .total-stats-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+      width: 100%; max-width: 600px; margin-bottom: 20px;
+    }
+    .total-box {
+      background: rgba(188, 19, 254, 0.1); /* Purple tint */
+      border: 1px solid rgba(188, 19, 254, 0.3);
+      border-radius: 12px; padding: 12px; text-align: center;
+    }
+    .total-box.full { grid-column: span 2; } /* Seconds spans full width */
+    .total-value {
+      font-family: 'Roboto Mono', monospace; font-size: 1.1rem; font-weight: 700; color: #e0aaff;
+    }
+    .total-label { font-size: 0.7rem; color: #d0d0d0; }
+
+    /* --- SUBJECT LIST --- */
+    .subject-list { display: flex; flex-direction: column; gap: 8px; width: 100%; max-width: 600px; }
+    .subject-item {
+      background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+      padding: 12px 15px; border-radius: 10px; border-left: 4px solid var(--secondary);
+      display: flex; justify-content: space-between; align-items: center;
+      cursor: pointer; font-size: 0.9rem;
+    }
+    .date-tag { font-family: 'Roboto Mono'; font-size: 0.75rem; color: var(--primary); background: rgba(0,0,0,0.3); padding: 4px 8px; border-radius: 5px; }
+
+    /* --- DETAIL VIEW OVERLAY --- */
+    .detail-view {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: #0d121b; z-index: 100;
+      flex-direction: column; align-items: center; justify-content: center; padding: 20px;
+    }
+    .back-btn {
+      margin-bottom: 30px; padding: 10px 25px; border-radius: 30px;
+      background: var(--glass); color: white; border: 1px solid var(--border);
+      cursor: pointer; font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="status-bar">
+    <div class="status-item"><span>📍 Rohtas:</span> <span id="weatherTemp">--°C</span></div>
+    <div class="status-item"><span id="batteryIcon">🔋</span> <span id="batteryPercent">--%</span></div>
+  </div>
+
+  <div id="homePage" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+    <h1>Mission 2026</h1>
+    <h2>Target: 02 Feb 2026</h2>
+
+    <div class="progress-box">
+      <div class="progress-info">
+        <span>Aaj ka Din (Today Used)</span>
+        <span id="dayPercent">0%</span>
+      </div>
+      <div class="track"><div class="fill" id="dayFill"></div></div>
+    </div>
+
+    <div class="section-title">Time Left</div>
+    <div class="countdown-grid">
+      <div class="time-box"><div class="value" id="cMonths">0</div><div class="label">Months</div></div>
+      <div class="time-box"><div class="value" id="cDays">0</div><div class="label">Days</div></div>
+      <div class="time-box"><div class="value" id="cHours">0</div><div class="label">Hours</div></div>
+      <div class="time-box"><div class="value" id="cMins">0</div><div class="label">Mins</div></div>
+      <div class="time-box"><div class="value" id="cSecs">0</div><div class="label">Secs</div></div>
+      <div class="time-box"><div class="value" id="cMs">000</div><div class="label">Milliseconds</div></div>
+    </div>
+
+    <div class="section-title">Deep Analysis (Total Time)</div>
+    <div class="total-stats-grid">
+      <div class="total-box"><div class="total-value" id="tHours">0</div><div class="total-label">Total Hours Left</div></div>
+      <div class="total-box"><div class="total-value" id="tMins">0</div><div class="total-label">Total Mins Left</div></div>
+      <div class="total-box full"><div class="total-value" id="tSecs">0</div><div class="total-label">Total Seconds Left</div></div>
+    </div>
+
+    <div class="section-title">Exam Schedule</div>
+    <div class="subject-list">
+      <div class="subject-item" onclick="openSubject('Biology 🌿', '2026-02-02')"><span>Biology</span> <span class="date-tag">02 Feb</span></div>
+      <div class="subject-item" onclick="openSubject('Maths 🧮', '2026-02-03')"><span>Maths</span> <span class="date-tag">03 Feb</span></div>
+      <div class="subject-item" onclick="openSubject('Physics ⚡', '2026-02-05')"><span>Physics</span> <span class="date-tag">05 Feb</span></div>
+      <div class="subject-item" onclick="openSubject('English ✍️', '2026-02-06')"><span>English</span> <span class="date-tag">06 Feb</span></div>
+      <div class="subject-item" onclick="openSubject('Chemistry 🧪', '2026-02-07')"><span>Chemistry</span> <span class="date-tag">07 Feb</span></div>
+      <div class="subject-item" onclick="openSubject('Hindi 📖', '2026-02-09')"><span>Hindi</span> <span class="date-tag">09 Feb</span></div>
+    </div>
+  </div>
+
+  <div id="detailView" class="detail-view">
+    <button class="back-btn" onclick="closeSubject()">← Back to Dashboard</button>
+    <h1 id="detailSubjectTitle"></h1>
+    <h2 id="detailSubjectDate"></h2>
+    
+    <div class="section-title" style="max-width: 400px; color: var(--primary);">Countdown to this Exam</div>
+    <div class="countdown-grid" style="max-width: 400px; grid-template-columns: repeat(2, 1fr);">
+      <div class="time-box"><div class="value" id="dDays">0</div><div class="label">Days</div></div>
+      <div class="time-box"><div class="value" id="dHours">0</div><div class="label">Hours</div></div>
+      <div class="time-box" style="grid-column: span 2;"><div class="value" id="dMins">0</div><div class="label">Mins</div></div>
+    </div>
+    
+    <div class="section-title" style="max-width: 400px; color: var(--primary);">Study Plan (Example)</div>
+    <div class="subject-list" style="max-width: 400px;">
+        <div class="subject-item" style="border-left-color: #ff9900;"><span>Chapter Review</span> <span class="date-tag">2 Hrs</span></div>
+        <div class="subject-item" style="border-left-color: #00ffaa;"><span>Practice Test</span> <span class="date-tag">1.5 Hrs</span></div>
+        <div class="subject-item" style="border-left-color: #bc13fe;"><span>Notes Revision</span> <span class="date-tag">1 Hr</span></div>
+    </div>
+
+  </div>
+
+  <script>
+    const TARGET_DATE = new Date("Feb 2, 2026 09:00:00").getTime(); // Target Exam Date (Feb 2, 2026, 9:00 AM)
+
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const distance = TARGET_DATE - now;
+
+      // Check if target date is reached
+      if (distance < 0) {
+        document.getElementById("cMonths").innerText = "0";
+        document.getElementById("cDays").innerText = "0";
+        document.getElementById("cHours").innerText = "0";
+        document.getElementById("cMins").innerText = "0";
+        document.getElementById("cSecs").innerText = "0";
+        document.getElementById("cMs").innerText = "000";
+        document.getElementById("tHours").innerText = "0";
+        document.getElementById("tMins").innerText = "0";
+        document.getElementById("tSecs").innerText = "0";
+        document.querySelector('h2').innerText = "Exam Achieved! 🎉";
+        return;
+      }
+
+      // Time calculations for main countdown
+      const msInYear = 1000 * 60 * 60 * 24 * 365.25;
+      const totalDays = distance / (1000 * 60 * 60 * 24);
+      const totalHours = distance / (1000 * 60 * 60);
+      const totalMinutes = distance / (1000 * 60);
+      const totalSeconds = distance / 1000;
+      
+      const months = Math.floor(totalDays / 30.44); // Approximation for months
+      const days = Math.floor(totalDays % 30.44);
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      const milliseconds = Math.floor(distance % 1000);
+
+      // Display main countdown
+      document.getElementById("cMonths").innerText = months.toLocaleString('en-US');
+      document.getElementById("cDays").innerText = days.toLocaleString('en-US');
+      document.getElementById("cHours").innerText = hours.toLocaleString('en-US');
+      document.getElementById("cMins").innerText = minutes.toLocaleString('en-US');
+      document.getElementById("cSecs").innerText = seconds.toLocaleString('en-US');
+      document.getElementById("cMs").innerText = milliseconds.toString().padStart(3, '0');
+
+      // Display Deep Analysis (Total Time)
+      document.getElementById("tHours").innerText = Math.floor(totalHours).toLocaleString('en-US');
+      document.getElementById("tMins").innerText = Math.floor(totalMinutes).toLocaleString('en-US');
+      document.getElementById("tSecs").innerText = Math.floor(totalSeconds).toLocaleString('en-US');
+    }
+
+    function updateDayProgress() {
+      const now = new Date();
+      const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0).getTime();
+      const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59).getTime();
+
+      const timeUsed = now.getTime() - startOfDay;
+      const totalTimeDay = endOfDay - startOfDay;
+      
+      const percentUsed = (timeUsed / totalTimeDay) * 100;
+      const displayPercent = Math.min(100, percentUsed).toFixed(1);
+
+      document.getElementById('dayPercent').innerText = `${displayPercent}%`;
+      document.getElementById('dayFill').style.width = `${displayPercent}%`;
+    }
+
+    function checkBatteryStatus() {
+        if ('getBattery' in navigator) {
+            navigator.getBattery().then(function(battery) {
+                function updateBattery() {
+                    const level = Math.floor(battery.level * 100);
+                    const isLow = level < 20 && !battery.charging;
+                    
+                    document.getElementById('batteryPercent').innerText = `${level}%`;
+                    document.getElementById('batteryIcon').className = isLow ? 'battery-low' : 'battery-ok';
+                    document.getElementById('batteryIcon').innerHTML = isLow ? '🚨' : (battery.charging ? '🔌' : '🔋');
+                }
+
+                updateBattery();
+                battery.addEventListener('levelchange', updateBattery);
+                battery.addEventListener('chargingchange', updateBattery);
+            });
+        } else {
+            // Fallback for browsers not supporting getBattery
+            document.getElementById('batteryPercent').innerText = 'N/A';
+            document.getElementById('batteryIcon').innerHTML = '📵';
+        }
+    }
+
+    function fetchWeather() {
+        // Since fetching live weather requires an API key, we'll use a placeholder/mock value.
+        // For a live app, you'd replace this with an actual API call (e.g., OpenWeatherMap, WeatherAPI).
+        
+        // Example Placeholder:
+        const mockTemp = (Math.random() * 15 + 20).toFixed(1); // Random temp between 20-35
+        document.getElementById('weatherTemp').innerText = `${mockTemp}°C`;
+
+        // Real API Call (Example - requires API Key and CORS setup):
+        /*
+        fetch('YOUR_WEATHER_API_ENDPOINT_FOR_ROHTAS')
+            .then(response => response.json())
+            .then(data => {
+                const temp = data.main.temp; // Assuming standard API response
+                document.getElementById('weatherTemp').innerText = `${temp}°C`;
+            })
+            .catch(error => console.error('Error fetching weather:', error));
+        */
+    }
+
+    function openSubject(subjectTitle, subjectDateString) {
+      document.getElementById('homePage').style.display = 'none';
+      document.getElementById('detailView').style.display = 'flex';
+      
+      document.getElementById('detailSubjectTitle').innerText = subjectTitle;
+      
+      const examDate = new Date(subjectDateString);
+      const formattedDate = examDate.toLocaleDateString('hi-IN', { year: 'numeric', month: 'long', day: 'numeric' });
+      document.getElementById('detailSubjectDate').innerText = `Date: ${formattedDate}`;
+
+      // Start specific countdown for the exam
+      clearInterval(window.detailCountdownInterval); 
+      window.detailCountdownInterval = setInterval(() => {
+          const now = new Date().getTime();
+          const distance = examDate.getTime() - now;
+
+          if (distance < 0) {
+              document.getElementById('dDays').innerText = '0';
+              document.getElementById('dHours').innerText = '0';
+              document.getElementById('dMins').innerText = '0';
+              clearInterval(window.detailCountdownInterval);
+              return;
+          }
+
+          const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+
+          document.getElementById('dDays').innerText = days.toLocaleString('en-US');
+          document.getElementById('dHours').innerText = hours.toLocaleString('en-US');
+          document.getElementById('dMins').innerText = minutes.toLocaleString('en-US');
+
+      }, 1000);
+    }
+
+    function closeSubject() {
+      document.getElementById('detailView').style.display = 'none';
+      document.getElementById('homePage').style.display = 'flex';
+      clearInterval(window.detailCountdownInterval); 
+    }
+
+    // Initialize all functions
+    updateCountdown();
+    updateDayProgress();
+    checkBatteryStatus();
+    fetchWeather();
+    
+    // Set intervals for continuous updates
+    setInterval(updateCountdown, 10); // Update main countdown quickly (for ms)
+    setInterval(updateDayProgress, 60000); // Update progress bar every minute
+    
+  </script>
+</body>
+</html>
+```

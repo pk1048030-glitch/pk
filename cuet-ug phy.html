@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CUET Physics PYQ Explorer | सीयूईटी भौतिकी पिछले वर्ष के प्रश्न</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Marked.js for parsing AI Markdown output -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8FAFC;
+            color: #1E293B;
+        }
+        .hindi-text {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+        }
+        .chart-container { 
+            position: relative; 
+            width: 100%; 
+            max-width: 500px; 
+            margin-left: auto; 
+            margin-right: auto; 
+            height: 300px; 
+            max-height: 350px; 
+        } 
+        @media (min-width: 768px) { 
+            .chart-container { height: 350px; } 
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+        .hidden { display: none !important; }
+
+        /* Custom styles for AI generated Markdown content */
+        .ai-markdown-content p { margin-bottom: 0.75em; line-height: 1.6; }
+        .ai-markdown-content p:last-child { margin-bottom: 0; }
+        .ai-markdown-content strong { font-weight: 700; color: #0F172A; }
+        .ai-markdown-content ul { list-style-type: disc; padding-left: 1.5em; margin-bottom: 0.75em; }
+        .ai-markdown-content ol { list-style-type: decimal; padding-left: 1.5em; margin-bottom: 0.75em; }
+        .ai-markdown-content li { margin-bottom: 0.4em; }
+        .ai-markdown-content h1, .ai-markdown-content h2, .ai-markdown-content h3 { font-weight: bold; margin-top: 1em; margin-bottom: 0.5em; color: #1E293B; }
+    </style>
+</head>
+<body class="antialiased pb-12">
+
+    <!-- Header Section -->
+    <header class="bg-indigo-700 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-bold tracking-tight">CUET Physics PYQ Explorer</h1>
+                <p class="text-indigo-200 text-sm hindi-text mt-1">सीयूईटी भौतिकी पिछले वर्ष के 50 प्रश्न + ✨ AI Tutor</p>
+            </div>
+            <div class="mt-4 md:mt-0 flex flex-wrap gap-2 md:gap-4 items-center">
+                <div class="bg-indigo-800 rounded-lg p-1 inline-flex">
+                    <button onclick="setLanguage('en')" id="btn-lang-en" class="px-4 py-1.5 text-sm font-medium rounded-md text-white hover:bg-indigo-600 transition-colors">English</button>
+                    <button onclick="setLanguage('bilingual')" id="btn-lang-bi" class="px-4 py-1.5 text-sm font-medium rounded-md bg-indigo-500 text-white shadow transition-colors">A/अ Both</button>
+                    <button onclick="setLanguage('hi')" id="btn-lang-hi" class="px-4 py-1.5 text-sm font-medium rounded-md text-white hover:bg-indigo-600 transition-colors hindi-text">हिंदी</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 space-y-8">
+        
+        <!-- Intro Section -->
+        <section class="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
+            <h2 class="text-xl font-semibold text-slate-800 mb-2">About This Interactive Module</h2>
+            <p class="text-slate-600 leading-relaxed mb-4">
+                This application contains exactly <strong>50 hand-picked Previous Year Questions (PYQs)</strong> for the CUET Physics examination, provided in both English and Hindi. 
+                Use the dashboard below to understand the topic distribution. You can filter questions by specific topics using the dropdown, and change your preferred reading language using the top navigation bar.
+            </p>
+            <div class="bg-indigo-50 border border-indigo-100 rounded-lg p-4 flex items-start gap-3">
+                <div class="text-2xl">✨</div>
+                <div>
+                    <h4 class="font-bold text-indigo-900">Auto AI Features Powered by Gemini</h4>
+                    <p class="text-sm text-indigo-800 mt-1">Pankaj ji, jab aap "Reveal Answer" par click karenge, toh aapko AI options dikhenge. "Explain Deeper" aapko asaan bhasha mein samjhayega aur "Similar Practice Q" aapko naya question dega practice ke liye.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard Section -->
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Stats & Filter -->
+            <div class="lg:col-span-1 glass-card rounded-xl p-6 flex flex-col justify-center">
+                <h3 class="text-lg font-bold text-slate-800 mb-4">Study Controls</h3>
+                
+                <div class="mb-6">
+                    <p class="text-3xl font-extrabold text-indigo-600">50</p>
+                    <p class="text-sm text-slate-500 font-medium uppercase tracking-wide">Total Questions</p>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="topicFilter" class="block text-sm font-medium text-slate-700">Filter by Topic (विषय चुनें):</label>
+                    <select id="topicFilter" onchange="filterQuestions()" class="w-full border-slate-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 bg-slate-50 py-2 px-3 border text-slate-700">
+                        <option value="All">All Topics / सभी विषय</option>
+                        <option value="Electrostatics">Electrostatics / स्थिरवैद्युतिकी</option>
+                        <option value="Current Electricity">Current Electricity / धारा विद्युत</option>
+                        <option value="Magnetic Effects">Magnetic Effects / धारा के चुंबकीय प्रभाव</option>
+                        <option value="EMI & AC">EMI & AC / विद्युत चुम्बकीय प्रेरण और प्रत्यावर्ती धारा</option>
+                        <option value="EM Waves">EM Waves / विद्युत चुम्बकीय तरंगें</option>
+                        <option value="Ray Optics">Ray Optics / किरण प्रकाशिकी</option>
+                        <option value="Wave Optics">Wave Optics / तरंग प्रकाशिकी</option>
+                        <option value="Dual Nature">Dual Nature / विकिरण की द्वैत प्रकृति</option>
+                        <option value="Atoms & Nuclei">Atoms & Nuclei / परमाणु और नाभिक</option>
+                        <option value="Electronic Devices">Electronic Devices / इलेक्ट्रॉनिक उपकरण</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Chart -->
+            <div class="lg:col-span-2 glass-card rounded-xl p-6">
+                <h3 class="text-lg font-bold text-slate-800 mb-2 text-center">Topic Distribution (प्रश्नों का वितरण)</h3>
+                <div class="chart-container">
+                    <canvas id="topicChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Question Grid Section -->
+        <section>
+            <div class="flex justify-between items-center mb-4 border-b border-slate-200 pb-2">
+                <h2 class="text-2xl font-bold text-slate-800">Question Bank</h2>
+                <span id="questionCountDisplay" class="text-sm font-medium bg-indigo-100 text-indigo-800 py-1 px-3 rounded-full">Showing 50 Questions</span>
+            </div>
+            
+            <div id="questionsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Questions will be injected here by JavaScript -->
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- Gemini API Configuration (Auto System as requested) ---
+        // PANKAJ JI: Do NOT change this line. The environment will auto-fill the key here.
+        const apiKey = "AIzaSyBS0D6C39Qbk3we-f8TQ3kE5d4c9l0fC24"; 
+
+        // Function to make API calls with Exponential Backoff (Auto-Retry System)
+        async function callGeminiAPI(prompt, retries = 5, delay = 1000) {
+            // FIXED: Using the stable gemini-2.0-flash model to avoid 404 errors
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }]
+            };
+
+            for (let attempt = 0; attempt < retries; attempt++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    if (!response.ok) {
+                        const errData = await response.json().catch(() => ({}));
+                        throw new Error(`API Error ${response.status}: ${errData.error?.message || 'Unknown error'}`);
+                    }
+                    
+                    const data = await response.json();
+                    
+                    if (data && data.candidates && data.candidates[0] && data.candidates[0].content) {
+                        return data.candidates[0].content.parts[0].text;
+                    } else {
+                        throw new Error("Invalid response structure from AI.");
+                    }
+
+                } catch (error) {
+                    if (attempt === retries - 1) {
+                        console.error("Gemini API Error after all retries:", error);
+                        throw new Error(`Network ya API mein dikkat hai. Kripya thodi der baad try karein. (Details: ${error.message})`);
+                    }
+                    // Wait before retrying (Exponential backoff)
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    delay *= 2; 
+                }
+            }
+        }
+
+        // Simple Markdown parser fallback just in case marked.js fails to load
+        function parseMarkdownContent(text) {
+            if (typeof marked !== 'undefined') {
+                return marked.parse(text);
+            }
+            // Fallback parser
+            return text
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/\n\n/g, '</p><p>')
+                .replace(/\n/g, '<br>')
+                .replace(/^(.+)$/g, '<p>$1</p>');
+        }
+
+        // --- Data Store: Exactly 50 CUET Physics PYQs (English + Hindi) ---
+        const pyqData = [
+            // --- Electrostatics (1-5) ---
+            { id: 1, topic: "Electrostatics",
+              q_en: "The SI unit of electric flux is:", q_hi: "विद्युत फ्लक्स की SI इकाई है:",
+              opt_en: ["Weber", "Newton / Coulomb", "Volt × meter", "Joule / Coulomb"],
+              opt_hi: ["वेबर", "न्यूटन / कूलॉम", "वोल्ट × मीटर", "जूल / कूलॉम"],
+              ans: 2, expl_en: "Electric flux Φ = E × A. Unit of E is V/m, area is m². So V/m × m² = V·m.", expl_hi: "विद्युत फ्लक्स Φ = E × A. E की इकाई V/m, क्षेत्रफल की m² है। इसलिए V/m × m² = V·m." },
+            { id: 2, topic: "Electrostatics",
+              q_en: "If the distance between two equal point charges is doubled and their individual charges are also doubled, what happens to the force between them?", q_hi: "यदि दो समान बिंदु आवेशों के बीच की दूरी दोगुनी कर दी जाए और उनके व्यक्तिगत आवेश भी दोगुने कर दिए जाएं, तो उनके बीच के बल का क्या होगा?",
+              opt_en: ["Remains the same", "Doubles", "Halves", "Becomes four times"],
+              opt_hi: ["समान रहेगा", "दोगुना हो जाएगा", "आधा हो जाएगा", "चार गुना हो जाएगा"],
+              ans: 0, expl_en: "F' = k(2q)(2q) / (2r)² = 4kq² / 4r² = kq²/r² = F.", expl_hi: "F' = k(2q)(2q) / (2r)² = 4kq² / 4r² = kq²/r² = F." },
+            { id: 3, topic: "Electrostatics",
+              q_en: "The electric potential inside a conducting hollow sphere is:", q_hi: "एक खोखले चालक गोले के अंदर विद्युत विभव होता है:",
+              opt_en: ["Zero", "Uniform and non-zero", "Increases towards center", "Decreases towards center"],
+              opt_hi: ["शून्य", "एकसमान और गैर-शून्य", "केंद्र की ओर बढ़ता है", "केंद्र की ओर घटता है"],
+              ans: 1, expl_en: "Electric field inside is zero, hence potential is constant and equals the surface potential.", expl_hi: "अंदर विद्युत क्षेत्र शून्य होता है, इसलिए विभव स्थिर रहता है और सतह के विभव के बराबर होता है।" },
+            { id: 4, topic: "Electrostatics",
+              q_en: "An electric dipole placed in a uniform electric field experiences:", q_hi: "एकसमान विद्युत क्षेत्र में रखे गए विद्युत द्विध्रुव पर क्या प्रभाव पड़ता है?",
+              opt_en: ["A net force only", "A net torque only", "Both force and torque", "Neither force nor torque"],
+              opt_hi: ["केवल शुद्ध बल", "केवल शुद्ध बल आघूर्ण", "बल और बल आघूर्ण दोनों", "न तो बल और न ही बल आघूर्ण"],
+              ans: 1, expl_en: "Net force is zero (+qE and -qE cancel), but it experiences a torque τ = p × E.", expl_hi: "शुद्ध बल शून्य होता है (+qE और -qE रद्द हो जाते हैं), लेकिन यह बल आघूर्ण τ = p × E का अनुभव करता है।" },
+            { id: 5, topic: "Electrostatics",
+              q_en: "Three capacitors of 3µF each are connected in series. Their equivalent capacitance is:", q_hi: "3µF के तीन संधारित्र श्रेणीक्रम (series) में जुड़े हुए हैं। उनकी समतुल्य धारिता है:",
+              opt_en: ["9 µF", "1 µF", "3 µF", "1/3 µF"],
+              opt_hi: ["9 µF", "1 µF", "3 µF", "1/3 µF"],
+              ans: 1, expl_en: "1/C_eq = 1/3 + 1/3 + 1/3 = 1. Therefore, C_eq = 1 µF.", expl_hi: "1/C_eq = 1/3 + 1/3 + 1/3 = 1. इसलिए, C_eq = 1 µF." },
+            
+            // --- Current Electricity (6-10) ---
+            { id: 6, topic: "Current Electricity",
+              q_en: "Kirchhoff's first rule (junction rule) is based on the conservation of:", q_hi: "किरचॉफ का प्रथम नियम (संधि नियम) किसके संरक्षण पर आधारित है?",
+              opt_en: ["Energy", "Momentum", "Charge", "Mass"],
+              opt_hi: ["ऊर्जा", "संवेग", "आवेश", "द्रव्यमान"],
+              ans: 2, expl_en: "Current entering = Current leaving. This is conservation of charge.", expl_hi: "प्रवेश करने वाली धारा = बाहर निकलने वाली धारा। यह आवेश का संरक्षण है।" },
+            { id: 7, topic: "Current Electricity",
+              q_en: "The drift velocity of electrons is of the order of:", q_hi: "इलेक्ट्रॉनों का अनुगमन वेग (drift velocity) किस क्रम का होता है?",
+              opt_en: ["10^4 m/s", "10^-4 m/s", "10^8 m/s", "10^-2 m/s"],
+              opt_hi: ["10^4 m/s", "10^-4 m/s", "10^8 m/s", "10^-2 m/s"],
+              ans: 1, expl_en: "Drift velocity is very small, typically in the range of mm/s or 10^-4 m/s.", expl_hi: "अनुगमन वेग बहुत छोटा होता है, आमतौर पर mm/s या 10^-4 m/s की सीमा में।" },
+            { id: 8, topic: "Current Electricity",
+              q_en: "When a wire is stretched to double its length, its resistance becomes:", q_hi: "जब एक तार को खींचकर उसकी लंबाई दोगुनी कर दी जाती है, तो उसका प्रतिरोध हो जाता है:",
+              opt_en: ["Double", "Half", "Four times", "One-fourth"],
+              opt_hi: ["दोगुना", "आधा", "चार गुना", "एक चौथाई"],
+              ans: 2, expl_en: "Volume is constant. length becomes 2L, area becomes A/2. R' = ρ(2L)/(A/2) = 4R.", expl_hi: "आयतन स्थिर है। लंबाई 2L हो जाती है, क्षेत्रफल A/2 हो जाता है। R' = ρ(2L)/(A/2) = 4R." },
+            { id: 9, topic: "Current Electricity",
+              q_en: "Which material has a negative temperature coefficient of resistivity?", q_hi: "किस सामग्री में प्रतिरोधकता का ऋणात्मक तापमान गुणांक होता है?",
+              opt_en: ["Copper", "Nichrome", "Silicon", "Silver"],
+              opt_hi: ["तांबा", "नाइक्रोम", "सिलिकॉन", "चांदी"],
+              ans: 2, expl_en: "Semiconductors like Silicon have negative temperature coefficient; resistance decreases on heating.", expl_hi: "सिलिकॉन जैसे अर्धचालकों का तापमान गुणांक ऋणात्मक होता है; गर्म करने पर प्रतिरोध कम हो जाता है।" },
+            { id: 10, topic: "Current Electricity",
+              q_en: "Internal resistance of an ideal voltmeter is:", q_hi: "एक आदर्श वोल्टमीटर का आंतरिक प्रतिरोध होता है:",
+              opt_en: ["Zero", "Infinite", "Very small", "Depends on the circuit"],
+              opt_hi: ["शून्य", "अनंत", "बहुत छोटा", "सर्किट पर निर्भर करता है"],
+              ans: 1, expl_en: "An ideal voltmeter should draw zero current, so its resistance must be infinite.", expl_hi: "एक आदर्श वोल्टमीटर को शून्य धारा खींचनी चाहिए, इसलिए इसका प्रतिरोध अनंत होना चाहिए।" },
+
+            // --- Magnetic Effects (11-15) ---
+            { id: 11, topic: "Magnetic Effects",
+              q_en: "Magnetic field at the center of a circular current carrying coil is directly proportional to:", q_hi: "एक वृत्ताकार धारावाही कुंडली के केंद्र पर चुंबकीय क्षेत्र किसके अनुक्रमानुपाती होता है?",
+              opt_en: ["Radius of the coil", "Current flowing through it", "Area of the coil", "Resistance of the coil"],
+              opt_hi: ["कुंडली की त्रिज्या", "उससे प्रवाहित धारा", "कुंडली का क्षेत्रफल", "कुंडली का प्रतिरोध"],
+              ans: 1, expl_en: "B = (μ₀I)/(2r). It is directly proportional to Current (I).", expl_hi: "B = (μ₀I)/(2r). यह धारा (I) के सीधे अनुक्रमानुपाती है।" },
+            { id: 12, topic: "Magnetic Effects",
+              q_en: "The path of a charged particle moving perpendicular to a uniform magnetic field is:", q_hi: "एकसमान चुंबकीय क्षेत्र के लंबवत गतिमान आवेशित कण का पथ होता है:",
+              opt_en: ["Straight line", "Parabola", "Circle", "Helix"],
+              opt_hi: ["सीधी रेखा", "परवलय", "वृत्त", "कुंडलिनी (Helix)"],
+              ans: 2, expl_en: "The magnetic force acts as centripetal force, making it move in a circle.", expl_hi: "चुंबकीय बल अभिकेंद्र बल के रूप में कार्य करता है, जिससे यह एक वृत्त में गति करता है।" },
+            { id: 13, topic: "Magnetic Effects",
+              q_en: "To convert a galvanometer into an ammeter, we connect:", q_hi: "गैल्वेनोमीटर को एमीटर में बदलने के लिए, हम जोड़ते हैं:",
+              opt_en: ["High resistance in series", "Low resistance in parallel", "High resistance in parallel", "Low resistance in series"],
+              opt_hi: ["श्रेणीक्रम में उच्च प्रतिरोध", "समानांतर में निम्न प्रतिरोध", "समानांतर में उच्च प्रतिरोध", "श्रेणीक्रम में निम्न प्रतिरोध"],
+              ans: 1, expl_en: "A low resistance (shunt) is connected in parallel to bypass most of the current.", expl_hi: "अधिकांश धारा को बायपास करने के लिए समानांतर में एक निम्न प्रतिरोध (शंट) जोड़ा जाता है।" },
+            { id: 14, topic: "Magnetic Effects",
+              q_en: "The magnetic moment of a current loop is independent of:", q_hi: "धारा पाश (current loop) का चुंबकीय आघूर्ण किस पर निर्भर नहीं करता है?",
+              opt_en: ["Current", "Area", "Number of turns", "Magnetic field"],
+              opt_hi: ["धारा", "क्षेत्रफल", "फेरों की संख्या", "चुंबकीय क्षेत्र"],
+              ans: 3, expl_en: "Magnetic moment M = NIA. It does not depend on the external magnetic field.", expl_hi: "चुंबकीय आघूर्ण M = NIA. यह बाहरी चुंबकीय क्षेत्र पर निर्भर नहीं करता है।" },
+            { id: 15, topic: "Magnetic Effects",
+              q_en: "Biot-Savart law in magnetism is analogous to which law in electrostatics?", q_hi: "चुंबकत्व में बायोट-सावर्ट नियम स्थिरवैद्युतिकी के किस नियम के अनुरूप है?",
+              opt_en: ["Gauss's law", "Faraday's law", "Coulomb's law", "Ampere's law"],
+              opt_hi: ["गॉस का नियम", "फैराडे का नियम", "कूलॉम का नियम", "एम्पीयर का नियम"],
+              ans: 2, expl_en: "Biot-Savart law gives magnetic field due to current element, like Coulomb's law gives electric field due to charge.", expl_hi: "बायोट-सावर्ट नियम धारा तत्व के कारण चुंबकीय क्षेत्र देता है, जैसे कूलॉम का नियम आवेश के कारण विद्युत क्षेत्र देता है।" },
+
+            // --- EMI & AC (16-20) ---
+            { id: 16, topic: "EMI & AC",
+              q_en: "Lenz's law is a consequence of the law of conservation of:", q_hi: "लेंज का नियम किसके संरक्षण के नियम का परिणाम है?",
+              opt_en: ["Charge", "Momentum", "Energy", "Mass"],
+              opt_hi: ["आवेश", "संवेग", "ऊर्जा", "द्रव्यमान"],
+              ans: 2, expl_en: "The mechanical work done against the opposing induced force converts into electrical energy.", expl_hi: "विरोधी प्रेरित बल के विरुद्ध किया गया यांत्रिक कार्य विद्युत ऊर्जा में परिवर्तित हो जाता है।" },
+            { id: 17, topic: "EMI & AC",
+              q_en: "In an AC circuit, the power factor is maximum when the circuit is:", q_hi: "एक एसी सर्किट में, शक्ति गुणांक (power factor) अधिकतम होता है जब सर्किट होता है:",
+              opt_en: ["Purely inductive", "Purely capacitive", "Purely resistive", "Contains L and C only"],
+              opt_hi: ["विशुद्ध रूप से आगमनात्मक (Inductive)", "विशुद्ध रूप से कैपेसिटिव", "विशुद्ध रूप से प्रतिरोधी (Resistive)", "केवल L और C शामिल हैं"],
+              ans: 2, expl_en: "Power factor cos(Φ) = R/Z. For purely resistive, Z = R, so cos(Φ) = 1 (Maximum).", expl_hi: "शक्ति गुणांक cos(Φ) = R/Z. विशुद्ध प्रतिरोधी के लिए, Z = R, इसलिए cos(Φ) = 1 (अधिकतम)।" },
+            { id: 18, topic: "EMI & AC",
+              q_en: "A step-up transformer increases:", q_hi: "एक स्टेप-अप ट्रांसफार्मर बढ़ाता है:",
+              opt_en: ["Voltage", "Current", "Power", "Frequency"],
+              opt_hi: ["वोल्टेज", "धारा", "शक्ति", "आवृत्ति"],
+              ans: 0, expl_en: "It increases voltage and decreases current, keeping power and frequency constant.", expl_hi: "यह शक्ति और आवृत्ति को स्थिर रखते हुए वोल्टेज बढ़ाता है और धारा घटाता है।" },
+            { id: 19, topic: "EMI & AC",
+              q_en: "The core of a transformer is laminated to reduce:", q_hi: "ट्रांसफार्मर के कोर को क्या कम करने के लिए लेमिनेट किया जाता है?",
+              opt_en: ["Flux leakage", "Hysteresis loss", "Eddy current loss", "Copper loss"],
+              opt_hi: ["फ्लक्स रिसाव", "हिस्टैरिसीस हानि", "भंवर धारा हानि (Eddy current)", "तांबे की हानि"],
+              ans: 2, expl_en: "Laminations break the path of eddy currents, reducing the heating loss.", expl_hi: "लेमिनेशन भंवर धाराओं के मार्ग को तोड़ते हैं, जिससे तापन हानि कम होती है।" },
+            { id: 20, topic: "EMI & AC",
+              q_en: "Resonance frequency in an LCR circuit is given by:", q_hi: "एक LCR परिपथ में अनुनाद आवृत्ति किसके द्वारा दी जाती है?",
+              opt_en: ["1 / √(LC)", "1 / (2π√(LC))", "√(LC)", "2π√(LC)"],
+              opt_hi: ["1 / √(LC)", "1 / (2π√(LC))", "√(LC)", "2π√(LC)"],
+              ans: 1, expl_en: "At resonance, X_L = X_C, yielding f = 1 / (2π√(LC)).", expl_hi: "अनुनाद पर, X_L = X_C, जिससे f = 1 / (2π√(LC)) प्राप्त होता है।" },
+
+            // --- EM Waves (21-25) ---
+            { id: 21, topic: "EM Waves",
+              q_en: "Which of the following EM waves has the highest frequency?", q_hi: "निम्नलिखित में से किस विद्युत चुम्बकीय तरंग की आवृत्ति सबसे अधिक होती है?",
+              opt_en: ["Radio waves", "Microwaves", "X-rays", "Gamma rays"],
+              opt_hi: ["रेडियो तरंगें", "सूक्ष्म तरंगें", "एक्स-रे", "गामा किरणें"],
+              ans: 3, expl_en: "Gamma rays have the shortest wavelength and highest frequency in the EM spectrum.", expl_hi: "गामा किरणों की तरंग दैर्ध्य सबसे कम और आवृत्ति सबसे अधिक होती है।" },
+            { id: 22, topic: "EM Waves",
+              q_en: "Displacement current arises due to:", q_hi: "विस्थापन धारा (Displacement current) किसके कारण उत्पन्न होती है?",
+              opt_en: ["Changing magnetic field", "Changing electric field", "Constant electric field", "Flow of electrons"],
+              opt_hi: ["बदलते चुंबकीय क्षेत्र", "बदलते विद्युत क्षेत्र", "स्थिर विद्युत क्षेत्र", "इलेक्ट्रॉनों का प्रवाह"],
+              ans: 1, expl_en: "According to Maxwell, a time-varying electric field produces a displacement current.", expl_hi: "मैक्सवेल के अनुसार, समय के साथ बदलने वाला विद्युत क्षेत्र विस्थापन धारा उत्पन्न करता है।" },
+            { id: 23, topic: "EM Waves",
+              q_en: "The velocity of EM waves in a vacuum depends on:", q_hi: "निर्वात में विद्युत चुम्बकीय तरंगों का वेग किस पर निर्भर करता है?",
+              opt_en: ["Wavelength", "Frequency", "Amplitude", "Neither of these"],
+              opt_hi: ["तरंग दैर्ध्य", "आवृत्ति", "आयाम", "इनमें से कोई नहीं"],
+              ans: 3, expl_en: "Velocity in vacuum is a constant c = 3×10^8 m/s, independent of frequency or wavelength.", expl_hi: "निर्वात में वेग स्थिर है c = 3×10^8 m/s, जो आवृत्ति या तरंग दैर्ध्य से स्वतंत्र है।" },
+            { id: 24, topic: "EM Waves",
+              q_en: "Which waves are used in radar systems?", q_hi: "रडार सिस्टम में किन तरंगों का उपयोग किया जाता है?",
+              opt_en: ["Infrared", "Microwaves", "Ultraviolet", "Radio waves (long)"],
+              opt_hi: ["इन्फ्रारेड", "सूक्ष्म तरंगें (Microwaves)", "पराबैंगनी", "रेडियो तरंगें (लंबी)"],
+              ans: 1, expl_en: "Microwaves are used in RADAR due to their short wavelength and directivity.", expl_hi: "माइक्रोवेव का उपयोग रडार में उनके छोटे तरंग दैर्ध्य और दिशात्मकता के कारण किया जाता है।" },
+            { id: 25, topic: "EM Waves",
+              q_en: "Ozone layer absorbs which radiation?", q_hi: "ओजोन परत किस विकिरण को अवशोषित करती है?",
+              opt_en: ["Visible light", "Infrared", "Ultraviolet", "Gamma rays"],
+              opt_hi: ["दृश्य प्रकाश", "इन्फ्रारेड", "पराबैंगनी", "गामा किरणें"],
+              ans: 2, expl_en: "The ozone layer protects Earth by absorbing harmful UV radiation from the sun.", expl_hi: "ओजोन परत सूर्य से हानिकारक यूवी विकिरण को अवशोषित करके पृथ्वी की रक्षा करती है।" },
+
+            // --- Ray Optics (26-30) ---
+            { id: 26, topic: "Ray Optics",
+              q_en: "Mirage is a phenomenon due to:", q_hi: "मृगतृष्णा (Mirage) किस घटना के कारण होती है?",
+              opt_en: ["Reflection", "Refraction", "Total Internal Reflection", "Diffraction"],
+              opt_hi: ["परावर्तन", "अपवर्तन", "पूर्ण आंतरिक परावर्तन", "विवर्तन"],
+              ans: 2, expl_en: "Mirage occurs due to Total Internal Reflection (TIR) in atmospheric layers of different densities.", expl_hi: "विभिन्न घनत्वों की वायुमंडलीय परतों में पूर्ण आंतरिक परावर्तन (TIR) के कारण मृगतृष्णा होती है।" },
+            { id: 27, topic: "Ray Optics",
+              q_en: "Power of a convex lens of focal length 20 cm is:", q_hi: "20 सेमी फोकस दूरी वाले उत्तल लेंस की क्षमता है:",
+              opt_en: ["+5 D", "-5 D", "+0.05 D", "-0.05 D"],
+              opt_hi: ["+5 D", "-5 D", "+0.05 D", "-0.05 D"],
+              ans: 0, expl_en: "P = 100/f(cm) = 100/20 = +5 Diopters.", expl_hi: "P = 100/f(cm) = 100/20 = +5 डायोप्टर।" },
+            { id: 28, topic: "Ray Optics",
+              q_en: "Which color of light deviates maximum in a prism?", q_hi: "प्रिज्म में प्रकाश का कौन सा रंग सबसे अधिक विचलित होता है?",
+              opt_en: ["Red", "Green", "Yellow", "Violet"],
+              opt_hi: ["लाल", "हरा", "पीला", "बैंगनी"],
+              ans: 3, expl_en: "Violet light has the shortest wavelength and hence highest refractive index, causing maximum deviation.", expl_hi: "बैंगनी प्रकाश की तरंग दैर्ध्य सबसे कम होती है और इसलिए अपवर्तनांक सबसे अधिक होता है, जिससे अधिकतम विचलन होता है।" },
+            { id: 29, topic: "Ray Optics",
+              q_en: "To construct an astronomical telescope, we need objective lens of:", q_hi: "खगोलीय दूरदर्शी बनाने के लिए, हमें किस प्रकार के अभिदृश्यक लेंस (objective) की आवश्यकता होती है?",
+              opt_en: ["Large aperture, large focal length", "Small aperture, small focal length", "Large aperture, small focal length", "Small aperture, large focal length"],
+              opt_hi: ["बड़ा द्वारक, बड़ी फोकस दूरी", "छोटा द्वारक, छोटी फोकस दूरी", "बड़ा द्वारक, छोटी फोकस दूरी", "छोटा द्वारक, बड़ी फोकस दूरी"],
+              ans: 0, expl_en: "Large aperture gathers more light; large focal length provides higher magnification.", expl_hi: "बड़ा द्वारक अधिक प्रकाश एकत्र करता है; बड़ी फोकस दूरी उच्च आवर्धन प्रदान करती है।" },
+            { id: 30, topic: "Ray Optics",
+              q_en: "A convex mirror always forms an image which is:", q_hi: "उत्तल दर्पण सदैव कैसा प्रतिबिम्ब बनाता है?",
+              opt_en: ["Real and erect", "Virtual and erect", "Real and inverted", "Virtual and inverted"],
+              opt_hi: ["वास्तविक और सीधा", "आभासी और सीधा", "वास्तविक और उल्टा", "आभासी और उल्टा"],
+              ans: 1, expl_en: "Convex mirrors always form virtual, erect, and diminished images.", expl_hi: "उत्तल दर्पण सदैव आभासी, सीधे और छोटे प्रतिबिम्ब बनाते हैं।" },
+
+            // --- Wave Optics (31-35) ---
+            { id: 31, topic: "Wave Optics",
+              q_en: "The phenomenon of interference is based on:", q_hi: "व्यतिकरण (Interference) की घटना किस पर आधारित है?",
+              opt_en: ["Conservation of momentum", "Conservation of energy", "Conservation of charge", "Quantum nature of light"],
+              opt_hi: ["संवेग का संरक्षण", "ऊर्जा का संरक्षण", "आवेश का संरक्षण", "प्रकाश की क्वांटम प्रकृति"],
+              ans: 1, expl_en: "In interference, energy is simply redistributed. Total energy is conserved.", expl_hi: "व्यतिकरण में ऊर्जा का केवल पुनर्वितरण होता है। कुल ऊर्जा संरक्षित रहती है।" },
+            { id: 32, topic: "Wave Optics",
+              q_en: "Fringe width in Young's double slit experiment is:", q_hi: "यंग के द्वि-स्लिट प्रयोग में फ्रिंज चौड़ाई होती है:",
+              opt_en: ["λd / D", "λD / d", "d / λD", "D / λd"],
+              opt_hi: ["λd / D", "λD / d", "d / λD", "D / λd"],
+              ans: 1, expl_en: "Fringe width β = λD / d. (D = distance to screen, d = slit separation).", expl_hi: "फ्रिंज चौड़ाई β = λD / d. (D = स्क्रीन की दूरी, d = स्लिट पृथक्करण)।" },
+            { id: 33, topic: "Wave Optics",
+              q_en: "Light can be polarized because it is a:", q_hi: "प्रकाश का ध्रुवीकरण किया जा सकता है क्योंकि यह एक:",
+              opt_en: ["Longitudinal wave", "Transverse wave", "Matter wave", "Particle"],
+              opt_hi: ["अनुदैर्ध्य तरंग", "अनुप्रस्थ तरंग", "पदार्थ तरंग", "कण"],
+              ans: 1, expl_en: "Polarization is a property exclusively shown by transverse waves.", expl_hi: "ध्रुवीकरण विशेष रूप से अनुप्रस्थ तरंगों (transverse waves) द्वारा दिखाया गया एक गुण है।" },
+            { id: 34, topic: "Wave Optics",
+              q_en: "Brewster's angle depends on:", q_hi: "ब्रूस्टर का कोण किस पर निर्भर करता है?",
+              opt_en: ["Wavelength of light", "Refractive index of medium", "Intensity of light", "Both 1 and 2"],
+              opt_hi: ["प्रकाश की तरंग दैर्ध्य", "माध्यम का अपवर्तनांक", "प्रकाश की तीव्रता", "1 और 2 दोनों"],
+              ans: 3, expl_en: "tan(θ_p) = μ. Since μ depends on wavelength, Brewster's angle depends on both.", expl_hi: "tan(θ_p) = μ. चूँकि μ तरंग दैर्ध्य पर निर्भर करता है, ब्रूस्टर का कोण दोनों पर निर्भर करता है।" },
+            { id: 35, topic: "Wave Optics",
+              q_en: "Diffraction effect is most prominent when size of obstacle is:", q_hi: "विवर्तन (Diffraction) प्रभाव सबसे प्रमुख होता है जब बाधा का आकार होता है:",
+              opt_en: ["Much larger than λ", "Much smaller than λ", "Comparable to λ", "Independent of λ"],
+              opt_hi: ["λ से बहुत बड़ा", "λ से बहुत छोटा", "λ के तुलनीय", "λ से स्वतंत्र"],
+              ans: 2, expl_en: "Diffraction is observable only when the obstacle/aperture size is of the order of wavelength (λ).", expl_hi: "विवर्तन केवल तभी देखा जा सकता है जब बाधा/द्वारक का आकार तरंग दैर्ध्य (λ) के क्रम का हो।" },
+
+            // --- Dual Nature (36-40) ---
+            { id: 36, topic: "Dual Nature",
+              q_en: "The kinetic energy of photoelectrons depends on:", q_hi: "प्रकाशिक इलेक्ट्रॉनों की गतिज ऊर्जा किस पर निर्भर करती है?",
+              opt_en: ["Intensity of incident light", "Frequency of incident light", "Time of illumination", "Angle of incidence"],
+              opt_hi: ["आपतित प्रकाश की तीव्रता", "आपतित प्रकाश की आवृत्ति", "रोशनी का समय", "आपतन कोण"],
+              ans: 1, expl_en: "Einstein's eq: K_max = hν - Φ. It depends directly on frequency (ν).", expl_hi: "आइंस्टीन का समीकरण: K_max = hν - Φ. यह सीधे आवृत्ति (ν) पर निर्भर करता है।" },
+            { id: 37, topic: "Dual Nature",
+              q_en: "De Broglie wavelength of an electron accelerated through potential V is:", q_hi: "विभव V के माध्यम से त्वरित एक इलेक्ट्रॉन की डी ब्रोग्ली तरंग दैर्ध्य है:",
+              opt_en: ["12.27 / √V Å", "1.227 / √V Å", "122.7 / √V Å", "0.122 / √V Å"],
+              opt_hi: ["12.27 / √V Å", "1.227 / √V Å", "122.7 / √V Å", "0.122 / √V Å"],
+              ans: 0, expl_en: "λ = h / √(2meV). For an electron, this simplifies to 12.27 / √V Angstroms.", expl_hi: "λ = h / √(2meV). एक इलेक्ट्रॉन के लिए, यह 12.27 / √V एंगस्ट्रॉम तक सरल हो जाता है।" },
+            { id: 38, topic: "Dual Nature",
+              q_en: "Rest mass of a photon is:", q_hi: "फोटॉन का विराम द्रव्यमान (Rest mass) होता है:",
+              opt_en: ["Infinite", "Zero", "m = hν/c²", "m = h/cλ"],
+              opt_hi: ["अनंत", "शून्य", "m = hν/c²", "m = h/cλ"],
+              ans: 1, expl_en: "Photons travel at the speed of light and have zero rest mass.", expl_hi: "फोटॉन प्रकाश की गति से यात्रा करते हैं और उनका विराम द्रव्यमान शून्य होता है।" },
+            { id: 39, topic: "Dual Nature",
+              q_en: "Work function is the minimum energy required to:", q_hi: "कार्य फलन (Work function) वह न्यूनतम ऊर्जा है जो आवश्यक है:",
+              opt_en: ["Ionize an atom", "Excite an electron", "Remove an electron from metal surface", "Accelerate an electron"],
+              opt_hi: ["एक परमाणु को आयनित करना", "एक इलेक्ट्रॉन को उत्तेजित करना", "धातु की सतह से इलेक्ट्रॉन निकालना", "इलेक्ट्रॉन को गति देना"],
+              ans: 2, expl_en: "Work function (Φ) is the minimum energy to just eject an electron from a solid surface.", expl_hi: "कार्य फलन (Φ) किसी ठोस सतह से इलेक्ट्रॉन निकालने के लिए न्यूनतम ऊर्जा है।" },
+            { id: 40, topic: "Dual Nature",
+              q_en: "If intensity of light increases, the photoelectric current:", q_hi: "यदि प्रकाश की तीव्रता बढ़ती है, तो प्रकाश विद्युत धारा:",
+              opt_en: ["Increases", "Decreases", "Remains same", "First increases then decreases"],
+              opt_hi: ["बढ़ती है", "घटती है", "समान रहती है", "पहले बढ़ती है फिर घटती है"],
+              ans: 0, expl_en: "Higher intensity means more photons per second, hence more electrons ejected per second.", expl_hi: "उच्च तीव्रता का अर्थ है प्रति सेकंड अधिक फोटॉन, इसलिए प्रति सेकंड अधिक इलेक्ट्रॉन निकलते हैं।" },
+
+            // --- Atoms & Nuclei (41-45) ---
+            { id: 41, topic: "Atoms & Nuclei",
+              q_en: "In Bohr's model, angular momentum of an electron in nth orbit is:", q_hi: "बोर के मॉडल में, n-वीं कक्षा में एक इलेक्ट्रॉन का कोणीय संवेग होता है:",
+              opt_en: ["nh/π", "nh/2π", "n²h/2π", "h/2πn"],
+              opt_hi: ["nh/π", "nh/2π", "n²h/2π", "h/2πn"],
+              ans: 1, expl_en: "Bohr's quantization condition: L = mvr = nh / (2π).", expl_hi: "बोर की क्वांटम शर्त: L = mvr = nh / (2π)." },
+            { id: 42, topic: "Atoms & Nuclei",
+              q_en: "The radius of a nucleus is proportional to (A = mass number):", q_hi: "एक नाभिक की त्रिज्या किसके आनुपातिक होती है (A = द्रव्यमान संख्या):",
+              opt_en: ["A", "A²", "A^(1/3)", "A^(1/2)"],
+              opt_hi: ["A", "A²", "A^(1/3)", "A^(1/2)"],
+              ans: 2, expl_en: "Nuclear radius R = R₀ * A^(1/3).", expl_hi: "नाभिकीय त्रिज्या R = R₀ * A^(1/3)." },
+            { id: 43, topic: "Atoms & Nuclei",
+              q_en: "Which of the following is an isobar of Carbon-14 (6C14)?", q_hi: "निम्नलिखित में से कौन कार्बन-14 (6C14) का समभारिक (isobar) है?",
+              opt_en: ["6C12", "7N14", "8O16", "6C13"],
+              opt_hi: ["6C12", "7N14", "8O16", "6C13"],
+              ans: 1, expl_en: "Isobars have the same mass number (14). Nitrogen-14 (7N14) fits this.", expl_hi: "समभारिकों की द्रव्यमान संख्या (14) समान होती है। नाइट्रोजन-14 (7N14) इसमें फिट बैठता है।" },
+            { id: 44, topic: "Atoms & Nuclei",
+              q_en: "Energy equivalent of 1 amu (atomic mass unit) is approximately:", q_hi: "1 amu (परमाणु द्रव्यमान इकाई) की ऊर्जा समतुल्य लगभग है:",
+              opt_en: ["931 MeV", "9.31 MeV", "1 eV", "931 eV"],
+              opt_hi: ["931 MeV", "9.31 MeV", "1 eV", "931 eV"],
+              ans: 0, expl_en: "E = mc². 1 amu converted to energy gives roughly 931.5 MeV.", expl_hi: "E = mc²। 1 amu को ऊर्जा में बदलने पर लगभग 931.5 MeV प्राप्त होता है।" },
+            { id: 45, topic: "Atoms & Nuclei",
+              q_en: "Alpha decay usually occurs in nuclei which are:", q_hi: "अल्फा क्षय आमतौर पर उन नाभिकों में होता है जो हैं:",
+              opt_en: ["Neutron rich", "Proton rich", "Too heavy (Z > 82)", "Too light"],
+              opt_hi: ["न्यूट्रॉन समृद्ध", "प्रोटॉन समृद्ध", "बहुत भारी (Z > 82)", "बहुत हल्के"],
+              ans: 2, expl_en: "Heavy, unstable nuclei undergo alpha decay to reduce size and reach stability.", expl_hi: "भारी, अस्थिर नाभिक आकार कम करने और स्थिरता तक पहुंचने के लिए अल्फा क्षय से गुजरते हैं।" },
+
+            // --- Electronic Devices (46-50) ---
+            { id: 46, topic: "Electronic Devices",
+              q_en: "In a p-type semiconductor, the majority charge carriers are:", q_hi: "पी-प्रकार (p-type) के अर्धचालक में, बहुसंख्यक आवेश वाहक होते हैं:",
+              opt_en: ["Electrons", "Holes", "Protons", "Neutrons"],
+              opt_hi: ["इलेक्ट्रॉनों", "छिद्र (Holes)", "प्रोटॉन", "न्यूट्रॉन"],
+              ans: 1, expl_en: "Trivalent doping creates electron vacancies called holes, making them majority carriers.", expl_hi: "त्रिसंयोजक डोपिंग से इलेक्ट्रॉन रिक्तियां बनती हैं जिन्हें होल कहा जाता है, जिससे वे बहुसंख्यक वाहक बन जाते हैं।" },
+            { id: 47, topic: "Electronic Devices",
+              q_en: "A Zener diode is primarily used as a:", q_hi: "जेनर डायोड का मुख्य रूप से उपयोग किया जाता है:",
+              opt_en: ["Rectifier", "Amplifier", "Voltage regulator", "Oscillator"],
+              opt_hi: ["रेक्टीफायर", "एम्पलीफायर", "वोल्टेज रेगुलेटर", "ऑसिलेटर"],
+              ans: 2, expl_en: "Operated in reverse breakdown, it maintains a constant voltage, hence acts as a regulator.", expl_hi: "रिवर्स ब्रेकडाउन में संचालित, यह एक निरंतर वोल्टेज बनाए रखता है, इसलिए एक रेगुलेटर के रूप में कार्य करता है।" },
+            { id: 48, topic: "Electronic Devices",
+              q_en: "The depletion region in a P-N junction diode is formed due to:", q_hi: "P-N जंक्शन डायोड में रिक्तीकरण क्षेत्र (Depletion region) किसके कारण बनता है?",
+              opt_en: ["Drift of electrons", "Diffusion of charge carriers", "Forward biasing", "Reverse biasing"],
+              opt_hi: ["इलेक्ट्रॉनों का बहाव", "आवेश वाहकों का प्रसार (Diffusion)", "फॉरवर्ड बायसिंग", "रिवर्स बायसिंग"],
+              ans: 1, expl_en: "Diffusion of holes and electrons across the junction creates a region void of free carriers.", expl_hi: "जंक्शन के पार होल और इलेक्ट्रॉनों का प्रसार मुक्त वाहकों से रहित क्षेत्र बनाता है।" },
+            { id: 49, topic: "Electronic Devices",
+              q_en: "Which logic gate is known as the 'Universal Gate'?", q_hi: "किस लॉजिक गेट को 'यूनिवर्सल गेट' कहा जाता है?",
+              opt_en: ["AND", "OR", "NAND", "NOT"],
+              opt_hi: ["AND", "OR", "NAND", "NOT"],
+              ans: 2, expl_en: "NAND and NOR gates are universal because any basic gate can be derived from them.", expl_hi: "NAND और NOR गेट यूनिवर्सल हैं क्योंकि उनसे कोई भी बेसिक गेट प्राप्त किया जा सकता है।" },
+            { id: 50, topic: "Electronic Devices",
+              q_en: "At absolute zero temperature, an intrinsic semiconductor behaves as a:", q_hi: "परम शून्य तापमान पर, एक आंतरिक (intrinsic) अर्धचालक कैसा व्यवहार करता है?",
+              opt_en: ["Superconductor", "Perfect conductor", "Perfect insulator", "Metal"],
+              opt_hi: ["सुपरकंडक्टर", "उत्तम चालक", "उत्तम इन्सुलेटर", "धातु"],
+              ans: 2, expl_en: "At 0 K, no electrons have energy to jump to conduction band; hence it's an insulator.", expl_hi: "0 K पर, किसी भी इलेक्ट्रॉन में चालन बैंड में कूदने की ऊर्जा नहीं होती है; इसलिए यह एक इन्सुलेटर है।" }
+        ];
+
+        let currentLanguage = 'bilingual'; // 'en', 'hi', or 'bilingual'
+        let currentTopic = 'All';
+        let chartInstance = null;
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderQuestions();
+            updateChart();
+            updateLangButtons();
+        });
+
+        // --- State Management: Language ---
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            updateLangButtons();
+            renderQuestions();
+        }
+
+        function updateLangButtons() {
+            const btnEn = document.getElementById('btn-lang-en');
+            const btnBi = document.getElementById('btn-lang-bi');
+            const btnHi = document.getElementById('btn-lang-hi');
+            
+            // Reset styles
+            [btnEn, btnBi, btnHi].forEach(btn => {
+                btn.classList.remove('bg-indigo-500', 'shadow');
+                btn.classList.add('hover:bg-indigo-600');
+            });
+
+            // Set active style
+            if(currentLanguage === 'en') {
+                btnEn.classList.add('bg-indigo-500', 'shadow');
+                btnEn.classList.remove('hover:bg-indigo-600');
+            } else if (currentLanguage === 'bilingual') {
+                btnBi.classList.add('bg-indigo-500', 'shadow');
+                btnBi.classList.remove('hover:bg-indigo-600');
+            } else {
+                btnHi.classList.add('bg-indigo-500', 'shadow');
+                btnHi.classList.remove('hover:bg-indigo-600');
+            }
+        }
+
+        // --- State Management: Filtering ---
+        function filterQuestions() {
+            currentTopic = document.getElementById('topicFilter').value;
+            renderQuestions();
+        }
+
+        // --- Core Render Logic ---
+        function renderQuestions() {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+            
+            let filteredData = pyqData;
+            if(currentTopic !== 'All') {
+                filteredData = pyqData.filter(q => q.topic === currentTopic);
+            }
+
+            document.getElementById('questionCountDisplay').innerText = `Showing ${filteredData.length} Question${filteredData.length !== 1 ? 's' : ''}`;
+
+            filteredData.forEach((q, index) => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow relative flex flex-col";
+                
+                // Topic Badge
+                let badgeHTML = `<span class="absolute top-4 right-4 text-xs font-semibold px-2.5 py-0.5 rounded bg-blue-100 text-blue-800">${q.topic}</span>`;
+                
+                // Question Text Generation based on language
+                let qTextHTML = '';
+                if(currentLanguage === 'en' || currentLanguage === 'bilingual') {
+                    qTextHTML += `<p class="font-semibold text-slate-800 mb-2">Q${q.id}. ${q.q_en}</p>`;
+                }
+                if(currentLanguage === 'hi' || currentLanguage === 'bilingual') {
+                    qTextHTML += `<p class="font-semibold text-slate-700 mb-2 hindi-text">${currentLanguage === 'bilingual' ? 'प्र.' : 'Q'}${q.id}. ${q.q_hi}</p>`;
+                }
+
+                // Options Generation
+                let optionsHTML = `<div class="space-y-2 mt-4 flex-grow">`;
+                for(let i = 0; i < 4; i++) {
+                    const letters = ['A', 'B', 'C', 'D'];
+                    let optText = '';
+                    if(currentLanguage === 'en') {
+                        optText = q.opt_en[i];
+                    } else if (currentLanguage === 'hi') {
+                        optText = `<span class="hindi-text">${q.opt_hi[i]}</span>`;
+                    } else {
+                        optText = `${q.opt_en[i]} <span class="text-slate-400 mx-1">|</span> <span class="hindi-text">${q.opt_hi[i]}</span>`;
+                    }
+                    
+                    optionsHTML += `
+                        <div class="flex items-start">
+                            <span class="font-bold text-slate-400 mr-2">${letters[i]}.</span>
+                            <span class="text-slate-600 text-sm">${optText}</span>
+                        </div>`;
+                }
+                optionsHTML += `</div>`;
+
+                // Answer Area
+                let ansText = '';
+                let expText = '';
+                if(currentLanguage === 'en') {
+                    ansText = `Option ${['A','B','C','D'][q.ans]}`;
+                    expText = q.expl_en;
+                } else if (currentLanguage === 'hi') {
+                    ansText = `विकल्प ${['A','B','C','D'][q.ans]}`;
+                    expText = `<span class="hindi-text">${q.expl_hi}</span>`;
+                } else {
+                    ansText = `Option ${['A','B','C','D'][q.ans]} / विकल्प ${['A','B','C','D'][q.ans]}`;
+                    expText = `${q.expl_en}<br><span class="text-slate-500 mt-1 block hindi-text">${q.expl_hi}</span>`;
+                }
+
+                let answerBlockHTML = `
+                    <div class="mt-6 pt-4 border-t border-slate-100">
+                        <button onclick="toggleAnswer(${q.id})" class="text-indigo-600 hover:text-indigo-800 text-sm font-semibold flex items-center transition-colors">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                            Reveal Answer / उत्तर देखें
+                        </button>
+                        <div id="ans-${q.id}" class="hidden mt-3 bg-slate-50 p-4 rounded-md border border-slate-200">
+                            <p class="font-bold text-green-600 mb-1">Correct Answer: ${ansText}</p>
+                            <p class="text-sm text-slate-700 mt-2">${expText}</p>
+                            
+                            <!-- AI Integration Buttons -->
+                            <div class="mt-4 pt-3 border-t border-slate-200 flex flex-wrap gap-2">
+                                <button onclick="explainDeeper(${q.id})" class="text-xs font-semibold px-3 py-1.5 bg-indigo-100 text-indigo-700 rounded hover:bg-indigo-200 transition-colors shadow-sm flex items-center">
+                                    ✨ Explain Deeper
+                                </button>
+                                <button onclick="generateSimilar(${q.id})" class="text-xs font-semibold px-3 py-1.5 bg-emerald-100 text-emerald-700 rounded hover:bg-emerald-200 transition-colors shadow-sm flex items-center">
+                                    ✨ Similar Practice Q
+                                </button>
+                            </div>
+                            
+                            <!-- Container for AI Response -->
+                            <div id="ai-response-${q.id}" class="hidden mt-4"></div>
+                        </div>
+                    </div>
+                `;
+
+                card.innerHTML = badgeHTML + qTextHTML + optionsHTML + answerBlockHTML;
+                container.appendChild(card);
+            });
+        }
+
+        function toggleAnswer(id) {
+            const ansDiv = document.getElementById(`ans-${id}`);
+            if(ansDiv.classList.contains('hidden')) {
+                ansDiv.classList.remove('hidden');
+            } else {
+                ansDiv.classList.add('hidden');
+            }
+        }
+
+        // --- AI Actions ---
+
+        // Feature 1: Get a deeper, simpler explanation from Gemini
+        async function explainDeeper(id) {
+            const q = pyqData.find(item => item.id === id);
+            const container = document.getElementById(`ai-response-${id}`);
+            
+            // Show loading state
+            container.innerHTML = `<div class="p-3 bg-indigo-50 rounded border border-indigo-100"><p class="text-sm text-indigo-600 animate-pulse font-medium">✨ AI Tutor Pankaj ji ke liye answer analyze kar raha hai...</p></div>`;
+            container.classList.remove('hidden');
+
+            const langInstruction = currentLanguage === 'hi' ? "in Hindi/Hinglish" : (currentLanguage === 'bilingual' ? "in both English and Hinglish" : "in English");
+            const prompt = `Act as an expert, patient Physics tutor for a Class 12 student named Pankaj ji who is preparing for his 2026 board exams and CUET exam. 
+            Explain the core concept behind this question step-by-step. Use a simple, real-world analogy to make it easy to understand.
+            
+            Question: "${q.q_en}"
+            Correct Answer: "${q.opt_en[q.ans]}"
+            Brief Explanation: "${q.expl_en}"
+            
+            Please provide your deep dive explanation ${langInstruction}. Format using Markdown for readability.`;
+
+            try {
+                const responseText = await callGeminiAPI(prompt);
+                const formattedHtml = parseMarkdownContent(responseText);
+                
+                container.innerHTML = `
+                    <div class="bg-indigo-50 p-4 rounded-md border border-indigo-200 shadow-sm">
+                        <div class="flex items-center gap-2 mb-3 border-b border-indigo-100 pb-2">
+                            <span class="text-xl">✨</span>
+                            <h4 class="font-bold text-indigo-900">AI Deep Dive</h4>
+                        </div>
+                        <div class="text-sm text-slate-700 ai-markdown-content ${currentLanguage === 'hi' || currentLanguage === 'bilingual' ? 'hindi-text' : ''}">
+                            ${formattedHtml}
+                        </div>
+                    </div>`;
+            } catch(e) {
+                container.innerHTML = `<p class="text-sm text-red-500 bg-red-50 p-3 rounded border border-red-100"><strong>Error:</strong> ${e.message}</p>`;
+            }
+        }
+
+        // Feature 2: Generate a similar practice question using Gemini
+        async function generateSimilar(id) {
+            const q = pyqData.find(item => item.id === id);
+            const container = document.getElementById(`ai-response-${id}`);
+            
+            // Show loading state
+            container.innerHTML = `<div class="p-3 bg-emerald-50 rounded border border-emerald-100"><p class="text-sm text-emerald-600 animate-pulse font-medium">✨ AI naya practice question bana raha hai...</p></div>`;
+            container.classList.remove('hidden');
+
+            const langInstruction = currentLanguage === 'hi' ? "in Hindi/Hinglish" : (currentLanguage === 'bilingual' ? "in both English and Hinglish" : "in English");
+            const prompt = `Act as an expert Physics exam setter for the CUET exam. 
+            I have a previous year question here: "${q.q_en}"
+            
+            Create a completely NEW, similar multiple-choice practice question for a Class 12 student named Pankaj. It should test the EXACT SAME physics concept but use different numbers, a different scenario, or slightly twisted logic to test the student's true understanding.
+            
+            Include:
+            1. The new question text.
+            2. Four options (A, B, C, D).
+            3. The correct answer.
+            4. A brief step-by-step explanation.
+            
+            Please respond ${langInstruction}. Format using Markdown for clear readability.`;
+
+            try {
+                const responseText = await callGeminiAPI(prompt);
+                const formattedHtml = parseMarkdownContent(responseText);
+                
+                container.innerHTML = `
+                    <div class="bg-emerald-50 p-4 rounded-md border border-emerald-200 shadow-sm">
+                        <div class="flex items-center gap-2 mb-3 border-b border-emerald-100 pb-2">
+                            <span class="text-xl">✨</span>
+                            <h4 class="font-bold text-emerald-900">AI Practice Question</h4>
+                        </div>
+                        <div class="text-sm text-slate-700 ai-markdown-content ${currentLanguage === 'hi' || currentLanguage === 'bilingual' ? 'hindi-text' : ''}">
+                            ${formattedHtml}
+                        </div>
+                    </div>`;
+            } catch(e) {
+                container.innerHTML = `<p class="text-sm text-red-500 bg-red-50 p-3 rounded border border-red-100"><strong>Error:</strong> ${e.message}</p>`;
+            }
+        }
+
+        // --- Chart Generation ---
+        function updateChart() {
+            const ctx = document.getElementById('topicChart').getContext('2d');
+            
+            // Calculate Topic Distribution
+            const topicCounts = {};
+            pyqData.forEach(q => {
+                topicCounts[q.topic] = (topicCounts[q.topic] || 0) + 1;
+            });
+
+            const labels = Object.keys(topicCounts);
+            const data = Object.values(topicCounts);
+            
+            // Beautiful Indigo/Blue Palette
+            const bgColors = [
+                '#4F46E5', '#3B82F6', '#6366F1', '#60A5FA', '#818CF8', 
+                '#93C5FD', '#A5B4FC', '#BFDBFE', '#C7D2FE', '#DBEAFE'
+            ];
+
+            if(chartInstance) {
+                chartInstance.destroy();
+            }
+
+            chartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: bgColors,
+                        borderWidth: 2,
+                        borderColor: '#ffffff',
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                boxWidth: 12,
+                                font: { size: 11, family: "'Inter', sans-serif" }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.label}: ${context.raw} Questions`;
+                                }
+                            }
+                        }
+                    },
+                    cutout: '65%'
+                }
+            });
+        }
+    </script>
+</body>
+</html>

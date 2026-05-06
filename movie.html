@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Basic Calculator</title>
+    <style>
+        body { font-family: Arial; background: #eef3fa; }
+        .container { max-width: 250px; margin: 60px auto; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px #aaa2; background: #fff; }
+        input[type="text"] { width: 100%; padding: 12px; margin-bottom: 12px; font-size: 22px; border: 2px solid #77a; border-radius: 5px; text-align: right; }
+        button { width: 22%; padding: 10px; font-size: 20px; margin: 2px; border-radius: 5px; border: 1px solid #77a; background: #3061b9; color: #fff; cursor: pointer; }
+        button:hover { background: #184384; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <input type="text" id="display" readonly>
+        <br>
+        <button onclick="append('7')">7</button>
+        <button onclick="append('8')">8</button>
+        <button onclick="append('9')">9</button>
+        <button onclick="append('+')">+</button>
+        <br>
+        <button onclick="append('4')">4</button>
+        <button onclick="append('5')">5</button>
+        <button onclick="append('6')">6</button>
+        <button onclick="append('-')">-</button>
+        <br>
+        <button onclick="append('1')">1</button>
+        <button onclick="append('2')">2</button>
+        <button onclick="append('3')">3</button>
+        <button onclick="append('*')">*</button>
+        <br>
+        <button onclick="append('0')">0</button>
+        <button onclick="append('.')">.</button>
+        <button onclick="clearDisplay()">C</button>
+        <button onclick="append('/')">/</button>
+        <br>
+        <button style="width: 96%;" onclick="calculate()">=</button>
+    </div>
+    <script>
+        function append(char) {
+            document.getElementById('display').value += char;
+        }
+        function clearDisplay() {
+            document.getElementById('display').value = '';
+        }
+        function calculate() {
+            let expr = document.getElementById('display').value;
+            try {
+                document.getElementById('display').value = eval(expr);
+            } catch {
+                document.getElementById('display').value = 'Error';
+            }
+        }
+    </script>
+    <a href="https://drive.google.com/drive/folders/1ELMC5fCydoyNNXh0aUrRUKR-ovgFqKzF">movie dekhe or Download Karein</a>
+</body>
+</html>

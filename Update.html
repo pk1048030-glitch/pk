@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pankaj Kumar - Header with Search</title>
+  <style>
+    :root {
+      --primary-color: #3f51b5;
+      --secondary-color: #ff9800;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f9f9ff, #ffe9f3);
+      color: #333;
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+      color: white;
+      padding: 15px 5%;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      animation: slideDown 1s ease;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      font-size: 1.8em;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    nav ul li {
+      margin-left: 25px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: white;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    nav ul li a:hover {
+      color: #ffe97f;
+      text-shadow: 0px 0px 6px #fff;
+    }
+
+    /* 🔍 Search Bar Style */
+    .search-box {
+      margin-left: 20px;
+      position: relative;
+    }
+
+    .search-box input {
+      padding: 6px 30px 6px 10px;
+      border-radius: 20px;
+      border: none;
+      outline: none;
+      font-size: 0.95em;
+      transition: 0.3s;
+    }
+
+    .search-box input:focus {
+      box-shadow: 0 0 8px #fff;
+    }
+
+    .search-box::after {
+      content: "🔍";
+      position: absolute;
+      right: 10px;
+      top: 4px;
+      font-size: 1.1em;
+      pointer-events: none;
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-100%); }
+      to { transform: translateY(0); }
+    }
+
+    @media(max-width: 768px) {
+      nav {
+        flex-direction: column;
+        text-align: center;
+      }
+      nav ul {
+        margin-top: 10px;
+        flex-direction: column;
+      }
+      nav ul li {
+        margin: 10px 0;
+      }
+      .search-box {
+        margin: 10px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- हेडर + सर्च बार -->
+  <header>
+    <nav>
+      <div class="logo">🌟 Pankaj Kumar 🌟</div>
+      
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search here...">
+      </div>
+      
+      <ul id="menuList">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">YouTube</a></li>
+        <li><a href="#">Contact</a></li>
+        <li><a href="phy.html">Physics</a></li>
+        <li><a href="math.html">Mathematics</a></li>
+        <li><a href="hindi2.0.html">Full hindi</a></li>
+        <li><a href="hindi.html">hindi</a></li>
+        <li><a href="english.html">English</a></li>
+        <li><a href="che2.0.html">full Chemistry</a></li>
+        <li><a href="che.html">chemistry</a></li>
+        <li><a href="bio.html">Biology</a></li>
+      
+      </ul>
+    </nav>
+  </header>
+
+  <script>
+    // 🔍 Live Search Function
+    const searchInput = document.getElementById('searchInput');
+    const menuList = document.getElementById('menuList');
+    const items = menuList.getElementsByTagName('li');
+
+    searchInput.addEventListener('keyup', function() {
+      const filter = searchInput.value.toLowerCase();
+      for (let i = 0; i < items.length; i++) {
+        let text = items[i].textContent.toLowerCase();
+        if (text.includes(filter)) {
+          items[i].style.display = "";
+        } else {
+          items[i].style.display = "none";
+        }
+      }
+    });
+  </script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

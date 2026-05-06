@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pankaj Kumar - Header with Search</title>
+  <style>
+    :root {
+      --primary-color: #3f51b5;
+      --secondary-color: #ff9800;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f9f9ff, #ffe9f3);
+      color: #333;
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+      color: white;
+      padding: 15px 5%;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      animation: slideDown 1s ease;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      font-size: 1.8em;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    nav ul li {
+      margin-left: 25px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: white;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    nav ul li a:hover {
+      color: #ffe97f;
+      text-shadow: 0px 0px 6px #fff;
+    }
+
+    /* 🔍 Search Bar Style */
+    .search-box {
+      margin-left: 20px;
+      position: relative;
+    }
+
+    .search-box input {
+      padding: 6px 30px 6px 10px;
+      border-radius: 20px;
+      border: none;
+      outline: none;
+      font-size: 0.95em;
+      transition: 0.3s;
+    }
+
+    .search-box input:focus {
+      box-shadow: 0 0 8px #fff;
+    }
+
+    .search-box::after {
+      content: "🔍";
+      position: absolute;
+      right: 10px;
+      top: 4px;
+      font-size: 1.1em;
+      pointer-events: none;
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-100%); }
+      to { transform: translateY(0); }
+    }
+
+    @media(max-width: 768px) {
+      nav {
+        flex-direction: column;
+        text-align: center;
+      }
+      nav ul {
+        margin-top: 10px;
+        flex-direction: column;
+      }
+      nav ul li {
+        margin: 10px 0;
+      }
+      .search-box {
+        margin: 10px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- हेडर + सर्च बार -->
+  <header>
+    <nav>
+      <div class="logo">🌟 Pankaj Kumar 🌟</div>
+      
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search here...">
+      </div>
+      
+      <ul id="menuList">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="*">YouTube</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <script>
+    // 🔍 Live Search Function
+    const searchInput = document.getElementById('searchInput');
+    const menuList = document.getElementById('menuList');
+    const items = menuList.getElementsByTagName('li');
+
+    searchInput.addEventListener('keyup', function() {
+      const filter = searchInput.value.toLowerCase();
+      for (let i = 0; i < items.length; i++) {
+        let text = items[i].textContent.toLowerCase();
+        if (text.includes(filter)) {
+          items[i].style.display = "";
+        } else {
+          items[i].style.display = "none";
+        }
+      }
+    });
+  </script>
+
+
+  
+
+
+
+
+
+
+<!-- 📂 Model Paper Section -->
+<section style="padding: 30px 5%;">
+  <h2 style="font-size: 1.6em; font-weight: bold; color: #3f51b5; margin-bottom: 15px;">
+    📂 Bihar Board 12th Model Paper 2026
+  </h2>
+
+  <!-- Folder button -->
+  <button onclick="toggleSection('streamSection')" 
+    style="background: linear-gradient(90deg, #3f51b5, #ff9800); color: white; 
+           border: none; border-radius: 10px; padding: 10px 15px; 
+           font-size: 1.1em; cursor: pointer; width: 100%;">
+    📁 Open Model Paper Folder
+  </button>
+
+  <!-- Streams -->
+  <div id="streamSection" style="display: none; margin-top: 15px;">
+    <!-- 🔬 SCIENCE -->
+    <div class="stream">
+      <button class="stream-btn" onclick="toggleSubjects('science')">🔬 Science</button>
+      <div id="science" class="subject-list">
+        <a href="https://dishaonlineclasses.com/admindp/uploads/study/692eda94a5ccc_117_Physics.pdf">Physics</a>
+        <a href="https://dishaonlineclasses.com/admindp/uploads/study/692edac5c0333_118_Chemistry.pdf">Chemistry</a>
+        <a href="https://dishaonlineclasses.com/admindp/uploads/study/692edadb16e1d_119_Biology.pdf">Biology</a>
+        <a href="https://dishaonlineclasses.com/admindp/uploads/study/692edaf8305a2_121_327_MATH.pdf">Math</a>
+        <a href="https://dishaonlineclasses.com/admindp/uploads/study/692edb72429cb_120_Agriculture.pdf">Agriculture</a>
+        <a href="https://dishaonlineclasses.com/admindp/uploads/study/692ed91fa271a_106_Hindi_125_206_224.pdf">Hindi</a>
+        <a href="https://dishaonlineclasses.com/admindp/uploads/study/692ed9decc96a_105_English.pdf">English</a>
+      </div>
+    </div>
+
+    <!-- 💼 COMMERCE -->
+    <div class="stream">
+      <button class="stream-btn" onclick="toggleSubjects('commerce')">💼 Commerce</button>
+      <div id="commerce" class="subject-list">
+        <a href="https://dishaonlineclasses.com/admindp/uploads/study/692ee08c21279_218_Entrepenureship.pdf">Entrepreneurship</a>
+        <a href="https://dishaonlineclasses.com/admindp/uploads/study/692ee0431a9d9_217_Business%20Studies.pdf">Business Studies</a>
+        <a href="https://dishaonlineclasses.com/admindp/uploads/study/692ee11eb9415_219_Economics.pdf">Economics</a>
+        <a href="https://dishaonlineclasses.com/admindp/uploads/study/692ee0dc8e703_220_Accountancy.pdf">Accountancy</a>
+        <a href="https://dishaonlineclasses.com/admindp/uploads/study/692ed91fa271a_106_Hindi_125_206_224.pdf">Hindi</a>
+        <a href="https://dishaonlineclasses.com/admindp/uploads/study/692ed9decc96a_105_English.pdf">English</a>
+      </div>
+    </div>
+
+    <!-- 🎨 ARTS -->
+    <div class="stream">
+      <button class="stream-btn" onclick="toggleSubjects('arts')">🎨 Arts</button>
+      <div id="arts" class="subject-list">
+        <a href="https://dishaonlineclasses.com/admindp/uploads/study/692edbdf5179a_321_History.pdf">History</a>
+        <a href="https://dishaonlineclasses.com/admindp/uploads/study/692edc07d5a43_323_Geography.pdf">Geography</a>
+        <a href="https://dishaonlineclasses.com/admindp/uploads/study/692edc9f8a291_322_Political%20Science.pdf">Political Science</a>
+        <a href="https://dishaonlineclasses.com/admindp/uploads/study/692ee11eb9415_219_Economics.pdf">Economics</a>
+        <a href="https://dishaonlineclasses.com/admindp/uploads/study/692edc404b65f_318_Music.pdf">Music</a>
+        <a href="https://dishaonlineclasses.com/admindp/uploads/study/692edc8289340_319_Home%20science.pdf">Home Science</a>
+        <a href="https://dishaonlineclasses.com/admindp/uploads/study/692edceae33f8_320_Philosophy.pdf">Philosophy</a>
+        <a href="https://dishaonlineclasses.com/admindp/uploads/study/692eda3c4d2c3_107_207_307_503_Urdu.pdf">Urdu</a>
+        <a href="https://dishaonlineclasses.com/admindp/uploads/study/692edd2a9e1da_324_Psychology.pdf">Psychology</a>
+        <a href="https://dishaonlineclasses.com/admindp/uploads/study/692edd75ac849_325_Sociology.pdf">Sociology</a>
+        <a href="https://dishaonlineclasses.com/admindp/uploads/study/692eda0b428de_109_Sanskrit_209_309_505.pdf">Sanskrit</a>
+        <a href="https://dishaonlineclasses.com/admindp/uploads/study/692ed91fa271a_106_Hindi_125_206_224.pdf">Hindi</a>
+        <a href="https://dishaonlineclasses.com/admindp/uploads/study/692ed9decc96a_105_English.pdf">English</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CSS -->
+<style>
+  .stream { margin-bottom: 15px; }
+  .stream-btn {
+    background: #e3e8ff;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    font-size: 1em;
+    text-align: left;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  .stream-btn:hover {
+    background: #d0d6ff;
+  }
+  .subject-list {
+    display: none;
+    margin-top: 8px;
+    padding-left: 15px;
+  }
+  .subject-list a {
+    display: block;
+    padding: 6px 10px;
+    background: #fff;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #3f51b5;
+    margin: 4px 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  .subject-list a:hover {
+    background: #e8eaff;
+  }
+</style>
+
+<!-- JS -->
+<script>
+  function toggleSection(id) {
+    const section = document.getElementById(id);
+    section.style.display = section.style.display === "none" ? "block" : "none";
+  }
+
+  function toggleSubjects(id) {
+    const all = document.querySelectorAll('.subject-list');
+    all.forEach(div => { if (div.id !== id) div.style.display = 'none'; });
+
+    const subjectList = document.getElementById(id);
+    subjectList.style.display = subjectList.style.display === "none" ? "block" : "none";
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
