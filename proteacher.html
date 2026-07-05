@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tuition Tracker Pro - Cloud Sync</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .view-section { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        /* Custom Toggle Switch Styles */
+        .toggle-checkbox:checked { right: 0; border-color: #68D391; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #68D391; }
+        .toast-enter { animation: slideInRight 0.3s forwards; }
+        .toast-leave { animation: slideOutRight 0.3s forwards; }
+        @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes slideOutRight { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
+        
+        #app-loader { transition: opacity 0.3s ease; }
+        .fade-out { opacity: 0; pointer-events: none; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 flex h-screen overflow-hidden selection:bg-indigo-200">
+
+    <!-- Loading Overlay for Firebase Auth & Data Fetching -->
+    <div id="app-loader" class="fixed inset-0 bg-slate-900 z-[100] flex flex-col items-center justify-center text-white">
+        <i class="fas fa-circle-notch fa-spin text-4xl text-indigo-500 mb-4"></i>
+        <h2 class="text-xl font-bold tracking-tight mb-2">TuitionPro Cloud</h2>
+        <p class="font-medium text-slate-400">Authenticating and Syncing Database...</p>
+    </div>
+
+    <!-- Desktop Sidebar -->
+    <aside class="hidden md:flex flex-col w-64 bg-slate-900 text-slate-300 h-full shadow-xl z-20">
+        <div class="p-6 flex items-center space-x-3 text-white border-b border-slate-800 relative overflow-hidden">
+            <div class="absolute -right-4 -top-4 w-16 h-16 bg-indigo-500/20 rounded-full blur-xl"></div>
+            <div class="bg-indigo-500 p-2 rounded-lg relative z-10"><i class="fas fa-graduation-cap text-xl"></i></div>
+            <div class="relative z-10">
+                <h1 class="text-xl font-bold tracking-tight text-white leading-tight">TuitionPro</h1>
+                <p class="text-[10px] text-emerald-400 font-medium flex items-center"><i class="fas fa-cloud text-[8px] mr-1"></i> Cloud Synced</p>
+            </div>
+        </div>
+        <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto" id="desktop-nav">
+            <!-- Navigation items injected via JS -->
+        </nav>
+        <div class="p-4 border-t border-slate-800 flex items-center text-xs text-slate-500 justify-center space-x-2">
+            <i class="fas fa-shield-alt"></i> <span>Secure Cloud Sync</span>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden relative w-full">
+        <!-- Mobile Header -->
+        <header class="md:hidden bg-white shadow-sm px-4 py-3 flex justify-between items-center z-10">
+            <div class="flex items-center space-x-2 text-indigo-700">
+                <i class="fas fa-graduation-cap text-xl"></i>
+                <div class="flex flex-col">
+                    <h1 class="text-lg font-bold leading-tight">TuitionPro</h1>
+                    <span class="text-[9px] text-emerald-500 font-bold -mt-1"><i class="fas fa-cloud"></i> Synced</span>
+                </div>
+            </div>
+            <div class="text-slate-400 text-sm font-medium" id="mobile-header-title">Dashboard</div>
+        </header>
+
+        <!-- Dynamic Views Container -->
+        <div class="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8 relative scroll-smooth hide-scrollbar" id="main-content">
+            
+            <!-- Dashboard View -->
+            <section id="view-dashboard" class="view-section hidden space-y-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-800">Overview Dashboard</h2>
+                    <p class="text-slate-500 text-sm mt-1">Real-time metrics for your tuition classes directly from the cloud.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-5 flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-500 mb-1">Active Students</p>
+                            <h3 class="text-3xl font-bold text-slate-800" id="dash-active-students">0</h3>
+                        </div>
+                        <div class="bg-blue-50 text-blue-600 p-3 rounded-full"><i class="fas fa-users text-xl"></i></div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-5 flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-500 mb-1">Today's Attendance</p>
+                            <h3 class="text-3xl font-bold text-slate-800" id="dash-attendance-pct">0%</h3>
+                        </div>
+                        <div class="bg-emerald-50 text-emerald-600 p-3 rounded-full"><i class="fas fa-calendar-check text-xl"></i></div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-5 flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-500 mb-1">Revenue (This Month)</p>
+                            <h3 class="text-3xl font-bold text-slate-800" id="dash-revenue">₹0</h3>
+                        </div>
+                        <div class="bg-indigo-50 text-indigo-600 p-3 rounded-full"><i class="fas fa-wallet text-xl"></i></div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+                    <div class="px-5 py-4 border-b border-slate-100 flex justify-between items-center">
+                        <h3 class="font-semibold text-slate-800"><i class="fas fa-exclamation-circle text-rose-500 mr-2"></i>Urgent Action: Overdue Fees</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm whitespace-nowrap">
+                            <thead class="bg-slate-50 text-slate-500">
+                                <tr>
+                                    <th class="px-5 py-3 font-medium">Student Name</th>
+                                    <th class="px-5 py-3 font-medium">Phone</th>
+                                    <th class="px-5 py-3 font-medium text-right">Pending Dues</th>
+                                    <th class="px-5 py-3 font-medium text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dash-triage-list" class="divide-y divide-slate-100">
+                                <!-- Populated via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Students View -->
+            <section id="view-students" class="view-section hidden space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-800">Student Directory</h2>
+                        <p class="text-slate-500 text-sm mt-1">Manage enrollments and demographic data.</p>
+                    </div>
+                    <button onclick="uiUtils.openModal('student-form-modal')" type="button" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition-colors flex items-center justify-center">
+                        <i class="fas fa-plus mr-2"></i> Add Student
+                    </button>
+                </div>
+
+                <div class="bg-white p-3 rounded-xl shadow-sm border border-slate-100 flex items-center">
+                    <i class="fas fa-search text-slate-400 ml-2 mr-3"></i>
+                    <input type="text" id="student-search" placeholder="Search students by name or subject..." class="flex-1 outline-none text-sm bg-transparent" oninput="studentsModule.filterStudents(this.value)">
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm whitespace-nowrap">
+                            <thead class="bg-slate-50 text-slate-500">
+                                <tr>
+                                    <th class="px-5 py-3 font-medium">Name</th>
+                                    <th class="px-5 py-3 font-medium">Subject</th>
+                                    <th class="px-5 py-3 font-medium">Monthly Fee</th>
+                                    <th class="px-5 py-3 font-medium text-center">Status</th>
+                                    <th class="px-5 py-3 font-medium text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="student-table-body" class="divide-y divide-slate-100">
+                                <!-- Populated via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="student-empty-state" class="hidden p-10 text-center text-slate-500">
+                        <i class="fas fa-user-graduate text-4xl mb-3 text-slate-300"></i>
+                        <p>No students found. Add a new student to get started.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Attendance View -->
+            <section id="view-attendance" class="view-section hidden space-y-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-800">Daily Roll Call</h2>
+                    <p class="text-slate-500 text-sm mt-1">Record presence for active students.</p>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-5 flex flex-col sm:flex-row items-center justify-between gap-4 sticky top-0 z-10">
+                    <div class="flex items-center w-full sm:w-auto">
+                        <i class="fas fa-calendar-day text-indigo-500 mr-3 text-lg"></i>
+                        <input type="date" id="attendance-date" class="bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5" onchange="attendanceModule.loadDate()">
+                    </div>
+                    <div id="attendance-status-badge" class="hidden px-3 py-1 text-xs font-medium rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200 shadow-sm flex items-center justify-center">
+                        <i class="fas fa-cloud-check mr-1"></i> Synced to Cloud
+                    </div>
+                    <button onclick="attendanceModule.saveAttendance()" type="button" class="w-full sm:w-auto bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2.5 rounded-lg font-medium shadow-sm transition-colors flex items-center justify-center">
+                        <i class="fas fa-cloud-upload-alt mr-2"></i> Commit Roster
+                    </button>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+                    <ul id="attendance-list" class="divide-y divide-slate-100">
+                        <!-- Populated via JS -->
+                    </ul>
+                    <div id="attendance-empty-state" class="hidden p-10 text-center text-slate-500">
+                        <i class="fas fa-users-slash text-4xl mb-3 text-slate-300"></i>
+                        <p>No active students available for roll call.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Finance View -->
+            <section id="view-finance" class="view-section hidden space-y-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-800">Financial Ledger</h2>
+                    <p class="text-slate-500 text-sm mt-1">Track fee remittances and pending balances securely in the cloud.</p>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-5">
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Select Student Profile</label>
+                    <select id="finance-student-select" class="bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5" onchange="financeModule.loadStudentData()">
+                        <option value="">-- Choose a Student --</option>
+                        <!-- Populated via JS -->
+                    </select>
+                </div>
+
+                <div id="finance-profile" class="hidden space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-slate-800 text-white rounded-xl p-5 shadow-sm relative overflow-hidden">
+                            <i class="fas fa-file-invoice absolute -right-4 -bottom-4 text-6xl text-slate-700 opacity-50"></i>
+                            <div class="relative z-10">
+                                <p class="text-slate-400 text-sm font-medium mb-1">Total Accrued Fees</p>
+                                <h3 class="text-2xl font-bold" id="fin-accrued">₹0</h3>
+                                <p class="text-xs text-slate-500 mt-2" id="fin-accrued-meta">Since joining</p>
+                            </div>
+                        </div>
+                        <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm relative overflow-hidden">
+                            <i class="fas fa-hand-holding-usd absolute -right-4 -bottom-4 text-6xl text-emerald-50 opacity-50"></i>
+                            <div class="relative z-10">
+                                <p class="text-slate-500 text-sm font-medium mb-1">Total Paid History</p>
+                                <h3 class="text-2xl font-bold text-emerald-600" id="fin-paid">₹0</h3>
+                            </div>
+                        </div>
+                        <div class="bg-white border border-rose-200 rounded-xl p-5 shadow-sm relative overflow-hidden">
+                            <div class="absolute top-0 right-0 bg-rose-500 text-white text-[10px] font-bold px-2 py-1 rounded-bl-lg z-20">DUE</div>
+                            <i class="fas fa-exclamation-circle absolute -right-4 -bottom-4 text-6xl text-rose-50 opacity-50"></i>
+                            <div class="relative z-10">
+                                <p class="text-slate-500 text-sm font-medium mb-1">Pending Balance</p>
+                                <h3 class="text-2xl font-bold text-rose-600" id="fin-pending">₹0</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-1 bg-white rounded-xl shadow-sm border border-slate-100 p-5 h-fit">
+                            <h3 class="font-semibold text-slate-800 mb-4 border-b pb-2">Record Remittance</h3>
+                            <form id="payment-form" onsubmit="financeModule.processPayment(event)" class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700">Amount Paid (₹)</label>
+                                    <input type="number" id="pay-amount" min="1" required class="mt-1 bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700">Date Received</label>
+                                    <input type="date" id="pay-date" required class="mt-1 bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700">Remarks (Optional)</label>
+                                    <input type="text" id="pay-remarks" placeholder="e.g., Cash, UPI, Month of June" class="mt-1 bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5">
+                                </div>
+                                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg font-medium transition-colors flex items-center justify-center">
+                                    <i class="fas fa-check-circle mr-2"></i> Log Transaction
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden flex flex-col">
+                            <div class="px-5 py-4 border-b border-slate-100 bg-slate-50">
+                                <h3 class="font-semibold text-slate-800">Transaction History</h3>
+                            </div>
+                            <div class="flex-1 overflow-y-auto max-h-96">
+                                <table class="w-full text-left text-sm whitespace-nowrap">
+                                    <thead class="bg-white sticky top-0 shadow-sm">
+                                        <tr class="text-slate-500">
+                                            <th class="px-5 py-3 font-medium">Date</th>
+                                            <th class="px-5 py-3 font-medium">Amount</th>
+                                            <th class="px-5 py-3 font-medium">Remarks</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="ledger-table-body" class="divide-y divide-slate-100">
+                                        <!-- Populated via JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings View -->
+            <section id="view-settings" class="view-section hidden space-y-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-800">System Preferences & Security</h2>
+                    <p class="text-slate-500 text-sm mt-1">Manage cloud database operations and application settings.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6 space-y-4">
+                        <h3 class="font-semibold text-slate-800 flex items-center"><i class="fas fa-cloud-download-alt text-indigo-500 mr-2"></i> Data Portability</h3>
+                        <p class="text-sm text-slate-500">Your data is securely stored in Firebase Firestore. You can export a local backup or restore data to the cloud.</p>
+                        
+                        <div class="space-y-3 pt-2">
+                            <button onclick="settingsModule.exportData()" type="button" class="w-full bg-slate-800 hover:bg-slate-900 text-white py-2.5 rounded-lg text-sm font-medium transition-colors flex justify-center items-center">
+                                <i class="fas fa-file-export mr-2"></i> Download Backup JSON
+                            </button>
+                            
+                            <div class="relative">
+                                <input type="file" id="import-file" accept=".json" class="hidden" onchange="settingsModule.handleImport(event)">
+                                <button onclick="document.getElementById('import-file').click()" type="button" class="w-full bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 py-2.5 rounded-lg text-sm font-medium transition-colors flex justify-center items-center">
+                                    <i class="fas fa-cloud-upload-alt mr-2"></i> Restore to Cloud
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm border border-rose-100 p-6 space-y-4 relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-1 h-full bg-rose-500"></div>
+                        <h3 class="font-semibold text-rose-600 flex items-center"><i class="fas fa-exclamation-triangle mr-2"></i> Danger Zone</h3>
+                        <p class="text-sm text-slate-500">Performing a factory reset will permanently delete all students, attendance records, and financial ledgers from the cloud database.</p>
+                        
+                        <div class="pt-4">
+                            <button onclick="settingsModule.requestFactoryReset()" type="button" class="bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 py-2.5 px-4 rounded-lg text-sm font-medium transition-colors w-full sm:w-auto">
+                                Factory Reset Cloud DB
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <nav class="md:hidden bg-white border-t border-slate-200 fixed bottom-0 w-full z-20 pb-safe" id="mobile-nav">
+            <ul class="flex justify-around items-center h-16">
+                <!-- Injected via JS -->
+            </ul>
+        </nav>
+    </main>
+
+    <!-- Add/Edit Student Modal -->
+    <div id="student-form-modal" class="fixed inset-0 bg-slate-900/50 hidden z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 class="font-bold text-slate-800" id="student-modal-title">Register New Student</h3>
+                <button type="button" onclick="uiUtils.closeModal('student-form-modal')" class="text-slate-400 hover:text-slate-600"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="student-form" onsubmit="studentsModule.saveStudent(event)" class="p-6 space-y-4">
+                <input type="hidden" id="form-student-id">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700">Full Name</label>
+                    <input type="text" id="form-name" required class="mt-1 w-full border border-slate-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700">Contact Number</label>
+                    <input type="tel" id="form-phone" required class="mt-1 w-full border border-slate-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700">Subject / Batch</label>
+                    <input type="text" id="form-subject" required class="mt-1 w-full border border-slate-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700">Monthly Fee (₹)</label>
+                        <input type="number" id="form-fee" min="0" required class="mt-1 w-full border border-slate-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700">Joining Date</label>
+                        <input type="date" id="form-date" required class="mt-1 w-full border border-slate-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </div>
+                </div>
+                <div class="pt-4 flex justify-end space-x-3">
+                    <button type="button" onclick="uiUtils.closeModal('student-form-modal')" class="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-md shadow-sm hover:bg-slate-50">Cancel</button>
+                    <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700">Save to Cloud</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Attendance History Modal -->
+    <div id="attendance-history-modal" class="fixed inset-0 bg-slate-900/50 hidden z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden transform transition-all max-h-[85vh] flex flex-col">
+            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 class="font-bold text-slate-800" id="attendance-history-title">Attendance History</h3>
+                <button type="button" onclick="uiUtils.closeModal('attendance-history-modal')" class="text-slate-400 hover:text-slate-600"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="p-6 space-y-4 overflow-y-auto flex-1">
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="bg-emerald-50 rounded-lg p-3 text-center">
+                        <p class="text-2xl font-bold text-emerald-600" id="att-hist-present">0</p>
+                        <p class="text-xs text-slate-500 mt-1">Present</p>
+                    </div>
+                    <div class="bg-rose-50 rounded-lg p-3 text-center">
+                        <p class="text-2xl font-bold text-rose-600" id="att-hist-absent">0</p>
+                        <p class="text-xs text-slate-500 mt-1">Absent</p>
+                    </div>
+                    <div class="bg-indigo-50 rounded-lg p-3 text-center">
+                        <p class="text-2xl font-bold text-indigo-600" id="att-hist-pct">0%</p>
+                        <p class="text-xs text-slate-500 mt-1">Attendance</p>
+                    </div>
+                </div>
+                <div class="border border-slate-100 rounded-xl overflow-hidden">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-50 text-slate-500 sticky top-0">
+                            <tr>
+                                <th class="px-4 py-2 font-medium">Date</th>
+                                <th class="px-4 py-2 font-medium text-right">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendance-history-body" class="divide-y divide-slate-100">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Modal -->
+    <div id="confirm-modal" class="fixed inset-0 bg-slate-900/50 hidden z-[60] flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-sm p-6 text-center transform transition-all">
+            <div id="confirm-icon" class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-rose-100 mb-4">
+                <i class="fas fa-exclamation-triangle text-rose-600 text-xl"></i>
+            </div>
+            <h3 class="text-lg leading-6 font-bold text-slate-900" id="confirm-title">Confirm Action</h3>
+            <div class="mt-2">
+                <p class="text-sm text-slate-500" id="confirm-message">Are you sure you want to proceed?</p>
+            </div>
+            <div class="mt-6 flex justify-center space-x-3">
+                <button type="button" onclick="uiUtils.closeConfirm()" class="w-full inline-flex justify-center rounded-md border border-slate-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-slate-700 hover:bg-slate-50 sm:text-sm">Cancel</button>
+                <button type="button" id="confirm-action-btn" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-rose-600 text-base font-medium text-white hover:bg-rose-700 sm:text-sm">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-4 right-4 z-[70] flex flex-col gap-2 pointer-events-none"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDocs, collection, onSnapshot, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global Variables
+        const appId = typeof __app_id !== 'undefined' ? __app_id : '1:314227009599:web:ef05d1c5560841718b308a';
+        const customToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        let userId = null;
+        
+        // Initial fallback config (provided by user)
+        let configToUse = {
+            apiKey: "AIzaSyDJXpAReUe40BZCT8IFblzxeD5MxzGuR2c",
+            authDomain: "tution-pro-32a33.firebaseapp.com",
+            projectId: "tution-pro-32a33",
+            storageBucket: "tution-pro-32a33.firebasestorage.app",
+            messagingSenderId: "314227009599",
+            appId: "1:314227009599:web:ef05d1c5560841718b308a"
+        };
+        
+        // Use environment config if present
+        if (typeof __firebase_config !== 'undefined') {
+            configToUse = JSON.parse(__firebase_config);
+        }
+
+        const appFirebase = initializeApp(configToUse);
+        const auth = getAuth(appFirebase);
+        const dbFirestore = getFirestore(appFirebase);
+
+        /**
+         * State Management Memory Mirror
+         */
+        let appState = {
+            students: [],
+            attendance: {}, // Map: "YYYY-MM-DD" -> [{studentId, status}]
+            payments: []    // Array: {transactionId, studentId, amountPaid, paymentDate, remarks}
+        };
+
+        const utils = {
+            generateUUID: () => crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2) + Date.now().toString(36),
+            getTodayStr: () => new Date().toISOString().split('T')[0],
+            formatCurrency: (amount) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(amount),
+            formatDate: (dateStr) => {
+                const options = { year: 'numeric', month: 'short', day: 'numeric' };
+                return new Date(dateStr).toLocaleDateString('en-IN', options);
+            },
+            calculateDues: (student) => {
+                const joinDate = new Date(student.joiningDate);
+                const today = new Date();
+                
+                let months = (today.getFullYear() - joinDate.getFullYear()) * 12 + (today.getMonth() - joinDate.getMonth());
+                if (today.getDate() >= joinDate.getDate()) {
+                    months++;
+                }
+                if (months <= 0) months = 1;
+
+                const totalAccrued = months * Number(student.monthlyFee);
+                const studentPayments = appState.payments.filter(p => p.studentId === student.id);
+                const totalPaid = studentPayments.reduce((sum, p) => sum + Number(p.amountPaid), 0);
+                
+                return {
+                    monthsElapsed: months,
+                    totalAccrued: totalAccrued,
+                    totalPaid: totalPaid,
+                    pendingBalance: totalAccrued - totalPaid
+                };
+            }
+        };
+
+        let confirmActionCallback = null;
+
+        const uiUtils = {
+            openModal: (id) => document.getElementById(id).classList.remove('hidden'),
+            closeModal: (id) => document.getElementById(id).classList.add('hidden'),
+            showConfirm: (title, message, isDanger, callback) => {
+                document.getElementById('confirm-title').innerText = title;
+                document.getElementById('confirm-message').innerText = message;
+                const icon = document.getElementById('confirm-icon');
+                const btn = document.getElementById('confirm-action-btn');
+                
+                if (isDanger) {
+                    icon.className = 'mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-rose-100 mb-4 text-rose-600';
+                    btn.className = 'w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-rose-600 text-base font-medium text-white hover:bg-rose-700 sm:text-sm';
+                } else {
+                    icon.className = 'mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-indigo-100 mb-4 text-indigo-600';
+                    icon.innerHTML = '<i class="fas fa-question text-xl"></i>';
+                    btn.className = 'w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 sm:text-sm';
+                }
+
+                confirmActionCallback = callback;
+                uiUtils.openModal('confirm-modal');
+            },
+            closeConfirm: () => {
+                uiUtils.closeModal('confirm-modal');
+                confirmActionCallback = null;
+            },
+            executeConfirm: () => {
+                if (confirmActionCallback) confirmActionCallback();
+                uiUtils.closeConfirm();
+            },
+            showToast: (message, type = 'success') => {
+                const container = document.getElementById('toast-container');
+                const toast = document.createElement('div');
+                toast.className = `toast-enter max-w-xs w-full bg-white shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-black ring-opacity-5 overflow-hidden`;
+                
+                const iconClass = type === 'success' ? 'fa-check-circle text-emerald-500' : 'fa-exclamation-circle text-rose-500';
+                const colorBar = type === 'success' ? 'bg-emerald-500' : 'bg-rose-500';
+
+                toast.innerHTML = `
+                    <div class="w-1 ${colorBar}"></div>
+                    <div class="p-3 flex items-center w-full">
+                        <i class="fas ${iconClass} text-xl mr-3"></i>
+                        <p class="text-sm font-medium text-slate-900 flex-1">${message}</p>
+                    </div>
+                `;
+                container.appendChild(toast);
+                
+                setTimeout(() => {
+                    toast.classList.replace('toast-enter', 'toast-leave');
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            },
+            setupNav: () => {
+                const navItems = [
+                    { id: 'dashboard', icon: 'fa-chart-pie', label: 'Dashboard' },
+                    { id: 'students', icon: 'fa-user-graduate', label: 'Students' },
+                    { id: 'attendance', icon: 'fa-calendar-check', label: 'Roll Call' },
+                    { id: 'finance', icon: 'fa-file-invoice-dollar', label: 'Finances' },
+                    { id: 'settings', icon: 'fa-cog', label: 'Settings' }
+                ];
+
+                const desktopNav = document.getElementById('desktop-nav');
+                const mobileNav = document.querySelector('#mobile-nav ul');
+                desktopNav.innerHTML = '';
+                mobileNav.innerHTML = '';
+
+                navItems.forEach(item => {
+                    const dBtn = document.createElement('button');
+                    dBtn.className = `nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors text-slate-400 hover:text-white hover:bg-slate-800`;
+                    dBtn.dataset.view = item.id;
+                    dBtn.innerHTML = `<i class="fas ${item.icon} w-5 text-center"></i> <span>${item.label}</span>`;
+                    dBtn.onclick = () => app.switchView(item.id);
+                    desktopNav.appendChild(dBtn);
+
+                    const mBtn = document.createElement('li');
+                    mBtn.className = `nav-btn flex-1 flex flex-col items-center justify-center text-slate-400 hover:text-indigo-600 cursor-pointer h-full`;
+                    mBtn.dataset.view = item.id;
+                    mBtn.innerHTML = `<i class="fas ${item.icon} text-lg mb-1"></i><span class="text-[10px] font-medium">${item.label}</span>`;
+                    mBtn.onclick = () => app.switchView(item.id);
+                    mobileNav.appendChild(mBtn);
+                });
+            }
+        };
+
+        document.getElementById('confirm-action-btn').addEventListener('click', uiUtils.executeConfirm);
+
+        // Reset form on close
+        document.querySelector('#student-form-modal .fa-times').parentElement.addEventListener('click', () => {
+            document.getElementById('student-form').reset();
+            document.getElementById('form-student-id').value = '';
+            document.getElementById('student-modal-title').innerText = "Register New Student";
+        });
+
+        const dashboardModule = {
+            render: () => {
+                const activeStudents = appState.students.filter(s => s.status === 'active');
+                document.getElementById('dash-active-students').innerText = activeStudents.length;
+
+                const todayStr = utils.getTodayStr();
+                const todayRecord = appState.attendance[todayStr] || [];
+                let attPct = "0%";
+                if (activeStudents.length > 0 && todayRecord.length > 0) {
+                    const presentCount = todayRecord.filter(r => r.status === 'present').length;
+                    const pct = Math.round((presentCount / todayRecord.length) * 100);
+                    attPct = `${pct}%`;
+                } else if (activeStudents.length > 0 && todayRecord.length === 0) {
+                     attPct = "N/A";
+                }
+                document.getElementById('dash-attendance-pct').innerText = attPct;
+
+                const currMonth = new Date().toISOString().substring(0, 7); 
+                const monthlyRevenue = appState.payments
+                    .filter(p => p.paymentDate.startsWith(currMonth))
+                    .reduce((sum, p) => sum + Number(p.amountPaid), 0);
+                document.getElementById('dash-revenue').innerText = utils.formatCurrency(monthlyRevenue);
+
+                const triageTbody = document.getElementById('dash-triage-list');
+                triageTbody.innerHTML = '';
+                
+                const duesList = activeStudents.map(student => {
+                    const fin = utils.calculateDues(student);
+                    return { ...student, pending: fin.pendingBalance };
+                }).filter(s => s.pending > 0).sort((a, b) => b.pending - a.pending);
+
+                if (duesList.length === 0) {
+                    triageTbody.innerHTML = `<tr><td colspan="4" class="px-5 py-8 text-center text-slate-400">No pending dues. Excellent!</td></tr>`;
+                } else {
+                    duesList.slice(0, 5).forEach(student => { 
+                        triageTbody.innerHTML += `
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="px-5 py-3 flex items-center"><div class="h-8 w-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold mr-3">${student.name.charAt(0).toUpperCase()}</div>${student.name}</td>
+                                <td class="px-5 py-3 text-slate-500">${student.phone}</td>
+                                <td class="px-5 py-3 text-right font-bold text-rose-600">${utils.formatCurrency(student.pending)}</td>
+                                <td class="px-5 py-3 text-center">
+                                    <button type="button" onclick="app.switchView('finance', '${student.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-3 py-1 rounded text-xs font-medium">Collect</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                }
+            }
+        };
+
+        const studentsModule = {
+            render: () => {
+                studentsModule.filterStudents(document.getElementById('student-search').value);
+            },
+            filterStudents: (query) => {
+                const tbody = document.getElementById('student-table-body');
+                const emptyState = document.getElementById('student-empty-state');
+                tbody.innerHTML = '';
+                
+                const q = query ? query.toLowerCase() : '';
+                const filtered = appState.students.filter(s => 
+                    s.name.toLowerCase().includes(q) || 
+                    s.subject.toLowerCase().includes(q)
+                );
+
+                if (filtered.length === 0) {
+                    tbody.parentElement.classList.add('hidden');
+                    emptyState.classList.remove('hidden');
+                } else {
+                    tbody.parentElement.classList.remove('hidden');
+                    emptyState.classList.add('hidden');
+                    filtered.forEach(student => {
+                        const statusBadge = student.status === 'active' 
+                            ? `<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-emerald-100 text-emerald-800">Active</span>`
+                            : `<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-slate-100 text-slate-600">Inactive</span>`;
+                        
+                        tbody.innerHTML += `
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="px-5 py-4 font-medium text-slate-900">${student.name}</td>
+                                <td class="px-5 py-4 text-slate-500">${student.subject}</td>
+                                <td class="px-5 py-4 text-slate-500">${utils.formatCurrency(student.monthlyFee)}</td>
+                                <td class="px-5 py-4 text-center">${statusBadge}</td>
+                                <td class="px-5 py-4 text-center text-sm font-medium space-x-2">
+                                    <button type="button" onclick="studentsModule.editStudent('${student.id}')" class="text-indigo-600 hover:text-indigo-900" title="Edit"><i class="fas fa-edit"></i></button>
+                                    <button type="button" onclick="studentsModule.viewAttendanceHistory('${student.id}')" class="text-slate-500 hover:text-slate-800" title="Attendance History"><i class="fas fa-calendar-alt"></i></button>
+                                    <button type="button" onclick="studentsModule.toggleStatus('${student.id}')" class="${student.status === 'active' ? 'text-rose-500 hover:text-rose-700' : 'text-emerald-500 hover:text-emerald-700'}" title="Toggle Status">
+                                        <i class="fas ${student.status === 'active' ? 'fa-user-slash' : 'fa-user-check'}"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                }
+            },
+            saveStudent: async (e) => {
+                e.preventDefault();
+                if (!userId) return;
+
+                const id = document.getElementById('form-student-id').value;
+                const student = {
+                    id: id || utils.generateUUID(),
+                    name: document.getElementById('form-name').value.trim(),
+                    phone: document.getElementById('form-phone').value.trim(),
+                    subject: document.getElementById('form-subject').value.trim(),
+                    monthlyFee: Number(document.getElementById('form-fee').value),
+                    joiningDate: document.getElementById('form-date').value,
+                    status: id ? appState.students.find(s => s.id === id).status : 'active'
+                };
+
+                uiUtils.closeModal('student-form-modal');
+                document.getElementById('student-form').reset();
+                
+                try {
+                    const docRef = doc(dbFirestore, 'artifacts', appId, 'users', userId, 'students', student.id);
+                    await setDoc(docRef, student);
+                    uiUtils.showToast(id ? "Student updated in cloud" : "New student synced to cloud");
+                } catch (err) {
+                    console.error("Error saving student:", err);
+                    uiUtils.showToast("Failed to save to cloud", "error");
+                }
+            },
+            editStudent: (id) => {
+                const student = appState.students.find(s => s.id === id);
+                if(!student) return;
+                document.getElementById('form-student-id').value = student.id;
+                document.getElementById('form-name').value = student.name;
+                document.getElementById('form-phone').value = student.phone;
+                document.getElementById('form-subject').value = student.subject;
+                document.getElementById('form-fee').value = student.monthlyFee;
+                document.getElementById('form-date').value = student.joiningDate;
+                document.getElementById('student-modal-title').innerText = "Edit Student Profile";
+                uiUtils.openModal('student-form-modal');
+            },
+            toggleStatus: (id) => {
+                if (!userId) return;
+                const student = appState.students.find(s => s.id === id);
+                if(!student) return;
+                const newStatus = student.status === 'active' ? 'inactive' : 'active';
+                const action = newStatus === 'inactive' ? 'deactivate' : 'reactivate';
+                
+                uiUtils.showConfirm(`Confirm Status Change`, `Are you sure you want to ${action} ${student.name}?`, newStatus==='inactive', async () => {
+                    try {
+                        const docRef = doc(dbFirestore, 'artifacts', appId, 'users', userId, 'students', id);
+                        await setDoc(docRef, { ...student, status: newStatus }, { merge: true });
+                        uiUtils.showToast(`Student marked as ${newStatus}`);
+                    } catch (err) {
+                        uiUtils.showToast("Failed to update status", "error");
+                    }
+                });
+            },
+            viewAttendanceHistory: (id) => {
+                const student = appState.students.find(s => s.id === id);
+                if (!student) return;
+
+                document.getElementById('attendance-history-title').innerText = `${student.name}'s Attendance History`;
+
+                const records = [];
+                Object.keys(appState.attendance).forEach(dateStr => {
+                    const dayRecords = appState.attendance[dateStr] || [];
+                    const found = dayRecords.find(r => r.studentId === id);
+                    if (found) {
+                        records.push({ date: dateStr, status: found.status });
+                    }
+                });
+
+                records.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                const presentCount = records.filter(r => r.status === 'present').length;
+                const absentCount = records.filter(r => r.status === 'absent').length;
+                const total = records.length;
+                const pct = total > 0 ? Math.round((presentCount / total) * 100) : 0;
+
+                document.getElementById('att-hist-present').innerText = presentCount;
+                document.getElementById('att-hist-absent').innerText = absentCount;
+                document.getElementById('att-hist-pct').innerText = `${pct}%`;
+
+                const body = document.getElementById('attendance-history-body');
+                body.innerHTML = '';
+
+                if (records.length === 0) {
+                    body.innerHTML = `<tr><td colspan="2" class="px-4 py-8 text-center text-slate-400">No attendance records found.</td></tr>`;
+                } else {
+                    records.forEach(r => {
+                        const badge = r.status === 'present'
+                            ? `<span class="px-2 py-1 text-xs font-semibold rounded-full bg-emerald-100 text-emerald-700"><i class="fas fa-check mr-1"></i>Present</span>`
+                            : `<span class="px-2 py-1 text-xs font-semibold rounded-full bg-rose-100 text-rose-700"><i class="fas fa-times mr-1"></i>Absent</span>`;
+                        body.innerHTML += `
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-4 py-2 text-slate-600">${utils.formatDate(r.date)}</td>
+                                <td class="px-4 py-2 text-right">${badge}</td>
+                            </tr>
+                        `;
+                    });
+                }
+                uiUtils.openModal('attendance-history-modal');
+            }
+        };
+
+        const attendanceModule = {
+            currentDate: null,
+            tempState: {}, 
+            
+            initView: () => {
+                const dateInput = document.getElementById('attendance-date');
+                if(!dateInput.value) dateInput.value = utils.getTodayStr();
+                attendanceModule.loadDate();
+            },
+            loadDate: () => {
+                const selectedDate = document.getElementById('attendance-date').value;
+                if (attendanceModule.currentDate !== selectedDate) {
+                    attendanceModule.tempState = {};
+                    attendanceModule.currentDate = selectedDate;
+                }
+
+                const activeStudents = appState.students.filter(s => s.status === 'active');
+                const listEl = document.getElementById('attendance-list');
+                const emptyState = document.getElementById('attendance-empty-state');
+                const badge = document.getElementById('attendance-status-badge');
+                
+                listEl.innerHTML = '';
+
+                if (activeStudents.length === 0) {
+                    listEl.parentElement.classList.add('hidden');
+                    emptyState.classList.remove('hidden');
+                    badge.classList.add('hidden');
+                    return;
+                }
+                
+                listEl.parentElement.classList.remove('hidden');
+                emptyState.classList.add('hidden');
+
+                const existingData = appState.attendance[attendanceModule.currentDate] || [];
+                if (existingData.length > 0) {
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+
+                activeStudents.forEach(student => {
+                    const record = existingData.find(r => r.studentId === student.id);
+                    let status = attendanceModule.tempState[student.id] || (record ? record.status : 'present'); 
+                    attendanceModule.tempState[student.id] = status;
+
+                    const isPresent = status === 'present';
+                    const li = document.createElement('li');
+                    li.className = "flex items-center justify-between px-5 py-4 hover:bg-slate-50 transition-colors";
+                    li.innerHTML = `
+                        <div class="flex items-center">
+                            <div class="h-10 w-10 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center font-bold mr-4">${student.name.charAt(0).toUpperCase()}</div>
+                            <div>
+                                <p class="text-sm font-semibold text-slate-900">${student.name}</p>
+                                <p class="text-xs text-slate-500">${student.subject}</p>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button type="button" onclick="attendanceModule.toggleStudent('${student.id}', 'present', this)" 
+                                class="att-btn present w-12 h-10 rounded-lg flex items-center justify-center transition-colors ${isPresent ? 'bg-emerald-500 text-white shadow-inner' : 'bg-slate-100 text-slate-400 hover:bg-slate-200'}">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            <button type="button" onclick="attendanceModule.toggleStudent('${student.id}', 'absent', this)" 
+                                class="att-btn absent w-12 h-10 rounded-lg flex items-center justify-center transition-colors ${!isPresent ? 'bg-rose-500 text-white shadow-inner' : 'bg-slate-100 text-slate-400 hover:bg-slate-200'}">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    `;
+                    listEl.appendChild(li);
+                });
+            },
+            toggleStudent: (studentId, status, btnEl) => {
+                attendanceModule.tempState[studentId] = status;
+                const container = btnEl.parentElement;
+                const presentBtn = container.querySelector('.present');
+                const absentBtn = container.querySelector('.absent');
+
+                if (status === 'present') {
+                    presentBtn.className = "att-btn present w-12 h-10 rounded-lg flex items-center justify-center transition-colors bg-emerald-500 text-white shadow-inner";
+                    absentBtn.className = "att-btn absent w-12 h-10 rounded-lg flex items-center justify-center transition-colors bg-slate-100 text-slate-400 hover:bg-slate-200";
+                } else {
+                    absentBtn.className = "att-btn absent w-12 h-10 rounded-lg flex items-center justify-center transition-colors bg-rose-500 text-white shadow-inner";
+                    presentBtn.className = "att-btn present w-12 h-10 rounded-lg flex items-center justify-center transition-colors bg-slate-100 text-slate-400 hover:bg-slate-200";
+                }
+            },
+            saveAttendance: async () => {
+                if (!userId || !attendanceModule.currentDate) return;
+                
+                const finalArray = Object.keys(attendanceModule.tempState).map(studentId => ({
+                    studentId: studentId,
+                    status: attendanceModule.tempState[studentId]
+                }));
+
+                try {
+                    const docRef = doc(dbFirestore, 'artifacts', appId, 'users', userId, 'attendance', attendanceModule.currentDate);
+                    await setDoc(docRef, { records: finalArray });
+                    uiUtils.showToast(`Roster saved to cloud for ${utils.formatDate(attendanceModule.currentDate)}`);
+                } catch (err) {
+                    uiUtils.showToast("Failed to save roster to cloud", "error");
+                }
+            }
+        };
+
+        const financeModule = {
+            render: (preselectId = null) => {
+                const select = document.getElementById('finance-student-select');
+                const currentSelection = preselectId || select.value;
+
+                select.innerHTML = '<option value="">-- Choose a Student --</option>';
+                appState.students.forEach(s => {
+                    const statusStr = s.status === 'inactive' ? ' (Inactive)' : '';
+                    select.innerHTML += `<option value="${s.id}">${s.name}${statusStr} - ${s.subject}</option>`;
+                });
+                
+                if (!document.getElementById('pay-date').value) {
+                    document.getElementById('pay-date').value = utils.getTodayStr();
+                }
+                
+                if (currentSelection && appState.students.some(s => s.id === currentSelection)) {
+                    select.value = currentSelection;
+                    financeModule.loadStudentData();
+                } else {
+                    document.getElementById('finance-profile').classList.add('hidden');
+                }
+            },
+            loadStudentData: () => {
+                const studentId = document.getElementById('finance-student-select').value;
+                const profileDiv = document.getElementById('finance-profile');
+                
+                if (!studentId) {
+                    profileDiv.classList.add('hidden');
+                    return;
+                }
+
+                const student = appState.students.find(s => s.id === studentId);
+                const fin = utils.calculateDues(student);
+
+                document.getElementById('fin-accrued').innerText = utils.formatCurrency(fin.totalAccrued);
+                document.getElementById('fin-accrued-meta').innerText = `Since ${utils.formatDate(student.joiningDate)} (${fin.monthsElapsed} mos @ ₹${student.monthlyFee})`;
+                document.getElementById('fin-paid').innerText = utils.formatCurrency(fin.totalPaid);
+                
+                const pendingEl = document.getElementById('fin-pending');
+                pendingEl.innerText = utils.formatCurrency(fin.pendingBalance);
+                
+                if (fin.pendingBalance > 0) {
+                    pendingEl.parentElement.classList.replace('border-slate-200', 'border-rose-200');
+                    pendingEl.className = "text-2xl font-bold text-rose-600";
+                    pendingEl.parentElement.querySelector('.absolute').classList.remove('hidden');
+                } else {
+                    pendingEl.parentElement.classList.replace('border-rose-200', 'border-slate-200');
+                    pendingEl.className = "text-2xl font-bold text-slate-800";
+                    pendingEl.parentElement.querySelector('.absolute').classList.add('hidden');
+                }
+
+                const ledgerTbody = document.getElementById('ledger-table-body');
+                ledgerTbody.innerHTML = '';
+                const studentPayments = appState.payments
+                    .filter(p => p.studentId === studentId)
+                    .sort((a, b) => new Date(b.paymentDate) - new Date(a.paymentDate));
+
+                if (studentPayments.length === 0) {
+                    ledgerTbody.innerHTML = `<tr><td colspan="3" class="px-5 py-8 text-center text-slate-400">No payment history found.</td></tr>`;
+                } else {
+                    studentPayments.forEach(p => {
+                        ledgerTbody.innerHTML += `
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-5 py-3 text-slate-600">${utils.formatDate(p.paymentDate)}</td>
+                                <td class="px-5 py-3 font-semibold text-emerald-600">${utils.formatCurrency(p.amountPaid)}</td>
+                                <td class="px-5 py-3 text-slate-500 text-xs">${p.remarks || '-'}</td>
+                            </tr>
+                        `;
+                    });
+                }
+
+                profileDiv.classList.remove('hidden');
+            },
+            processPayment: async (e) => {
+                e.preventDefault();
+                if (!userId) return;
+
+                const studentId = document.getElementById('finance-student-select').value;
+                if (!studentId) return;
+
+                const amount = Number(document.getElementById('pay-amount').value);
+                const date = document.getElementById('pay-date').value;
+                const remarks = document.getElementById('pay-remarks').value.trim();
+
+                const transaction = {
+                    transactionId: utils.generateUUID(),
+                    studentId: studentId,
+                    amountPaid: amount,
+                    paymentDate: date,
+                    remarks: remarks
+                };
+
+                try {
+                    const docRef = doc(dbFirestore, 'artifacts', appId, 'users', userId, 'payments', transaction.transactionId);
+                    await setDoc(docRef, transaction);
+                    
+                    uiUtils.showToast("Payment securely logged to cloud");
+                    document.getElementById('pay-amount').value = '';
+                    document.getElementById('pay-remarks').value = '';
+                } catch (err) {
+                    uiUtils.showToast("Failed to log transaction", "error");
+                }
+            }
+        };
+
+        const settingsModule = {
+            exportData: () => {
+                const dataStr = JSON.stringify(appState, null, 2);
+                const blob = new Blob([dataStr], { type: "application/json" });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `tuition_cloud_backup_${utils.getTodayStr()}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                uiUtils.showToast("Cloud snapshot exported to Downloads");
+            },
+            handleImport: (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const parsed = JSON.parse(event.target.result);
+                        if (parsed.students && parsed.attendance && parsed.payments) {
+                            uiUtils.showConfirm("Restore & Merge to Cloud?", "This will upload the backup data to the cloud database. Existing items with the same IDs will be updated.", false, async () => {
+                                if(!userId) return;
+                                uiUtils.showToast("Starting cloud restoration...", "success");
+                                
+                                try {
+                                    for (const s of parsed.students) {
+                                        await setDoc(doc(dbFirestore, 'artifacts', appId, 'users', userId, 'students', s.id), s);
+                                    }
+                                    for (const date of Object.keys(parsed.attendance)) {
+                                        await setDoc(doc(dbFirestore, 'artifacts', appId, 'users', userId, 'attendance', date), { records: parsed.attendance[date] });
+                                    }
+                                    for (const p of parsed.payments) {
+                                        await setDoc(doc(dbFirestore, 'artifacts', appId, 'users', userId, 'payments', p.transactionId), p);
+                                    }
+                                    uiUtils.showToast("Restoration complete");
+                                } catch (err) {
+                                    uiUtils.showToast("Error during cloud upload", "error");
+                                }
+                            });
+                        } else {
+                            throw new Error("Invalid schema");
+                        }
+                    } catch (err) {
+                        uiUtils.showToast("Invalid backup file.", "error");
+                    }
+                    e.target.value = ''; 
+                };
+                reader.readAsText(file);
+            },
+            requestFactoryReset: () => {
+                uiUtils.showConfirm("CRITICAL: Factory Reset", "You are about to permanently delete all data from the cloud database. This action cannot be undone.", true, async () => {
+                    if (!userId) return;
+                    try {
+                        const collections = ['students', 'attendance', 'payments'];
+                        for (const colName of collections) {
+                            const colRef = collection(dbFirestore, 'artifacts', appId, 'users', userId, colName);
+                            const snap = await getDocs(colRef);
+                            const deletePromises = snap.docs.map(d => deleteDoc(d.ref));
+                            await Promise.all(deletePromises);
+                        }
+                        uiUtils.showToast("Cloud database wiped successfully.");
+                    } catch (err) {
+                        uiUtils.showToast("Error resetting database.", "error");
+                    }
+                });
+            }
+        };
+
+        const app = {
+            currentView: 'dashboard',
+            switchView: (viewId, param = null) => {
+                app.currentView = viewId;
+                document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden'));
+                document.getElementById(`view-${viewId}`).classList.remove('hidden');
+
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    if (btn.dataset.view === viewId) {
+                        btn.classList.add('text-white'); 
+                        btn.classList.add('text-indigo-600'); 
+                        if (btn.tagName === 'BUTTON') btn.classList.add('bg-slate-800'); 
+                    } else {
+                        btn.classList.remove('text-white', 'text-indigo-600', 'bg-slate-800');
+                    }
+                });
+
+                const titles = { dashboard: 'Dashboard', students: 'Directory', attendance: 'Roll Call', finance: 'Ledger', settings: 'Settings' };
+                document.getElementById('mobile-header-title').innerText = titles[viewId];
+
+                app.reRenderCurrentView(param);
+            },
+            reRenderCurrentView: (param = null) => {
+                switch(app.currentView) {
+                    case 'dashboard': dashboardModule.render(); break;
+                    case 'students': studentsModule.render(); break;
+                    case 'attendance': 
+                        if(!document.getElementById('attendance-date').value) {
+                            attendanceModule.initView();
+                        } else {
+                            attendanceModule.loadDate();
+                        }
+                        break;
+                    case 'finance': financeModule.render(param); break;
+                }
+            },
+            setupRealtimeListeners: () => {
+                const handleError = (err) => console.error("Firestore sync error:", err);
+                
+                onSnapshot(collection(dbFirestore, 'artifacts', appId, 'users', userId, 'students'), (snap) => {
+                    appState.students = snap.docs.map(d => d.data());
+                    app.reRenderCurrentView();
+                }, handleError);
+
+                onSnapshot(collection(dbFirestore, 'artifacts', appId, 'users', userId, 'attendance'), (snap) => {
+                    appState.attendance = {};
+                    snap.docs.forEach(d => {
+                        appState.attendance[d.id] = d.data().records;
+                    });
+                    app.reRenderCurrentView();
+                }, handleError);
+
+                onSnapshot(collection(dbFirestore, 'artifacts', appId, 'users', userId, 'payments'), (snap) => {
+                    appState.payments = snap.docs.map(d => d.data());
+                    app.reRenderCurrentView();
+                }, handleError);
+            },
+            boot: async () => {
+                try {
+                    // Authenticate
+                    if (customToken) {
+                        await signInWithCustomToken(auth, customToken);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                    userId = auth.currentUser.uid;
+
+                    // Setup realtime listeners which will populate appState and re-render
+                    app.setupRealtimeListeners();
+                    
+                    // Setup UI Structure
+                    uiUtils.setupNav();
+                    app.switchView('dashboard');
+
+                    // Hide Loading screen
+                    setTimeout(() => {
+                        const loader = document.getElementById('app-loader');
+                        loader.classList.add('fade-out');
+                        setTimeout(() => loader.remove(), 300);
+                    }, 500);
+
+                } catch (error) {
+                    console.error("Initialization Error:", error);
+                    document.getElementById('app-loader').innerHTML = `
+                        <i class="fas fa-exclamation-triangle text-4xl text-rose-500 mb-4"></i>
+                        <h2 class="text-xl font-bold tracking-tight mb-2">Connection Error</h2>
+                        <p class="font-medium text-slate-400">Failed to connect to cloud database.</p>
+                    `;
+                }
+            }
+        };
+
+        // Expose modules to global window for HTML inline event handlers
+        window.uiUtils = uiUtils;
+        window.dashboardModule = dashboardModule;
+        window.studentsModule = studentsModule;
+        window.attendanceModule = attendanceModule;
+        window.financeModule = financeModule;
+        window.settingsModule = settingsModule;
+        window.app = app;
+
+        // Bootstrap on Load
+        document.addEventListener('DOMContentLoaded', app.boot);
+
+    </script>
+</body>
+</html>
