@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Tuition Tracker Pro - Cloud Sync</title>
+    <title>Tuition Tracker Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -20,35 +20,21 @@
         .toast-leave { animation: slideOutRight 0.3s forwards; }
         @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         @keyframes slideOutRight { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
-        
-        #app-loader { transition: opacity 0.3s ease; }
-        .fade-out { opacity: 0; pointer-events: none; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 flex h-screen overflow-hidden selection:bg-indigo-200">
 
-    <!-- Loading Overlay for Firebase Auth & Data Fetching -->
-    <div id="app-loader" class="fixed inset-0 bg-slate-900 z-[100] flex flex-col items-center justify-center text-white">
-        <i class="fas fa-circle-notch fa-spin text-4xl text-indigo-500 mb-4"></i>
-        <h2 class="text-xl font-bold tracking-tight mb-2">TuitionPro Cloud</h2>
-        <p class="font-medium text-slate-400">Authenticating and Syncing Database...</p>
-    </div>
-
     <!-- Desktop Sidebar -->
     <aside class="hidden md:flex flex-col w-64 bg-slate-900 text-slate-300 h-full shadow-xl z-20">
-        <div class="p-6 flex items-center space-x-3 text-white border-b border-slate-800 relative overflow-hidden">
-            <div class="absolute -right-4 -top-4 w-16 h-16 bg-indigo-500/20 rounded-full blur-xl"></div>
-            <div class="bg-indigo-500 p-2 rounded-lg relative z-10"><i class="fas fa-graduation-cap text-xl"></i></div>
-            <div class="relative z-10">
-                <h1 class="text-xl font-bold tracking-tight text-white leading-tight">TuitionPro</h1>
-                <p class="text-[10px] text-emerald-400 font-medium flex items-center"><i class="fas fa-cloud text-[8px] mr-1"></i> Cloud Synced</p>
-            </div>
+        <div class="p-6 flex items-center space-x-3 text-white border-b border-slate-800">
+            <div class="bg-indigo-500 p-2 rounded-lg"><i class="fas fa-graduation-cap text-xl"></i></div>
+            <h1 class="text-xl font-bold tracking-tight">TuitionPro</h1>
         </div>
         <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto" id="desktop-nav">
             <!-- Navigation items injected via JS -->
         </nav>
-        <div class="p-4 border-t border-slate-800 flex items-center text-xs text-slate-500 justify-center space-x-2">
-            <i class="fas fa-shield-alt"></i> <span>Secure Cloud Sync</span>
+        <div class="p-4 border-t border-slate-800 text-xs text-slate-500 text-center flex items-center justify-center space-x-2">
+            <i class="fas fa-cloud text-emerald-400"></i> <span class="text-emerald-400 font-medium">Cloud Synced</span>
         </div>
     </aside>
 
@@ -58,24 +44,21 @@
         <header class="md:hidden bg-white shadow-sm px-4 py-3 flex justify-between items-center z-10">
             <div class="flex items-center space-x-2 text-indigo-700">
                 <i class="fas fa-graduation-cap text-xl"></i>
-                <div class="flex flex-col">
-                    <h1 class="text-lg font-bold leading-tight">TuitionPro</h1>
-                    <span class="text-[9px] text-emerald-500 font-bold -mt-1"><i class="fas fa-cloud"></i> Synced</span>
-                </div>
+                <h1 class="text-lg font-bold">TuitionPro</h1>
             </div>
-            <div class="text-slate-400 text-sm font-medium" id="mobile-header-title">Dashboard</div>
+            <div class="text-slate-400 text-sm" id="mobile-header-title">Dashboard</div>
         </header>
 
         <!-- Dynamic Views Container -->
         <div class="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8 relative scroll-smooth hide-scrollbar" id="main-content">
             
-            <!-- Dashboard View -->
             <section id="view-dashboard" class="view-section hidden space-y-6">
                 <div>
                     <h2 class="text-2xl font-bold text-slate-800">Overview Dashboard</h2>
-                    <p class="text-slate-500 text-sm mt-1">Real-time metrics for your tuition classes directly from the cloud.</p>
+                    <p class="text-slate-500 text-sm mt-1">Real-time metrics for your tuition classes.</p>
                 </div>
                 
+                <!-- KPI Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-5 flex items-center justify-between">
                         <div>
@@ -100,6 +83,7 @@
                     </div>
                 </div>
 
+                <!-- Triage List -->
                 <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
                     <div class="px-5 py-4 border-b border-slate-100 flex justify-between items-center">
                         <h3 class="font-semibold text-slate-800"><i class="fas fa-exclamation-circle text-rose-500 mr-2"></i>Urgent Action: Overdue Fees</h3>
@@ -122,23 +106,24 @@
                 </div>
             </section>
 
-            <!-- Students View -->
             <section id="view-students" class="view-section hidden space-y-6">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <h2 class="text-2xl font-bold text-slate-800">Student Directory</h2>
                         <p class="text-slate-500 text-sm mt-1">Manage enrollments and demographic data.</p>
                     </div>
-                    <button onclick="uiUtils.openModal('student-form-modal')" type="button" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition-colors flex items-center justify-center">
+                    <button onclick="uiUtils.openModal('student-form-modal')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition-colors flex items-center justify-center">
                         <i class="fas fa-plus mr-2"></i> Add Student
                     </button>
                 </div>
 
+                <!-- Search & Filter -->
                 <div class="bg-white p-3 rounded-xl shadow-sm border border-slate-100 flex items-center">
                     <i class="fas fa-search text-slate-400 ml-2 mr-3"></i>
                     <input type="text" id="student-search" placeholder="Search students by name or subject..." class="flex-1 outline-none text-sm bg-transparent" oninput="studentsModule.filterStudents(this.value)">
                 </div>
 
+                <!-- Data Table -->
                 <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-sm whitespace-nowrap">
@@ -163,7 +148,6 @@
                 </div>
             </section>
 
-            <!-- Attendance View -->
             <section id="view-attendance" class="view-section hidden space-y-6">
                 <div>
                     <h2 class="text-2xl font-bold text-slate-800">Daily Roll Call</h2>
@@ -175,10 +159,10 @@
                         <i class="fas fa-calendar-day text-indigo-500 mr-3 text-lg"></i>
                         <input type="date" id="attendance-date" class="bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5" onchange="attendanceModule.loadDate()">
                     </div>
-                    <div id="attendance-status-badge" class="hidden px-3 py-1 text-xs font-medium rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200 shadow-sm flex items-center justify-center">
+                    <div id="attendance-status-badge" class="hidden px-3 py-1 text-xs font-medium rounded-full bg-emerald-100 text-emerald-700">
                         <i class="fas fa-cloud-check mr-1"></i> Synced to Cloud
                     </div>
-                    <button onclick="attendanceModule.saveAttendance()" type="button" class="w-full sm:w-auto bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2.5 rounded-lg font-medium shadow-sm transition-colors flex items-center justify-center">
+                    <button onclick="attendanceModule.saveAttendance()" class="w-full sm:w-auto bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2.5 rounded-lg font-medium shadow-sm transition-colors flex items-center justify-center">
                         <i class="fas fa-cloud-upload-alt mr-2"></i> Commit Roster
                     </button>
                 </div>
@@ -194,11 +178,10 @@
                 </div>
             </section>
 
-            <!-- Finance View -->
             <section id="view-finance" class="view-section hidden space-y-6">
                 <div>
                     <h2 class="text-2xl font-bold text-slate-800">Financial Ledger</h2>
-                    <p class="text-slate-500 text-sm mt-1">Track fee remittances and pending balances securely in the cloud.</p>
+                    <p class="text-slate-500 text-sm mt-1">Track fee remittances and pending balances.</p>
                 </div>
 
                 <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-5">
@@ -209,34 +192,27 @@
                     </select>
                 </div>
 
+                <!-- Financial Profile (Hidden until student selected) -->
                 <div id="finance-profile" class="hidden space-y-6">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="bg-slate-800 text-white rounded-xl p-5 shadow-sm relative overflow-hidden">
-                            <i class="fas fa-file-invoice absolute -right-4 -bottom-4 text-6xl text-slate-700 opacity-50"></i>
-                            <div class="relative z-10">
-                                <p class="text-slate-400 text-sm font-medium mb-1">Total Accrued Fees</p>
-                                <h3 class="text-2xl font-bold" id="fin-accrued">₹0</h3>
-                                <p class="text-xs text-slate-500 mt-2" id="fin-accrued-meta">Since joining</p>
-                            </div>
+                        <div class="bg-slate-800 text-white rounded-xl p-5 shadow-sm">
+                            <p class="text-slate-400 text-sm font-medium mb-1">Total Accrued Fees</p>
+                            <h3 class="text-2xl font-bold" id="fin-accrued">₹0</h3>
+                            <p class="text-xs text-slate-500 mt-2" id="fin-accrued-meta">Since joining</p>
                         </div>
-                        <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm relative overflow-hidden">
-                            <i class="fas fa-hand-holding-usd absolute -right-4 -bottom-4 text-6xl text-emerald-50 opacity-50"></i>
-                            <div class="relative z-10">
-                                <p class="text-slate-500 text-sm font-medium mb-1">Total Paid History</p>
-                                <h3 class="text-2xl font-bold text-emerald-600" id="fin-paid">₹0</h3>
-                            </div>
+                        <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+                            <p class="text-slate-500 text-sm font-medium mb-1">Total Paid History</p>
+                            <h3 class="text-2xl font-bold text-emerald-600" id="fin-paid">₹0</h3>
                         </div>
                         <div class="bg-white border border-rose-200 rounded-xl p-5 shadow-sm relative overflow-hidden">
-                            <div class="absolute top-0 right-0 bg-rose-500 text-white text-[10px] font-bold px-2 py-1 rounded-bl-lg z-20">DUE</div>
-                            <i class="fas fa-exclamation-circle absolute -right-4 -bottom-4 text-6xl text-rose-50 opacity-50"></i>
-                            <div class="relative z-10">
-                                <p class="text-slate-500 text-sm font-medium mb-1">Pending Balance</p>
-                                <h3 class="text-2xl font-bold text-rose-600" id="fin-pending">₹0</h3>
-                            </div>
+                            <div class="absolute top-0 right-0 bg-rose-500 text-white text-[10px] font-bold px-2 py-1 rounded-bl-lg">DUE</div>
+                            <p class="text-slate-500 text-sm font-medium mb-1">Pending Balance</p>
+                            <h3 class="text-2xl font-bold text-rose-600" id="fin-pending">₹0</h3>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Log Payment Form -->
                         <div class="lg:col-span-1 bg-white rounded-xl shadow-sm border border-slate-100 p-5 h-fit">
                             <h3 class="font-semibold text-slate-800 mb-4 border-b pb-2">Record Remittance</h3>
                             <form id="payment-form" onsubmit="financeModule.processPayment(event)" class="space-y-4">
@@ -252,12 +228,13 @@
                                     <label class="block text-sm font-medium text-slate-700">Remarks (Optional)</label>
                                     <input type="text" id="pay-remarks" placeholder="e.g., Cash, UPI, Month of June" class="mt-1 bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5">
                                 </div>
-                                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg font-medium transition-colors flex items-center justify-center">
-                                    <i class="fas fa-check-circle mr-2"></i> Log Transaction
+                                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg font-medium transition-colors">
+                                    Log Transaction
                                 </button>
                             </form>
                         </div>
 
+                        <!-- Transaction Ledger -->
                         <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden flex flex-col">
                             <div class="px-5 py-4 border-b border-slate-100 bg-slate-50">
                                 <h3 class="font-semibold text-slate-800">Transaction History</h3>
@@ -281,40 +258,41 @@
                 </div>
             </section>
 
-            <!-- Settings View -->
             <section id="view-settings" class="view-section hidden space-y-6">
                 <div>
                     <h2 class="text-2xl font-bold text-slate-800">System Preferences & Security</h2>
-                    <p class="text-slate-500 text-sm mt-1">Manage cloud database operations and application settings.</p>
+                    <p class="text-slate-500 text-sm mt-1">Manage cloud database and application settings.</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Backup & Restore -->
                     <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6 space-y-4">
-                        <h3 class="font-semibold text-slate-800 flex items-center"><i class="fas fa-cloud-download-alt text-indigo-500 mr-2"></i> Data Portability</h3>
-                        <p class="text-sm text-slate-500">Your data is securely stored in Firebase Firestore. You can export a local backup or restore data to the cloud.</p>
+                        <h3 class="font-semibold text-slate-800 flex items-center"><i class="fas fa-database text-indigo-500 mr-2"></i> Data Portability</h3>
+                        <p class="text-sm text-slate-500">Export a local backup or restore data to the Cloud database.</p>
                         
                         <div class="space-y-3 pt-2">
-                            <button onclick="settingsModule.exportData()" type="button" class="w-full bg-slate-800 hover:bg-slate-900 text-white py-2.5 rounded-lg text-sm font-medium transition-colors flex justify-center items-center">
+                            <button onclick="settingsModule.exportData()" class="w-full bg-slate-800 hover:bg-slate-900 text-white py-2.5 rounded-lg text-sm font-medium transition-colors flex justify-center items-center">
                                 <i class="fas fa-file-export mr-2"></i> Download Backup JSON
                             </button>
                             
                             <div class="relative">
                                 <input type="file" id="import-file" accept=".json" class="hidden" onchange="settingsModule.handleImport(event)">
-                                <button onclick="document.getElementById('import-file').click()" type="button" class="w-full bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 py-2.5 rounded-lg text-sm font-medium transition-colors flex justify-center items-center">
-                                    <i class="fas fa-cloud-upload-alt mr-2"></i> Restore to Cloud
+                                <button onclick="document.getElementById('import-file').click()" class="w-full bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 py-2.5 rounded-lg text-sm font-medium transition-colors flex justify-center items-center">
+                                    <i class="fas fa-file-import mr-2"></i> Restore from Backup
                                 </button>
                             </div>
                         </div>
                     </div>
 
+                    <!-- Danger Zone -->
                     <div class="bg-white rounded-xl shadow-sm border border-rose-100 p-6 space-y-4 relative overflow-hidden">
                         <div class="absolute top-0 left-0 w-1 h-full bg-rose-500"></div>
                         <h3 class="font-semibold text-rose-600 flex items-center"><i class="fas fa-exclamation-triangle mr-2"></i> Danger Zone</h3>
-                        <p class="text-sm text-slate-500">Performing a factory reset will permanently delete all students, attendance records, and financial ledgers from the cloud database.</p>
+                        <p class="text-sm text-slate-500">Performing a factory reset will permanently delete all data from the Firebase Cloud Database.</p>
                         
                         <div class="pt-4">
-                            <button onclick="settingsModule.requestFactoryReset()" type="button" class="bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 py-2.5 px-4 rounded-lg text-sm font-medium transition-colors w-full sm:w-auto">
-                                Factory Reset Cloud DB
+                            <button onclick="settingsModule.requestFactoryReset()" class="bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 py-2.5 px-4 rounded-lg text-sm font-medium transition-colors w-full sm:w-auto">
+                                Factory Reset Database
                             </button>
                         </div>
                     </div>
@@ -324,7 +302,7 @@
 
         <nav class="md:hidden bg-white border-t border-slate-200 fixed bottom-0 w-full z-20 pb-safe" id="mobile-nav">
             <ul class="flex justify-around items-center h-16">
-                <!-- Injected via JS -->
+                <!-- Injected via JS to keep synced with desktop -->
             </ul>
         </nav>
     </main>
@@ -334,7 +312,7 @@
         <div class="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden transform transition-all">
             <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
                 <h3 class="font-bold text-slate-800" id="student-modal-title">Register New Student</h3>
-                <button type="button" onclick="uiUtils.closeModal('student-form-modal')" class="text-slate-400 hover:text-slate-600"><i class="fas fa-times"></i></button>
+                <button onclick="uiUtils.closeModal('student-form-modal')" class="text-slate-400 hover:text-slate-600"><i class="fas fa-times"></i></button>
             </div>
             <form id="student-form" onsubmit="studentsModule.saveStudent(event)" class="p-6 space-y-4">
                 <input type="hidden" id="form-student-id">
@@ -362,7 +340,7 @@
                 </div>
                 <div class="pt-4 flex justify-end space-x-3">
                     <button type="button" onclick="uiUtils.closeModal('student-form-modal')" class="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-md shadow-sm hover:bg-slate-50">Cancel</button>
-                    <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700">Save to Cloud</button>
+                    <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700">Save Profile</button>
                 </div>
             </form>
         </div>
@@ -373,7 +351,7 @@
         <div class="bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden transform transition-all max-h-[85vh] flex flex-col">
             <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
                 <h3 class="font-bold text-slate-800" id="attendance-history-title">Attendance History</h3>
-                <button type="button" onclick="uiUtils.closeModal('attendance-history-modal')" class="text-slate-400 hover:text-slate-600"><i class="fas fa-times"></i></button>
+                <button onclick="uiUtils.closeModal('attendance-history-modal')" class="text-slate-400 hover:text-slate-600"><i class="fas fa-times"></i></button>
             </div>
             <div class="p-6 space-y-4 overflow-y-auto flex-1">
                 <div class="grid grid-cols-3 gap-3">
@@ -407,7 +385,7 @@
         </div>
     </div>
 
-    <!-- Confirm Modal -->
+    <!-- Custom Confirmation Modal -->
     <div id="confirm-modal" class="fixed inset-0 bg-slate-900/50 hidden z-[60] flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white rounded-xl shadow-xl w-full max-w-sm p-6 text-center transform transition-all">
             <div id="confirm-icon" class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-rose-100 mb-4">
@@ -424,21 +402,17 @@
         </div>
     </div>
 
-    <!-- Toast Container -->
+    <!-- Toast Notification Container -->
     <div id="toast-container" class="fixed top-4 right-4 z-[70] flex flex-col gap-2 pointer-events-none"></div>
 
+    <!-- Type Module is critical for Github Pages when importing external packages -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDocs, collection, onSnapshot, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        // Import Firebase directly via CDN for Static Hosting Compatibility (GitHub Pages)
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-        // Global Variables
-        const appId = typeof __app_id !== 'undefined' ? __app_id : '1:314227009599:web:ef05d1c5560841718b308a';
-        const customToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-        let userId = null;
-        
-        // Initial fallback config (provided by user)
-        let configToUse = {
+        // Your exact Firebase Config
+        const firebaseConfig = {
             apiKey: "AIzaSyDJXpAReUe40BZCT8IFblzxeD5MxzGuR2c",
             authDomain: "tution-pro-32a33.firebaseapp.com",
             projectId: "tution-pro-32a33",
@@ -446,23 +420,47 @@
             messagingSenderId: "314227009599",
             appId: "1:314227009599:web:ef05d1c5560841718b308a"
         };
+
+        // Initialize Firebase Apps
+        const firebaseApp = initializeApp(firebaseConfig);
+        const firestoreDB = getFirestore(firebaseApp);
+        const globalDocRef = doc(firestoreDB, "tuitionAppDb", "mainData");
         
-        // Use environment config if present
-        if (typeof __firebase_config !== 'undefined') {
-            configToUse = JSON.parse(__firebase_config);
-        }
-
-        const appFirebase = initializeApp(configToUse);
-        const auth = getAuth(appFirebase);
-        const dbFirestore = getFirestore(appFirebase);
-
-        /**
-         * State Management Memory Mirror
-         */
         let appState = {
             students: [],
             attendance: {}, // Map: "YYYY-MM-DD" -> [{studentId, status}]
             payments: []    // Array: {transactionId, studentId, amountPaid, paymentDate, remarks}
+        };
+
+        const db = {
+            init: async () => {
+                try {
+                    // Fetch data from cloud
+                    const snap = await getDoc(globalDocRef);
+                    if (snap.exists()) {
+                        appState = snap.data();
+                        // Security fallback if arrays are missing
+                        if(!appState.students) appState.students = [];
+                        if(!appState.attendance) appState.attendance = {};
+                        if(!appState.payments) appState.payments = [];
+                    } else {
+                        // DB does not exist yet, save empty schema
+                        await db.save();
+                    }
+                } catch (e) {
+                    console.error("Firestore Error:", e);
+                    uiUtils.showToast("Cloud connection error. Showing local defaults.", "error");
+                }
+            },
+            save: async () => {
+                try {
+                    // Pushes state back to the cloud document
+                    await setDoc(globalDocRef, appState);
+                } catch (e) {
+                    console.error("Save Error:", e);
+                    uiUtils.showToast("Failed to save changes to Cloud", "error");
+                }
+            }
         };
 
         const utils = {
@@ -560,8 +558,6 @@
 
                 const desktopNav = document.getElementById('desktop-nav');
                 const mobileNav = document.querySelector('#mobile-nav ul');
-                desktopNav.innerHTML = '';
-                mobileNav.innerHTML = '';
 
                 navItems.forEach(item => {
                     const dBtn = document.createElement('button');
@@ -581,15 +577,6 @@
             }
         };
 
-        document.getElementById('confirm-action-btn').addEventListener('click', uiUtils.executeConfirm);
-
-        // Reset form on close
-        document.querySelector('#student-form-modal .fa-times').parentElement.addEventListener('click', () => {
-            document.getElementById('student-form').reset();
-            document.getElementById('form-student-id').value = '';
-            document.getElementById('student-modal-title').innerText = "Register New Student";
-        });
-
         const dashboardModule = {
             render: () => {
                 const activeStudents = appState.students.filter(s => s.status === 'active');
@@ -603,11 +590,11 @@
                     const pct = Math.round((presentCount / todayRecord.length) * 100);
                     attPct = `${pct}%`;
                 } else if (activeStudents.length > 0 && todayRecord.length === 0) {
-                     attPct = "N/A";
+                     attPct = "N/A"; 
                 }
                 document.getElementById('dash-attendance-pct').innerText = attPct;
 
-                const currMonth = new Date().toISOString().substring(0, 7); 
+                const currMonth = new Date().toISOString().substring(0, 7);
                 const monthlyRevenue = appState.payments
                     .filter(p => p.paymentDate.startsWith(currMonth))
                     .reduce((sum, p) => sum + Number(p.amountPaid), 0);
@@ -631,7 +618,7 @@
                                 <td class="px-5 py-3 text-slate-500">${student.phone}</td>
                                 <td class="px-5 py-3 text-right font-bold text-rose-600">${utils.formatCurrency(student.pending)}</td>
                                 <td class="px-5 py-3 text-center">
-                                    <button type="button" onclick="app.switchView('finance', '${student.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-3 py-1 rounded text-xs font-medium">Collect</button>
+                                    <button onclick="app.switchView('finance', '${student.id}')" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-3 py-1 rounded text-xs font-medium">Collect</button>
                                 </td>
                             </tr>
                         `;
@@ -642,14 +629,15 @@
 
         const studentsModule = {
             render: () => {
-                studentsModule.filterStudents(document.getElementById('student-search').value);
+                studentsModule.filterStudents('');
+                document.getElementById('student-search').value = '';
             },
             filterStudents: (query) => {
                 const tbody = document.getElementById('student-table-body');
                 const emptyState = document.getElementById('student-empty-state');
                 tbody.innerHTML = '';
                 
-                const q = query ? query.toLowerCase() : '';
+                const q = query.toLowerCase();
                 const filtered = appState.students.filter(s => 
                     s.name.toLowerCase().includes(q) || 
                     s.subject.toLowerCase().includes(q)
@@ -673,9 +661,9 @@
                                 <td class="px-5 py-4 text-slate-500">${utils.formatCurrency(student.monthlyFee)}</td>
                                 <td class="px-5 py-4 text-center">${statusBadge}</td>
                                 <td class="px-5 py-4 text-center text-sm font-medium space-x-2">
-                                    <button type="button" onclick="studentsModule.editStudent('${student.id}')" class="text-indigo-600 hover:text-indigo-900" title="Edit"><i class="fas fa-edit"></i></button>
-                                    <button type="button" onclick="studentsModule.viewAttendanceHistory('${student.id}')" class="text-slate-500 hover:text-slate-800" title="Attendance History"><i class="fas fa-calendar-alt"></i></button>
-                                    <button type="button" onclick="studentsModule.toggleStatus('${student.id}')" class="${student.status === 'active' ? 'text-rose-500 hover:text-rose-700' : 'text-emerald-500 hover:text-emerald-700'}" title="Toggle Status">
+                                    <button onclick="studentsModule.editStudent('${student.id}')" class="text-indigo-600 hover:text-indigo-900" title="Edit"><i class="fas fa-edit"></i></button>
+                                    <button onclick="studentsModule.viewAttendanceHistory('${student.id}')" class="text-slate-500 hover:text-slate-800" title="Attendance History"><i class="fas fa-calendar-alt"></i></button>
+                                    <button onclick="studentsModule.toggleStatus('${student.id}')" class="${student.status === 'active' ? 'text-rose-500 hover:text-rose-700' : 'text-emerald-500 hover:text-emerald-700'}" title="Toggle Status">
                                         <i class="fas ${student.status === 'active' ? 'fa-user-slash' : 'fa-user-check'}"></i>
                                     </button>
                                 </td>
@@ -686,8 +674,6 @@
             },
             saveStudent: async (e) => {
                 e.preventDefault();
-                if (!userId) return;
-
                 const id = document.getElementById('form-student-id').value;
                 const student = {
                     id: id || utils.generateUUID(),
@@ -699,21 +685,22 @@
                     status: id ? appState.students.find(s => s.id === id).status : 'active'
                 };
 
-                uiUtils.closeModal('student-form-modal');
-                document.getElementById('student-form').reset();
-                
-                try {
-                    const docRef = doc(dbFirestore, 'artifacts', appId, 'users', userId, 'students', student.id);
-                    await setDoc(docRef, student);
-                    uiUtils.showToast(id ? "Student updated in cloud" : "New student synced to cloud");
-                } catch (err) {
-                    console.error("Error saving student:", err);
-                    uiUtils.showToast("Failed to save to cloud", "error");
+                if (id) {
+                    const idx = appState.students.findIndex(s => s.id === id);
+                    appState.students[idx] = student;
+                    uiUtils.showToast("Student updated successfully");
+                } else {
+                    appState.students.push(student);
+                    uiUtils.showToast("New student registered to Cloud");
                 }
+                
+                await db.save(); // Sync to Firebase
+                uiUtils.closeModal('student-form-modal');
+                studentsModule.render();
+                document.getElementById('student-form').reset();
             },
             editStudent: (id) => {
                 const student = appState.students.find(s => s.id === id);
-                if(!student) return;
                 document.getElementById('form-student-id').value = student.id;
                 document.getElementById('form-name').value = student.name;
                 document.getElementById('form-phone').value = student.phone;
@@ -724,20 +711,15 @@
                 uiUtils.openModal('student-form-modal');
             },
             toggleStatus: (id) => {
-                if (!userId) return;
                 const student = appState.students.find(s => s.id === id);
-                if(!student) return;
                 const newStatus = student.status === 'active' ? 'inactive' : 'active';
                 const action = newStatus === 'inactive' ? 'deactivate' : 'reactivate';
                 
                 uiUtils.showConfirm(`Confirm Status Change`, `Are you sure you want to ${action} ${student.name}?`, newStatus==='inactive', async () => {
-                    try {
-                        const docRef = doc(dbFirestore, 'artifacts', appId, 'users', userId, 'students', id);
-                        await setDoc(docRef, { ...student, status: newStatus }, { merge: true });
-                        uiUtils.showToast(`Student marked as ${newStatus}`);
-                    } catch (err) {
-                        uiUtils.showToast("Failed to update status", "error");
-                    }
+                    student.status = newStatus;
+                    await db.save();
+                    studentsModule.render();
+                    uiUtils.showToast(`Student marked as ${newStatus}`);
                 });
             },
             viewAttendanceHistory: (id) => {
@@ -770,7 +752,7 @@
                 body.innerHTML = '';
 
                 if (records.length === 0) {
-                    body.innerHTML = `<tr><td colspan="2" class="px-4 py-8 text-center text-slate-400">No attendance records found.</td></tr>`;
+                    body.innerHTML = `<tr><td colspan="2" class="px-4 py-8 text-center text-slate-400">Abhi tak koi attendance record nahi mila.</td></tr>`;
                 } else {
                     records.forEach(r => {
                         const badge = r.status === 'present'
@@ -793,23 +775,18 @@
             tempState: {}, 
             
             initView: () => {
-                const dateInput = document.getElementById('attendance-date');
-                if(!dateInput.value) dateInput.value = utils.getTodayStr();
+                document.getElementById('attendance-date').value = utils.getTodayStr();
                 attendanceModule.loadDate();
             },
             loadDate: () => {
-                const selectedDate = document.getElementById('attendance-date').value;
-                if (attendanceModule.currentDate !== selectedDate) {
-                    attendanceModule.tempState = {};
-                    attendanceModule.currentDate = selectedDate;
-                }
-
+                attendanceModule.currentDate = document.getElementById('attendance-date').value;
                 const activeStudents = appState.students.filter(s => s.status === 'active');
                 const listEl = document.getElementById('attendance-list');
                 const emptyState = document.getElementById('attendance-empty-state');
                 const badge = document.getElementById('attendance-status-badge');
                 
                 listEl.innerHTML = '';
+                attendanceModule.tempState = {};
 
                 if (activeStudents.length === 0) {
                     listEl.parentElement.classList.add('hidden');
@@ -830,7 +807,7 @@
 
                 activeStudents.forEach(student => {
                     const record = existingData.find(r => r.studentId === student.id);
-                    let status = attendanceModule.tempState[student.id] || (record ? record.status : 'present'); 
+                    let status = record ? record.status : 'present'; 
                     attendanceModule.tempState[student.id] = status;
 
                     const isPresent = status === 'present';
@@ -845,11 +822,11 @@
                             </div>
                         </div>
                         <div class="flex space-x-2">
-                            <button type="button" onclick="attendanceModule.toggleStudent('${student.id}', 'present', this)" 
+                            <button onclick="attendanceModule.toggleStudent('${student.id}', 'present', this)" 
                                 class="att-btn present w-12 h-10 rounded-lg flex items-center justify-center transition-colors ${isPresent ? 'bg-emerald-500 text-white shadow-inner' : 'bg-slate-100 text-slate-400 hover:bg-slate-200'}">
                                 <i class="fas fa-check"></i>
                             </button>
-                            <button type="button" onclick="attendanceModule.toggleStudent('${student.id}', 'absent', this)" 
+                            <button onclick="attendanceModule.toggleStudent('${student.id}', 'absent', this)" 
                                 class="att-btn absent w-12 h-10 rounded-lg flex items-center justify-center transition-colors ${!isPresent ? 'bg-rose-500 text-white shadow-inner' : 'bg-slate-100 text-slate-400 hover:bg-slate-200'}">
                                 <i class="fas fa-times"></i>
                             </button>
@@ -873,40 +850,35 @@
                 }
             },
             saveAttendance: async () => {
-                if (!userId || !attendanceModule.currentDate) return;
+                if (!attendanceModule.currentDate) return;
                 
                 const finalArray = Object.keys(attendanceModule.tempState).map(studentId => ({
                     studentId: studentId,
                     status: attendanceModule.tempState[studentId]
                 }));
 
-                try {
-                    const docRef = doc(dbFirestore, 'artifacts', appId, 'users', userId, 'attendance', attendanceModule.currentDate);
-                    await setDoc(docRef, { records: finalArray });
-                    uiUtils.showToast(`Roster saved to cloud for ${utils.formatDate(attendanceModule.currentDate)}`);
-                } catch (err) {
-                    uiUtils.showToast("Failed to save roster to cloud", "error");
-                }
+                appState.attendance[attendanceModule.currentDate] = finalArray;
+                await db.save(); // Sync to Firebase
+                
+                document.getElementById('attendance-status-badge').classList.remove('hidden');
+                uiUtils.showToast(`Cloud roster saved for ${utils.formatDate(attendanceModule.currentDate)}`);
             }
         };
 
         const financeModule = {
             render: (preselectId = null) => {
                 const select = document.getElementById('finance-student-select');
-                const currentSelection = preselectId || select.value;
-
                 select.innerHTML = '<option value="">-- Choose a Student --</option>';
+                
                 appState.students.forEach(s => {
                     const statusStr = s.status === 'inactive' ? ' (Inactive)' : '';
                     select.innerHTML += `<option value="${s.id}">${s.name}${statusStr} - ${s.subject}</option>`;
                 });
+
+                document.getElementById('pay-date').value = utils.getTodayStr();
                 
-                if (!document.getElementById('pay-date').value) {
-                    document.getElementById('pay-date').value = utils.getTodayStr();
-                }
-                
-                if (currentSelection && appState.students.some(s => s.id === currentSelection)) {
-                    select.value = currentSelection;
+                if (preselectId) {
+                    select.value = preselectId;
                     financeModule.loadStudentData();
                 } else {
                     document.getElementById('finance-profile').classList.add('hidden');
@@ -965,8 +937,6 @@
             },
             processPayment: async (e) => {
                 e.preventDefault();
-                if (!userId) return;
-
                 const studentId = document.getElementById('finance-student-select').value;
                 if (!studentId) return;
 
@@ -982,16 +952,13 @@
                     remarks: remarks
                 };
 
-                try {
-                    const docRef = doc(dbFirestore, 'artifacts', appId, 'users', userId, 'payments', transaction.transactionId);
-                    await setDoc(docRef, transaction);
-                    
-                    uiUtils.showToast("Payment securely logged to cloud");
-                    document.getElementById('pay-amount').value = '';
-                    document.getElementById('pay-remarks').value = '';
-                } catch (err) {
-                    uiUtils.showToast("Failed to log transaction", "error");
-                }
+                appState.payments.push(transaction);
+                await db.save(); // Sync to Firebase
+
+                uiUtils.showToast("Payment recorded to Cloud successfully");
+                document.getElementById('pay-amount').value = '';
+                document.getElementById('pay-remarks').value = '';
+                financeModule.loadStudentData();
             }
         };
 
@@ -1009,7 +976,7 @@
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
                 
-                uiUtils.showToast("Cloud snapshot exported to Downloads");
+                uiUtils.showToast("Backup exported to Downloads");
             },
             handleImport: (e) => {
                 const file = e.target.files[0];
@@ -1020,66 +987,42 @@
                     try {
                         const parsed = JSON.parse(event.target.result);
                         if (parsed.students && parsed.attendance && parsed.payments) {
-                            uiUtils.showConfirm("Restore & Merge to Cloud?", "This will upload the backup data to the cloud database. Existing items with the same IDs will be updated.", false, async () => {
-                                if(!userId) return;
-                                uiUtils.showToast("Starting cloud restoration...", "success");
-                                
-                                try {
-                                    for (const s of parsed.students) {
-                                        await setDoc(doc(dbFirestore, 'artifacts', appId, 'users', userId, 'students', s.id), s);
-                                    }
-                                    for (const date of Object.keys(parsed.attendance)) {
-                                        await setDoc(doc(dbFirestore, 'artifacts', appId, 'users', userId, 'attendance', date), { records: parsed.attendance[date] });
-                                    }
-                                    for (const p of parsed.payments) {
-                                        await setDoc(doc(dbFirestore, 'artifacts', appId, 'users', userId, 'payments', p.transactionId), p);
-                                    }
-                                    uiUtils.showToast("Restoration complete");
-                                } catch (err) {
-                                    uiUtils.showToast("Error during cloud upload", "error");
-                                }
+                            uiUtils.showConfirm("Overwrite Cloud Database?", "Restoring this backup will completely overwrite your current cloud data. This cannot be undone.", true, async () => {
+                                appState = parsed;
+                                await db.save();
+                                uiUtils.showToast("Database restored to Cloud successfully");
+                                app.switchView('dashboard');
                             });
                         } else {
                             throw new Error("Invalid schema");
                         }
                     } catch (err) {
-                        uiUtils.showToast("Invalid backup file.", "error");
+                        uiUtils.showToast("Invalid backup file. Restoration failed.", "error");
                     }
-                    e.target.value = ''; 
+                    e.target.value = '';
                 };
                 reader.readAsText(file);
             },
             requestFactoryReset: () => {
-                uiUtils.showConfirm("CRITICAL: Factory Reset", "You are about to permanently delete all data from the cloud database. This action cannot be undone.", true, async () => {
-                    if (!userId) return;
-                    try {
-                        const collections = ['students', 'attendance', 'payments'];
-                        for (const colName of collections) {
-                            const colRef = collection(dbFirestore, 'artifacts', appId, 'users', userId, colName);
-                            const snap = await getDocs(colRef);
-                            const deletePromises = snap.docs.map(d => deleteDoc(d.ref));
-                            await Promise.all(deletePromises);
-                        }
-                        uiUtils.showToast("Cloud database wiped successfully.");
-                    } catch (err) {
-                        uiUtils.showToast("Error resetting database.", "error");
-                    }
+                uiUtils.showConfirm("CRITICAL: Factory Reset", "You are about to permanently delete all students, attendance, and financial data FROM THE CLOUD. This cannot be undone.", true, async () => {
+                    appState = { students: [], attendance: {}, payments: [] };
+                    await db.save();
+                    uiUtils.showToast("Cloud Database factory reset complete.");
+                    app.switchView('dashboard');
                 });
             }
         };
 
         const app = {
-            currentView: 'dashboard',
             switchView: (viewId, param = null) => {
-                app.currentView = viewId;
                 document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden'));
                 document.getElementById(`view-${viewId}`).classList.remove('hidden');
 
                 document.querySelectorAll('.nav-btn').forEach(btn => {
                     if (btn.dataset.view === viewId) {
-                        btn.classList.add('text-white'); 
-                        btn.classList.add('text-indigo-600'); 
-                        if (btn.tagName === 'BUTTON') btn.classList.add('bg-slate-800'); 
+                        btn.classList.add('text-white');
+                        btn.classList.add('text-indigo-600');
+                        if (btn.tagName === 'BUTTON') btn.classList.add('bg-slate-800');
                     } else {
                         btn.classList.remove('text-white', 'text-indigo-600', 'bg-slate-800');
                     }
@@ -1088,79 +1031,27 @@
                 const titles = { dashboard: 'Dashboard', students: 'Directory', attendance: 'Roll Call', finance: 'Ledger', settings: 'Settings' };
                 document.getElementById('mobile-header-title').innerText = titles[viewId];
 
-                app.reRenderCurrentView(param);
-            },
-            reRenderCurrentView: (param = null) => {
-                switch(app.currentView) {
+                switch(viewId) {
                     case 'dashboard': dashboardModule.render(); break;
                     case 'students': studentsModule.render(); break;
-                    case 'attendance': 
-                        if(!document.getElementById('attendance-date').value) {
-                            attendanceModule.initView();
-                        } else {
-                            attendanceModule.loadDate();
-                        }
-                        break;
+                    case 'attendance': attendanceModule.initView(); break;
                     case 'finance': financeModule.render(param); break;
                 }
             },
-            setupRealtimeListeners: () => {
-                const handleError = (err) => console.error("Firestore sync error:", err);
-                
-                onSnapshot(collection(dbFirestore, 'artifacts', appId, 'users', userId, 'students'), (snap) => {
-                    appState.students = snap.docs.map(d => d.data());
-                    app.reRenderCurrentView();
-                }, handleError);
-
-                onSnapshot(collection(dbFirestore, 'artifacts', appId, 'users', userId, 'attendance'), (snap) => {
-                    appState.attendance = {};
-                    snap.docs.forEach(d => {
-                        appState.attendance[d.id] = d.data().records;
-                    });
-                    app.reRenderCurrentView();
-                }, handleError);
-
-                onSnapshot(collection(dbFirestore, 'artifacts', appId, 'users', userId, 'payments'), (snap) => {
-                    appState.payments = snap.docs.map(d => d.data());
-                    app.reRenderCurrentView();
-                }, handleError);
-            },
             boot: async () => {
-                try {
-                    // Authenticate
-                    if (customToken) {
-                        await signInWithCustomToken(auth, customToken);
-                    } else {
-                        await signInAnonymously(auth);
-                    }
-                    userId = auth.currentUser.uid;
-
-                    // Setup realtime listeners which will populate appState and re-render
-                    app.setupRealtimeListeners();
-                    
-                    // Setup UI Structure
-                    uiUtils.setupNav();
-                    app.switchView('dashboard');
-
-                    // Hide Loading screen
-                    setTimeout(() => {
-                        const loader = document.getElementById('app-loader');
-                        loader.classList.add('fade-out');
-                        setTimeout(() => loader.remove(), 300);
-                    }, 500);
-
-                } catch (error) {
-                    console.error("Initialization Error:", error);
-                    document.getElementById('app-loader').innerHTML = `
-                        <i class="fas fa-exclamation-triangle text-4xl text-rose-500 mb-4"></i>
-                        <h2 class="text-xl font-bold tracking-tight mb-2">Connection Error</h2>
-                        <p class="font-medium text-slate-400">Failed to connect to cloud database.</p>
-                    `;
-                }
+                // Wait for data to load from Firebase before rendering UI
+                await db.init();
+                uiUtils.setupNav();
+                app.switchView('dashboard');
             }
         };
 
-        // Expose modules to global window for HTML inline event handlers
+        /* 
+           CRITICAL STEP FOR GITHUB PAGES:
+           Since type="module" makes variables private, we must expose them 
+           to the global "window" object so HTML onclick functions can find them!
+        */
+        window.utils = utils;
         window.uiUtils = uiUtils;
         window.dashboardModule = dashboardModule;
         window.studentsModule = studentsModule;
@@ -1169,7 +1060,15 @@
         window.settingsModule = settingsModule;
         window.app = app;
 
-        // Bootstrap on Load
+        // Bind global event listeners
+        document.getElementById('confirm-action-btn').addEventListener('click', window.uiUtils.executeConfirm);
+        document.querySelector('#student-form-modal .fa-times').parentElement.addEventListener('click', () => {
+            document.getElementById('student-form').reset();
+            document.getElementById('form-student-id').value = '';
+            document.getElementById('student-modal-title').innerText = "Register New Student";
+        });
+
+        // Run application on load
         document.addEventListener('DOMContentLoaded', app.boot);
 
     </script>
