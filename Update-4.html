@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pankaj Kumar - Header with Search</title>
+
+<style>
+:root {
+  --primary-color: #3f51b5;
+  --secondary-color: #ff9800;
+}
+
+/* RESET */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:"Segoe UI", Arial, sans-serif;
+}
+
+body{
+  background: linear-gradient(135deg, #f9f9ff, #ffe9f3);
+  color:#333;
+  min-height:100vh;
+}
+
+/* ===== HEADER ===== */
+header{
+  background:linear-gradient(to right,var(--primary-color),var(--secondary-color));
+  color:#fff;
+  padding:15px 5%;
+  position:sticky;
+  top:0;
+  z-index:1000;
+  box-shadow:0 4px 8px rgba(0,0,0,0.2);
+  animation:slideDown 1s ease;
+}
+
+nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+.logo{
+  font-size:1.8em;
+  font-weight:bold;
+  letter-spacing:1px;
+}
+
+nav ul{
+  list-style:none;
+  display:flex;
+  flex-wrap:wrap;
+}
+
+nav ul li{
+  margin-left:25px;
+}
+
+nav ul li a{
+  text-decoration:none;
+  color:white;
+  font-weight:500;
+  transition:.3s;
+}
+
+nav ul li a:hover{
+  color:#ffe97f;
+  text-shadow:0 0 6px #fff;
+}
+
+/* 🔍 SEARCH */
+.search-box{
+  margin-left:20px;
+  position:relative;
+}
+.search-box input{
+  padding:6px 30px 6px 10px;
+  border-radius:20px;
+  border:none;
+  outline:none;
+  font-size:.95em;
+}
+.search-box input:focus{
+  box-shadow:0 0 8px #fff;
+}
+.search-box::after{
+  content:"🔍";
+  position:absolute;
+  right:10px;
+  top:4px;
+  pointer-events:none;
+}
+
+/* 🔴 RED BLINK SEARCH HIGHLIGHT */
+.search-blink-red{
+  outline:3px solid red !important;
+  animation:redBlink 1s infinite;
+}
+@keyframes redBlink{
+  0%{ box-shadow:0 0 6px red; }
+  50%{ box-shadow:0 0 22px red; }
+  100%{ box-shadow:0 0 6px red; }
+}
+
+@keyframes slideDown{
+  from{transform:translateY(-100%);}
+  to{transform:translateY(0);}
+}
+
+@media(max-width:768px){
+  nav{flex-direction:column;text-align:center;}
+  nav ul{margin-top:10px;flex-direction:column;}
+  nav ul li{margin:10px 0;}
+  .search-box{margin:10px 0;}
+}
+
+/* ===== LOGIN GATE ===== */
+.gate-wrap{max-width:900px;margin:60px auto;padding:20px;text-align:center;}
+.gate-title{font-size:1.6em;margin-bottom:10px;color:var(--primary-color);}
+.gate-sub{color:#666;margin-bottom:30px;}
+.gate-cards{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;}
+.gate-card{background:#fff;border-radius:16px;padding:30px 25px;width:260px;box-shadow:0 6px 20px rgba(0,0,0,.08);cursor:pointer;transition:.3s;border:2px solid transparent;}
+.gate-card:hover{transform:translateY(-6px);box-shadow:0 12px 28px rgba(0,0,0,.15);border-color:var(--secondary-color);}
+.gate-card .icon{font-size:2.6em;margin-bottom:12px;}
+.gate-card h3{margin-bottom:8px;color:var(--primary-color);}
+.gate-card p{font-size:.9em;color:#777;}
+
+.pass-box{max-width:340px;margin:30px auto 0;background:#fff;padding:25px;border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,.1);}
+.pass-box input{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:8px;margin-bottom:12px;font-size:1em;}
+.pass-box button{width:100%;padding:10px;border:none;border-radius:8px;background:var(--primary-color);color:#fff;font-weight:600;cursor:pointer;transition:.3s;}
+.pass-box button:hover{background:var(--secondary-color);}
+.pass-error{color:#e53935;font-size:.85em;margin-bottom:10px;display:none;}
+.pass-back{margin-top:10px;background:none!important;color:var(--primary-color)!important;text-decoration:underline;font-weight:400!important;}
+
+/* ===== APP CONTENT ===== */
+#appContent{display:none;padding:20px 5%;max-width:1100px;margin:0 auto;}
+.topbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:20px;}
+.badge{padding:5px 14px;border-radius:20px;font-size:.85em;font-weight:600;color:#fff;}
+.badge.admin{background:#43a047;}
+.badge.guest{background:#757575;}
+.btn{padding:8px 16px;border:none;border-radius:8px;cursor:pointer;font-weight:600;transition:.3s;}
+.btn-primary{background:var(--primary-color);color:#fff;}
+.btn-primary:hover{background:var(--secondary-color);}
+.btn-danger{background:#e53935;color:#fff;padding:5px 10px;font-size:.8em;}
+.btn-outline{background:none;border:1px solid #ccc;color:#555;}
+
+.add-panel{background:#fff;border-radius:14px;padding:20px;margin-bottom:25px;box-shadow:0 4px 14px rgba(0,0,0,.08);}
+.type-tabs{display:flex;gap:8px;margin-bottom:15px;flex-wrap:wrap;}
+.type-tab{padding:6px 14px;border-radius:20px;border:1px solid #ddd;cursor:pointer;font-size:.85em;background:#f5f5f5;}
+.type-tab.active{background:var(--primary-color);color:#fff;border-color:var(--primary-color);}
+.add-panel input,.add-panel textarea{width:100%;padding:9px 10px;border:1px solid #ddd;border-radius:8px;margin-bottom:10px;font-size:.95em;font-family:inherit;}
+
+.feed{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px;}
+.card{background:#fff;border-radius:14px;padding:16px;box-shadow:0 4px 14px rgba(0,0,0,.08);position:relative;animation:fadeIn .4s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.card img{width:100%;border-radius:10px;max-height:180px;object-fit:cover;cursor:pointer;margin-bottom:8px;}
+.card .ctype{font-size:.7em;text-transform:uppercase;letter-spacing:.5px;color:var(--secondary-color);font-weight:700;}
+.card h4{margin:4px 0 6px;color:#333;font-size:1em;}
+.card p{font-size:.88em;color:#666;word-break:break-word;}
+.card a.link-open{display:inline-block;margin-top:6px;font-size:.85em;color:var(--primary-color);font-weight:600;text-decoration:none;}
+.card iframe{width:100%;height:160px;border:0;border-radius:10px;margin-bottom:8px;}
+.card .del-btn{position:absolute;top:10px;right:10px;}
+.empty-state{text-align:center;color:#999;padding:40px 0;grid-column:1/-1;}
+
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:2000;padding:20px;}
+.lightbox img{max-width:90%;max-height:90%;border-radius:10px;}
+.lightbox.show{display:flex;}
+
+/* ===== RICH MEDIA PREVIEW (auto play for youtube/drive/mega/direct video-photo links) ===== */
+.media-frame{width:100%;height:220px;border:0;border-radius:10px;margin-bottom:8px;background:#000;display:block;}
+.card video.media-video{width:100%;max-height:260px;border-radius:10px;margin-bottom:8px;background:#000;display:block;}
+.card img.media-image{width:100%;border-radius:10px;max-height:220px;object-fit:cover;cursor:pointer;margin-bottom:8px;display:block;}
+.media-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px;}
+.media-actions a,.media-actions button{flex:1;min-width:100px;text-align:center;padding:7px 8px;border-radius:8px;font-size:.78em;font-weight:700;text-decoration:none;white-space:nowrap;border:none;cursor:pointer;font-family:inherit;}
+.media-actions .open-btn{background:#eef1fb;color:var(--primary-color);border:1px solid #d8ddf5;}
+.media-actions .dl-btn{background:var(--primary-color);color:#fff;border:1px solid var(--primary-color);}
+.media-actions .dl-btn:hover{background:var(--secondary-color);border-color:var(--secondary-color);}
+.media-actions .open-btn:hover{background:#e2e7fb;}
+.media-actions .fs-btn{background:#fff3e0;color:#c96a00;border:1px solid #ffd9a0;}
+.media-actions .fs-btn:hover{background:#ffe6bf;}
+
+@media(max-width:600px){.gate-cards{flex-direction:column;align-items:center;}}
+</style>
+</head>
+
+<body>
+
+<header>
+<nav>
+  <div class="logo">🌟 Pankaj Kumar 🌟</div>
+
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="Search here...">
+  </div>
+
+  <ul id="menuList">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="#">YouTube</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+</nav>
+</header>
+
+<!-- ===== LOGIN GATE ===== -->
+<div class="gate-wrap" id="authGate">
+  <div class="gate-title">🔒 Access Type Chuniye</div>
+  <div class="gate-sub">Admin login karein content manage karne ke liye, ya sirf dekhne ke liye View Only chunein</div>
+  <div class="gate-cards">
+    <div class="gate-card" id="adminCardBtn">
+      <div class="icon">🔑</div>
+      <h3>Admin Login</h3>
+      <p>Password daal kar login karein — links, photos, notes add/delete kar sakte hain</p>
+    </div>
+    <div class="gate-card" id="viewCardBtn">
+      <div class="icon">👁️</div>
+      <h3>View Only</h3>
+      <p>Sirf content dekhein — kuch bhi add, edit ya delete nahi kar sakte</p>
+    </div>
+  </div>
+
+  <div class="pass-box" id="passBox" hidden>
+    <div class="pass-error" id="passError">Galat password! Dobara try karein.</div>
+    <input type="password" id="passInput" placeholder="Password enter karein" autocomplete="current-password">
+    <button id="passSubmitBtn">Login</button>
+    <button class="pass-back" id="passBackBtn">⬅ Wapas jaayein</button>
+  </div>
+</div>
+
+<!-- ===== MAIN APP (locked until gate passed) ===== -->
+<main id="appContent">
+  <div class="topbar">
+    <span class="badge" id="modeBadge">-</span>
+    <button class="btn btn-outline" id="logoutBtn">Logout / Switch</button>
+  </div>
+
+  <div class="add-panel" id="adminPanel" hidden>
+    <div class="type-tabs">
+      <div class="type-tab active" data-type="link">🔗 Link</div>
+      <div class="type-tab" data-type="photo">🖼️ Photo</div>
+      <div class="type-tab" data-type="video">🎬 Video</div>
+      <div class="type-tab" data-type="note">📝 Note</div>
+    </div>
+    <input type="text" id="itemTitle" placeholder="Title / Naam">
+    <input type="text" id="itemUrl" placeholder="Link URL paste karein">
+    <textarea id="itemNote" placeholder="Note / Description likhein" rows="2" hidden></textarea>
+    <button class="btn btn-primary" id="addItemBtn">+ Content Add Karein</button>
+  </div>
+
+  <div class="feed" id="feed">
+    <div class="empty-state">Loading content...</div>
+  </div>
+</main>
+
+<div class="lightbox" id="lightbox"><img id="lightboxImg" src="" alt="photo"></div>
+
+<script>
+/* 🔍 SAFE SEARCH SYSTEM (RED BLINK) */
+(function(){
+  const search = document.getElementById("searchInput");
+  const menuItems = document.querySelectorAll("#menuList li");
+  const blocks = document.querySelectorAll("header, nav, li, a");
+
+  let last = null;
+
+  search.addEventListener("input", function(){
+    const q = this.value.toLowerCase().trim();
+
+    /* MENU FILTER */
+    menuItems.forEach(li=>{
+      li.style.display = li.innerText.toLowerCase().includes(q) ? "" : "none";
+    });
+
+    /* REMOVE OLD HIGHLIGHT */
+    if(last){
+      last.classList.remove("search-blink-red");
+      last = null;
+    }
+
+    if(!q) return;
+
+    /* CONTENT SEARCH */
+    for(const el of blocks){
+      if(el.innerText && el.innerText.toLowerCase().includes(q)){
+        el.classList.add("search-blink-red");
+        el.scrollIntoView({behavior:"smooth",block:"center"});
+        last = el;
+        break;
+      }
+    }
+  });
+})();
+</script>
+
+
+
+
+
+
+
+
+
+
+
+<!-- ===== FIREBASE SDK (compat, Spark/free plan friendly — Firestore + Auth only, no Storage) ===== -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script>
+/* ========= LOGIN + CONTENT MANAGEMENT (Firebase Firestore + Auth) ========= */
+(function(){
+  const firebaseConfig = {
+    apiKey: "AIzaSyD8t_uT50iDbpRpKxBqzWCKyNP_7UTVDOk",
+    authDomain: "all-rounder-79be9.firebaseapp.com",
+    projectId: "all-rounder-79be9",
+    storageBucket: "all-rounder-79be9.firebasestorage.app",
+    messagingSenderId: "961295059059",
+    appId: "1:961295059059:web:8e579cb36abbe0290ac206"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  // Fixed hidden email tied to the admin password. Create this exact user
+  // in Firebase Console → Authentication → Email/Password, with password P@88337.
+  const ADMIN_EMAIL = "owner@proteacher-admin.com";
+  const COLLECTION = "content";
+
+  // ---- Elements ----
+  const authGate = document.getElementById("authGate");
+  const adminCardBtn = document.getElementById("adminCardBtn");
+  const viewCardBtn = document.getElementById("viewCardBtn");
+  const passBox = document.getElementById("passBox");
+  const passInput = document.getElementById("passInput");
+  const passSubmitBtn = document.getElementById("passSubmitBtn");
+  const passBackBtn = document.getElementById("passBackBtn");
+  const passError = document.getElementById("passError");
+
+  const appContent = document.getElementById("appContent");
+  const modeBadge = document.getElementById("modeBadge");
+  const logoutBtn = document.getElementById("logoutBtn");
+  const adminPanel = document.getElementById("adminPanel");
+  const feed = document.getElementById("feed");
+
+  const typeTabs = document.querySelectorAll(".type-tab");
+  const itemTitle = document.getElementById("itemTitle");
+  const itemUrl = document.getElementById("itemUrl");
+  const itemNote = document.getElementById("itemNote");
+  const addItemBtn = document.getElementById("addItemBtn");
+
+  const lightbox = document.getElementById("lightbox");
+  const lightboxImg = document.getElementById("lightboxImg");
+
+  let currentType = "link";
+  let isAdmin = false;
+  let unsubscribeFeed = null;
+
+  // ---------- GATE HANDLING ----------
+  adminCardBtn.addEventListener("click", function(){
+    passBox.hidden = false;
+    passError.style.display = "none";
+    passInput.value = "";
+    passInput.focus();
+  });
+
+  passBackBtn.addEventListener("click", function(){
+    passBox.hidden = true;
+  });
+
+  passSubmitBtn.addEventListener("click", doLogin);
+  passInput.addEventListener("keydown", function(e){ if(e.key === "Enter") doLogin(); });
+
+  function doLogin(){
+    const pwd = passInput.value.trim();
+    if(!pwd) return;
+    passSubmitBtn.disabled = true;
+    passSubmitBtn.textContent = "Checking...";
+    auth.signInWithEmailAndPassword(ADMIN_EMAIL, pwd)
+      .catch(function(err){
+        passError.textContent = "Galat password! (" + (err.code || err.message) + ")";
+        passError.style.display = "block";
+      })
+      .finally(function(){
+        passSubmitBtn.disabled = false;
+        passSubmitBtn.textContent = "Login";
+      });
+  }
+
+  viewCardBtn.addEventListener("click", function(){
+    localStorage.setItem("pt_guest", "1");
+    enterApp(false);
+  });
+
+  logoutBtn.addEventListener("click", function(){
+    localStorage.removeItem("pt_guest");
+    if(auth.currentUser){ auth.signOut(); }
+    else { showGate(); }
+  });
+
+  function showGate(){
+    isAdmin = false;
+    appContent.style.display = "none";
+    authGate.style.display = "block";
+    passBox.hidden = true;
+    if(unsubscribeFeed){ unsubscribeFeed(); unsubscribeFeed = null; }
+  }
+
+  function enterApp(adminMode){
+    isAdmin = adminMode;
+    authGate.style.display = "none";
+    appContent.style.display = "block";
+    modeBadge.textContent = adminMode ? "✅ Admin Mode" : "👁️ Viewer Mode";
+    modeBadge.className = "badge " + (adminMode ? "admin" : "guest");
+    adminPanel.hidden = !adminMode;
+    startFeed();
+  }
+
+  // Decides mode on load / after login / after refresh
+  auth.onAuthStateChanged(function(user){
+    if(user && user.email === ADMIN_EMAIL){
+      localStorage.removeItem("pt_guest");
+      enterApp(true);
+    } else if(localStorage.getItem("pt_guest") === "1"){
+      enterApp(false);
+    } else {
+      showGate();
+    }
+  });
+
+  // ---------- ADD CONTENT (ADMIN ONLY) ----------
+  typeTabs.forEach(function(tab){
+    tab.addEventListener("click", function(){
+      typeTabs.forEach(function(t){ t.classList.remove("active"); });
+      tab.classList.add("active");
+      currentType = tab.dataset.type;
+      itemNote.hidden = currentType !== "note";
+      itemUrl.hidden = currentType === "note";
+      itemUrl.placeholder = currentType === "photo" ? "Photo ka URL paste karein" :
+                             currentType === "video" ? "YouTube / Video URL paste karein" :
+                             "Link URL paste karein";
+    });
+  });
+
+  addItemBtn.addEventListener("click", async function(){
+    if(!isAdmin) return;
+    const title = itemTitle.value.trim();
+    const url = itemUrl.value.trim();
+    const note = itemNote.value.trim();
+
+    if(currentType === "note"){
+      if(!note){ alert("Note likhna zaroori hai"); return; }
+    } else {
+      if(!url || !/^https?:\/\//i.test(url)){ alert("Sahi URL daalein (http:// ya https:// se shuru)"); return; }
+    }
+
+    addItemBtn.disabled = true;
+    try{
+      await db.collection(COLLECTION).add({
+        type: currentType,
+        title: title || "",
+        url: currentType !== "note" ? url : "",
+        note: currentType === "note" ? note : "",
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      itemTitle.value = ""; itemUrl.value = ""; itemNote.value = "";
+    }catch(err){
+      alert("Add karne me error: " + err.message);
+    }
+    addItemBtn.disabled = false;
+  });
+
+  // ---------- FEED (real-time, read-only for everyone, delete only for admin) ----------
+  function startFeed(){
+    if(unsubscribeFeed) return;
+    unsubscribeFeed = db.collection(COLLECTION).orderBy("createdAt", "desc")
+      .onSnapshot(function(snap){
+        if(snap.empty){
+          feed.innerHTML = '<div class="empty-state">Abhi tak koi content nahi hai.</div>';
+          return;
+        }
+        feed.innerHTML = "";
+        snap.forEach(function(doc){
+          feed.appendChild(renderCard(doc.id, doc.data()));
+        });
+      }, function(err){
+        feed.innerHTML = '<div class="empty-state">Content load nahi ho paaya.</div>';
+        console.error(err);
+      });
+  }
+
+  function ytEmbedUrl(url){
+    const m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([\w-]{6,})/);
+    return m ? "https://www.youtube.com/embed/" + m[1] : null;
+  }
+
+  // ---------- NEW: universal media-link detector (Google Drive / Mega / YouTube / direct file) ----------
+  function extractDriveId(url){
+    let m = url.match(/drive\.google\.com\/file\/d\/([\w-]+)/);
+    if(m) return m[1];
+    m = url.match(/drive\.google\.com\/open\?id=([\w-]+)/);
+    if(m) return m[1];
+    m = url.match(/[?&]id=([\w-]+)/);
+    if(m && /drive\.google\.com/.test(url)) return m[1];
+    return null;
+  }
+
+  function extractMega(url){
+    const m = url.match(/mega\.nz\/(?:file|embed)\/([\w-]+)#([\w-]+)/);
+    return m ? { id: m[1], key: m[2] } : null;
+  }
+
+  function directFileKind(url){
+    const clean = url.split(/[?#]/)[0].toLowerCase();
+    if(/\.(mp4|webm|ogv|mov|m4v)$/.test(clean)) return "video";
+    if(/\.(jpg|jpeg|png|gif|webp|bmp|svg)$/.test(clean)) return "image";
+    return null;
+  }
+
+  // Returns a descriptor for how to preview a URL, regardless of the stored content "type".
+  // Any link (Link / Photo / Video tab) that points to YouTube, Google Drive, Mega,
+  // or a direct image/video file will be auto-detected and shown as a real inline player.
+  function resolveMedia(url){
+    if(!url) return null;
+
+    const yt = ytEmbedUrl(url);
+    if(yt) return { kind: "youtube", embedUrl: yt, openUrl: url };
+
+    const driveId = extractDriveId(url);
+    if(driveId){
+      return {
+        kind: "gdrive",
+        embedUrl: "https://drive.google.com/file/d/" + driveId + "/preview",
+        openUrl: "https://drive.google.com/file/d/" + driveId + "/view",
+        downloadUrl: "https://drive.google.com/uc?export=download&id=" + driveId
+      };
+    }
+
+    const mega = extractMega(url);
+    if(mega){
+      return {
+        kind: "mega",
+        embedUrl: "https://mega.nz/embed/" + mega.id + "#" + mega.key,
+        openUrl: url
+      };
+    }
+
+    const dk = directFileKind(url);
+    if(dk === "video") return { kind: "direct-video", srcUrl: url, openUrl: url, downloadUrl: url };
+    if(dk === "image") return { kind: "direct-image", srcUrl: url, openUrl: url, downloadUrl: url };
+
+    return null;
+  }
+
+  // Cross-browser fullscreen trigger (handles iOS Safari's native video fullscreen too)
+  function goFullscreen(el){
+    if(!el) return;
+    if(el.requestFullscreen) el.requestFullscreen();
+    else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+    else if(el.webkitEnterFullscreen) el.webkitEnterFullscreen(); // iOS <video>
+    else if(el.mozRequestFullScreen) el.mozRequestFullScreen();
+    else if(el.msRequestFullscreen) el.msRequestFullscreen();
+  }
+
+  // Builds the actual preview element (iframe/video/img) + Open/Download buttons row for a media descriptor.
+  function buildMediaBlock(media, data){
+    const wrap = document.createDocumentFragment();
+    let mediaEl = null;
+
+    if(media.kind === "youtube" || media.kind === "gdrive" || media.kind === "mega"){
+      const ifr = document.createElement("iframe");
+      ifr.className = "media-frame";
+      ifr.src = media.embedUrl;
+      ifr.allow = "autoplay; fullscreen; picture-in-picture";
+      ifr.allowFullscreen = true;
+      wrap.appendChild(ifr);
+      mediaEl = ifr;
+    } else if(media.kind === "direct-video"){
+      const vid = document.createElement("video");
+      vid.className = "media-video";
+      vid.src = media.srcUrl;
+      vid.controls = true;
+      vid.playsInline = true;
+      vid.preload = "metadata";
+      wrap.appendChild(vid);
+      mediaEl = vid;
+    } else if(media.kind === "direct-image"){
+      const img = document.createElement("img");
+      img.className = "media-image";
+      img.src = media.srcUrl;
+      img.alt = data.title || "photo";
+      img.addEventListener("click", function(){
+        lightboxImg.src = media.srcUrl;
+        lightbox.classList.add("show");
+      });
+      wrap.appendChild(img);
+    }
+
+    // Action buttons: shown right below the player. Hidden automatically while
+    // the player itself is in native fullscreen (only the fullscreened element shows then).
+    const actions = document.createElement("div");
+    actions.className = "media-actions";
+
+    if(mediaEl){
+      const fsBtn = document.createElement("button");
+      fsBtn.type = "button";
+      fsBtn.className = "fs-btn";
+      fsBtn.textContent = "⛶ Full Screen";
+      fsBtn.addEventListener("click", function(){ goFullscreen(mediaEl); });
+      actions.appendChild(fsBtn);
+    }
+
+    const openBtn = document.createElement("a");
+    openBtn.href = media.openUrl;
+    openBtn.target = "_blank";
+    openBtn.rel = "noopener noreferrer";
+    openBtn.className = "open-btn";
+    openBtn.textContent = media.kind === "gdrive" ? "📁 Drive me kholein" :
+                           media.kind === "youtube" ? "▶ YouTube pe kholein" :
+                           media.kind === "mega" ? "☁ Mega me kholein" : "🔗 Kholein";
+    actions.appendChild(openBtn);
+
+    if(media.downloadUrl){
+      const dlBtn = document.createElement("a");
+      dlBtn.href = media.downloadUrl;
+      dlBtn.target = "_blank";
+      dlBtn.rel = "noopener noreferrer";
+      dlBtn.setAttribute("download", data.title || "download");
+      dlBtn.className = "dl-btn";
+      dlBtn.textContent = "⬇ Download";
+      actions.appendChild(dlBtn);
+    }
+
+    wrap.appendChild(actions);
+    return wrap;
+  }
+
+  function renderCard(id, data){
+    const card = document.createElement("div");
+    card.className = "card";
+
+    const typeLabel = document.createElement("div");
+    typeLabel.className = "ctype";
+    typeLabel.textContent = data.type || "";
+    card.appendChild(typeLabel);
+
+    if(data.title){
+      const h4 = document.createElement("h4");
+      h4.textContent = data.title;
+      card.appendChild(h4);
+    }
+
+    // NEW: try to auto-detect a rich playable/viewable preview for ANY url-based item
+    // (works no matter which tab it was added under — Link, Photo, or Video —
+    // and no matter which service: YouTube, Google Drive, Mega, or a direct file link).
+    const autoMedia = data.url ? resolveMedia(data.url) : null;
+
+    if(autoMedia){
+      card.appendChild(buildMediaBlock(autoMedia, data));
+    } else if(data.type === "photo" && data.url){
+      const img = document.createElement("img");
+      img.src = data.url;
+      img.alt = data.title || "photo";
+      img.addEventListener("click", function(){
+        lightboxImg.src = data.url;
+        lightbox.classList.add("show");
+      });
+      card.appendChild(img);
+    } else if(data.type === "video" && data.url){
+      const embed = ytEmbedUrl(data.url);
+      if(embed){
+        const ifr = document.createElement("iframe");
+        ifr.src = embed;
+        ifr.allowFullscreen = true;
+        card.appendChild(ifr);
+      } else {
+        const a = document.createElement("a");
+        a.href = data.url; a.target = "_blank"; a.rel = "noopener noreferrer";
+        a.className = "link-open";
+        a.textContent = "▶ Video kholein";
+        card.appendChild(a);
+      }
+    } else if(data.type === "link" && data.url){
+      const a = document.createElement("a");
+      a.href = data.url; a.target = "_blank"; a.rel = "noopener noreferrer";
+      a.className = "link-open";
+      a.textContent = "🔗 Link kholein";
+      card.appendChild(a);
+    } else if(data.type === "note" && data.note){
+      const p = document.createElement("p");
+      p.textContent = data.note;
+      card.appendChild(p);
+    }
+
+    if(isAdmin){
+      const del = document.createElement("button");
+      del.className = "btn btn-danger del-btn";
+      del.textContent = "🗑";
+      del.addEventListener("click", async function(){
+        if(confirm("Ye content delete karein?")){
+          try{ await db.collection(COLLECTION).doc(id).delete(); }
+          catch(err){ alert("Delete error: " + err.message); }
+        }
+      });
+      card.appendChild(del);
+    }
+
+    return card;
+  }
+
+  lightbox.addEventListener("click", function(){ lightbox.classList.remove("show"); });
+
+})();
+</script>
+
+<script>
+/* ========= GLOBAL VIBRATION ONLY ========= */
+document.addEventListener("click", function () {
+  if (navigator.vibrate) navigator.vibrate(40);
+}, true);
+</script>
+
+</body>
+</html>
